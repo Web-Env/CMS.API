@@ -1,0 +1,7 @@
+# Compiled output
+/bin
+/obj
+/debug
+
+# IDE - VS
+/.vs
