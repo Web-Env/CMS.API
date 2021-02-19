@@ -2,10 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <Version>0.0.1</Version>
+    <Authors>Adam Barry-O'Donovan</Authors>
   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="Controllers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CMS.Domain.All" Version="0.0.1" />
   </ItemGroup>
 
 
