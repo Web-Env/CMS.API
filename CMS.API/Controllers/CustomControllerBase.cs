@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using CMS.API.DownloadModels;
 using CMS.API.UploadModels;
 using CMS.Domain.Entities;
 using CMS.Domain.Enums;
