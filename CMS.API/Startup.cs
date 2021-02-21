@@ -27,7 +27,6 @@ namespace CMS.API
             services.AddAutoMapper(typeof(Startup));
             services.AddControllers();
 
-            //services.AddSingleton<IRepositoryManager, RepositoryManager>();
             services.Add(new ServiceDescriptor(typeof(IRepositoryManager), new RepositoryManager(ConfigureRepositoryContext())));
 
             services.AddSwaggerGen(c =>
