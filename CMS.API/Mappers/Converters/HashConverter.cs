@@ -8,9 +8,9 @@ namespace CMS.API.Mappers.Converters
     {
         public byte[] Convert(string password, ResolutionContext resolutionContext)
         {
-            MD5CryptoServiceProvider md5Hasher = new MD5CryptoServiceProvider();
+            SHA256Managed sha256Hasher = new SHA256Managed();
             UTF8Encoding encoder = new UTF8Encoding();
-            return md5Hasher.ComputeHash(encoder.GetBytes(password));
+            return sha256Hasher.ComputeHash(encoder.GetBytes(password));
         }
     }
 }

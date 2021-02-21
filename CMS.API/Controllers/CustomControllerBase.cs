@@ -12,7 +12,7 @@ namespace CMS.API.Controllers
     public class CustomControllerBase : ControllerBase
     {
         public IRepositoryManager RepositoryManager { get; private set; }
-        private IMapper _mapper;
+        private readonly IMapper _mapper;
 
         public CustomControllerBase(IRepositoryManager repositoryManager,
                                     IMapper mapper)

@@ -10,7 +10,7 @@ namespace CMS.API.DownloadModels
 
         public string LastName { get; set; }
 
-        public bool IsAdmin { get; set; } = false;
+        public bool IsAdmin { get; set; }
 
         public DateTime CreatedOn { get; set; }
 
