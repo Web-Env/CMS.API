@@ -3,5 +3,9 @@
 /CMS.API/obj
 /CMS.API/debug
 
+/CMS.API.UploadModels/bin
+/CMS.API.UploadModels/obj
+/CMS.API.UploadModels/debug
+
 # IDE - VS
 /.vs
