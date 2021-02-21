@@ -1,7 +1,15 @@
 # Compiled output
-/bin
-/obj
-/debug
+/CMS.API/bin
+/CMS.API/obj
+/CMS.API/debug
+
+/CMS.API.UploadModels/bin
+/CMS.API.UploadModels/obj
+/CMS.API.UploadModels/debug
+
+/CMS.API.DownloadModels/bin
+/CMS.API.DownloadModels/obj
+/CMS.API.DownloadModels/debug
 
 # IDE - VS
 /.vs
