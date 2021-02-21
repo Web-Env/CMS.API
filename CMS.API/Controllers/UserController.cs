@@ -21,7 +21,6 @@ namespace CMS.API.Controllers
 
 
         [HttpPost]
-        [AllowAnonymous] //TODO: Remove AllowAnonymous annotation once login method has been developed
         public async Task<IActionResult> Post(UserUploadModel user)
         {
             var existingEmail = await RepositoryManager.UserRepository.FindAsync(u => u.Email == user.Email);
