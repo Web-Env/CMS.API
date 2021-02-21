@@ -1,16 +1,13 @@
-﻿using CMS.API.UploadModels;
+﻿using AutoMapper;
+using CMS.API.UploadModels;
 using CMS.Domain.Entities;
-using CMS.Domain.Repositories.Interfaces;
 using CMS.Domain.Enums;
+using CMS.Domain.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
-using AutoMapper;
-using CMS.API.DownloadModels;
 
 namespace CMS.API.Controllers
 {
