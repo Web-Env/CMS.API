@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace CMS.API.Controllers
 {
+    [ApiController]
+    [Authorize]
+    [Route("[controller]")]
     public class UserController : CustomControllerBase
     {
         public UserController(IRepositoryManager repositoryManager) : base(repositoryManager) { }

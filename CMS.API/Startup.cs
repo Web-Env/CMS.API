@@ -26,11 +26,12 @@ namespace CMS.API
         {
             services.AddControllers();
 
-            services.AddSingleton<IRepositoryManager, RepositoryManager>();
+            //services.AddSingleton<IRepositoryManager, RepositoryManager>();
+            services.Add(new ServiceDescriptor(typeof(IRepositoryManager), new RepositoryManager(ConfigureRepositoryContext())));
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "DropTop", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CMS", Version = "V0.0.1" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
@@ -87,7 +88,7 @@ namespace CMS.API
             app.UseSwaggerUI(c =>
             {
                 string swaggerJsonBasePath = string.IsNullOrWhiteSpace(c.RoutePrefix) ? "." : "..";
-                c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", "DropTop");
+                c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", "CMS");
             });
         }
 

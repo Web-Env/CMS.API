@@ -6,7 +6,7 @@ namespace CMS.API.UploadModels
     {
         public string Email { get; set; }
 
-        public char[] Password { get; set; }
+        public string Password { get; set; }
 
         public string FirstName { get; set; }
 
