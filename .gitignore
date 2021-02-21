@@ -1,7 +1,7 @@
 # Compiled output
-/bin
-/obj
-/debug
+/CMS.API/bin
+/CMS.API/obj
+/CMS.API/debug
 
 # IDE - VS
 /.vs

@@ -1,15 +1,12 @@
+using CMS.Domain.Repositories;
+using CMS.Domain.Repositories.Contexts;
+using CMS.Domain.Repositories.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CMS.API
 {
@@ -26,6 +23,7 @@ namespace CMS.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddSingleton(IRepositoryManager, new RepositoryManager(ConfigureRepositoryContext()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,6 +44,16 @@ namespace CMS.API
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private CMSRepositoryContext ConfigureRepositoryContext()
+        {
+            var options = new DbContextOptionsBuilder<CMSRepositoryContext>()
+                .UseSqlServer("Server=localhost;Database=CMS;Trusted_Connection=True;")
+                .Options;
+            CMSRepositoryContext context = new CMSRepositoryContext(options);
+
+            return context;
         }
     }
 }
