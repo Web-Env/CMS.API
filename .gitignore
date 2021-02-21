@@ -7,5 +7,9 @@
 /CMS.API.UploadModels/obj
 /CMS.API.UploadModels/debug
 
+/CMS.API.DownloadModels/bin
+/CMS.API.DownloadModels/obj
+/CMS.API.DownloadModels/debug
+
 # IDE - VS
 /.vs

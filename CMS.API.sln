@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMS.API", "CMS.API\CMS.API.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMS.API.UploadModels", "CMS.API.UploadModels\CMS.API.UploadModels.csproj", "{B90F41F6-C855-42E9-B6DC-238A9D7FE1B5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMS.API.DownloadModels", "CMS.API.DownloadModels\CMS.API.DownloadModels.csproj", "{DAE72CA6-FF32-458A-BDBA-9BE188D98D64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{B90F41F6-C855-42E9-B6DC-238A9D7FE1B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B90F41F6-C855-42E9-B6DC-238A9D7FE1B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B90F41F6-C855-42E9-B6DC-238A9D7FE1B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAE72CA6-FF32-458A-BDBA-9BE188D98D64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAE72CA6-FF32-458A-BDBA-9BE188D98D64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAE72CA6-FF32-458A-BDBA-9BE188D98D64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAE72CA6-FF32-458A-BDBA-9BE188D98D64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

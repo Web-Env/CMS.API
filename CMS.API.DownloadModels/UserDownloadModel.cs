@@ -1,28 +1,19 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
-namespace CMS.API.UploadModels
+namespace CMS.API.DownloadModels
 {
-    public class UserUploadModel : UploadModelBase
+    public class UserDownloadModel : DownloadModelBase
     {
-        [Required]
         public string Email { get; set; }
 
-        [Required]
-        public string Password { get; set; }
-
-        [Required]
         public string FirstName { get; set; }
 
-        [Required]
         public string LastName { get; set; }
 
-        public bool IsAdmin { get; set; }
+        public bool IsAdmin { get; set; } = false;
 
-        [Required]
         public DateTime CreatedOn { get; set; }
 
-        [Required]
         public Guid CreatedBy { get; set; }
 
         public DateTime LastUpdatedOn { get; set; }
