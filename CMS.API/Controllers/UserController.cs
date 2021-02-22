@@ -19,7 +19,6 @@ namespace CMS.API.Controllers
         public UserController(IRepositoryManager repositoryManager,
                               IMapper mapper) : base(repositoryManager, mapper) { }
 
-
         [HttpPost]
         public async Task<IActionResult> Post(UserUploadModel user)
         {

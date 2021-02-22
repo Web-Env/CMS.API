@@ -11,5 +11,9 @@
 /CMS.API.DownloadModels/obj
 /CMS.API.DownloadModels/debug
 
+Tests/CMS.API.Tests/bin
+Tests/CMS.API.Tests/obj
+Tests/CMS.API.Tests/debug
+
 # IDE - VS
 /.vs
