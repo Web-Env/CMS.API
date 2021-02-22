@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Setup Nuget.exe
-      uses: nuget/setup-nuget@v1.0.2
+      uses: nuget/setup-nuget@v1.0.5
     - name: Add GPR Source using nuget.exe
       run: nuget sources add -name "GPR" -Source https://api.nuget.org/v3/index.json -Source https://nuget.pkg.github.com/AdamBOD/index.json -Username AdamBOD -Password GPR_TOKEN
     - name: Setup .NET
