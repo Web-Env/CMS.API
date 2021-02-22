@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Setup nuget sources
-      run: dotnet nuget sources add -name "GPR" -Source https://api.nuget.org/v3/index.json -Source https://nuget.pkg.github.com/AdamBOD/index.json -Username AdamBOD -Password GPR_TOKEN
+      run: dotnet nuget sources add -Source https://api.nuget.org/v3/index.json -Source https://nuget.pkg.github.com/AdamBOD/index.json -Username AdamBOD -Password GPR_TOKEN --disable-parallel
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
