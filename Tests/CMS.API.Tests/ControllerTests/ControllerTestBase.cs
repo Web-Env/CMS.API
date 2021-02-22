@@ -1,8 +1,12 @@
-﻿using CMS.Domain.Entities;
+﻿using AutoMapper;
+using CMS.API.Mappers;
+using CMS.API.Tests.Funcs;
+using CMS.Domain.Entities;
 using CMS.Domain.Repositories;
 using CMS.Domain.Repositories.Contexts;
 using CMS.Domain.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Nito.AsyncEx;
 using Xunit;
 
 namespace CMS.API.Tests.ControllerTests
@@ -11,11 +15,18 @@ namespace CMS.API.Tests.ControllerTests
     {
         private readonly DatabaseFixture _databaseFixture;
         public IRepositoryManager RepositoryManager { get; private set; }
+        public IMapper Mapper { get; private set; }
 
         protected ControllerTestBase(DatabaseFixture fixture)
         {
             _databaseFixture = fixture;
             RepositoryManager = new RepositoryManager(CreateTestRepositoryContext());
+            var mockMapper = new MapperConfiguration(cfg => {
+                cfg.AddProfile(new UploadModelToEntity());
+                cfg.AddProfile(new EntityToDownloadModel());
+            });
+            Mapper = mockMapper.CreateMapper();
+            AsyncContext.Run(() => UserFunc.CreateRootUser(GetContext()));
         }
 
         public CMSRepositoryContext CreateTestRepositoryContext()

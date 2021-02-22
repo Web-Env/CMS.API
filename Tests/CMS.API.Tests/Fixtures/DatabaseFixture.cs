@@ -12,7 +12,7 @@ namespace CMS.API.Tests
         private const string _connectionString = "DataSource=:memory:";
         private SqliteConnection _connection;
 
-        protected DatabaseFixture()
+        public DatabaseFixture()
         {
             _connection = new SqliteConnection(_connectionString);
             _connection.Open();
