@@ -7,57 +7,57 @@ using Xunit;
 namespace CMS.API.Tests.ControllerTests
 {
     [Trait("Category", "Unit")]
-	public class UserControllerTests : ControllerTestBase
-	{
-		private readonly UserController _userController;
-		public UserControllerTests(DatabaseFixture fixture) : base(fixture)
-		{
-			_userController = new UserController(RepositoryManager, Mapper);
-		}
-
-		[Fact]
-		public async Task Post_WithBadModel_ShouldReturnBadResult()
-		{
-			//Arrange
-			var newUser = UserControllerHelper.GenerateBadUserUploadModel();
-
-			//Act
-			var result = await _userController.Post(newUser);
-
-			//Assert
-			Assert.NotNull(result);
-			Assert.IsNotType<OkResult>(result);
-			Assert.IsType<BadRequestObjectResult>(result);
-		}
-
-		[Fact]
-		public async Task Post_WithExistingEmail_ShouldReturnBadResult()
-		{
-			//Arrange
-			var newUser = UserControllerHelper.GenerateDuplicateEmailUserUploadModel();
-
-			//Act
-			var result = await _userController.Post(newUser);
-
-			//Assert
-			Assert.NotNull(result);
-			Assert.IsNotType<OkResult>(result);
-			Assert.IsType<BadRequestObjectResult>(result);
-		}
-
-		[Fact]
-		public async Task Post_WithGoodModel_ShouldReturnOkResult()
+    public class UserControllerTests : ControllerTestBase
+    {
+        private readonly UserController _userController;
+        public UserControllerTests(DatabaseFixture fixture) : base(fixture)
         {
-			//Arrange
-			var newUser = UserControllerHelper.GenerateUserUploadModel();
+            _userController = new UserController(RepositoryManager, Mapper);
+        }
 
-			//Act
-			var result = await _userController.Post(newUser);
+        [Fact]
+        public async Task Post_WithBadModel_ShouldReturnBadResult()
+        {
+            //Arrange
+            var newUser = UserControllerHelper.GenerateBadUserUploadModel();
 
-			//Assert
-			Assert.NotNull(result);
-			Assert.IsNotType<BadRequestObjectResult>(result);
-			Assert.IsType<OkResult>(result);
-		}
-	}
+            //Act
+            var result = await _userController.Post(newUser);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.IsNotType<OkResult>(result);
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task Post_WithExistingEmail_ShouldReturnBadResult()
+        {
+            //Arrange
+            var newUser = UserControllerHelper.GenerateDuplicateEmailUserUploadModel();
+
+            //Act
+            var result = await _userController.Post(newUser);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.IsNotType<OkResult>(result);
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task Post_WithGoodModel_ShouldReturnOkResult()
+        {
+            //Arrange
+            var newUser = UserControllerHelper.GenerateUserUploadModel();
+
+            //Act
+            var result = await _userController.Post(newUser);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.IsNotType<BadRequestObjectResult>(result);
+            Assert.IsType<OkResult>(result);
+        }
+    }
 }

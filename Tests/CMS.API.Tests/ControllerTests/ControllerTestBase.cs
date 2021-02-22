@@ -21,7 +21,8 @@ namespace CMS.API.Tests.ControllerTests
         {
             _databaseFixture = fixture;
             RepositoryManager = new RepositoryManager(CreateTestRepositoryContext());
-            var mockMapper = new MapperConfiguration(cfg => {
+            var mockMapper = new MapperConfiguration(cfg =>
+            {
                 cfg.AddProfile(new UploadModelToEntity());
                 cfg.AddProfile(new EntityToDownloadModel());
             });

@@ -17,7 +17,8 @@ namespace CMS.API.Tests.Funcs
                 UTF8Encoding encoder = new UTF8Encoding();
                 var hashedPassword = sha256Hasher.ComputeHash(encoder.GetBytes(UserConsts.RootUserHashedPassword));
 
-                var user = new User {
+                var user = new User
+                {
                     Id = Guid.Parse(UserConsts.RootUserId),
                     Email = UserConsts.RootUserEmail,
                     Password = hashedPassword,
