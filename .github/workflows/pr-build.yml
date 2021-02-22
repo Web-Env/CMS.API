@@ -15,8 +15,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: Setup nuget sources
       run: |
-        dotnet nuget add source nuget https://api.nuget.org/v3/index.json 
-        dotnet nuget add source GPR https://nuget.pkg.github.com/AdamBOD/index.json -u AdamBOD -p GPR_TOKEN
+        dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget
+        dotnet nuget add source https://nuget.pkg.github.com/AdamBOD/index.json -n GPR -u AdamBOD -p GPR_TOKEN
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
