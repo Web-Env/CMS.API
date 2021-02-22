@@ -8,6 +8,8 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    env:
+      GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
 
     steps:
     - uses: actions/checkout@v2
