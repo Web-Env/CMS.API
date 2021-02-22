@@ -15,7 +15,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Setup nuget sources
       run: |
-        dotnet nuget add source https://nuget.pkg.github.com/AdamBOD/index.json -n GPR -u AdamBOD -p $GPR_TOKEN --store-password-in-clear-text
+        dotnet nuget add source https://nuget.pkg.github.com/AdamBOD/index.json -n GPR -u AdamBOD -p ${ env.GPR_TOKEN } --store-password-in-clear-text
         nuget restore CMS.API.sln
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
