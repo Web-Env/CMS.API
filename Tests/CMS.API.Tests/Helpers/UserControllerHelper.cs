@@ -8,47 +8,30 @@ namespace CMS.API.Tests.Helpers
     {
         public static UserUploadModel GenerateUserUploadModel()
         {
-            return new UserUploadModel
-            {
-                UserAddress = UserConsts.DefaultAddress,
-                RequesterUserId = UserConsts.RootUserId,
-                Email = "tester.testerson@testing.com",
-                Password = UserConsts.TestUserPassword,
-                FirstName = UserConsts.TestUserFirstName,
-                LastName = UserConsts.TestUserLastName,
-                IsAdmin = false,
-                CreatedOn = DateTime.Now,
-                CreatedBy = Guid.Empty,
-                LastUpdatedOn = DateTime.Now,
-                LastUpdatedBy = Guid.Empty
-            };
+            return CreateUserUploadModelObject();   
         }
 
         public static UserUploadModel GenerateBadUserUploadModel()
         {
-            return new UserUploadModel
-            {
-                UserAddress = "",
-                RequesterUserId = UserConsts.RootUserId,
-                Email = "tester.testerson@testing.com",
-                Password = UserConsts.TestUserPassword,
-                FirstName = UserConsts.TestUserFirstName,
-                LastName = UserConsts.TestUserLastName,
-                IsAdmin = false,
-                CreatedOn = DateTime.Now,
-                CreatedBy = Guid.Empty,
-                LastUpdatedOn = DateTime.Now,
-                LastUpdatedBy = Guid.Empty
-            };
+            var badUserUploadModel = CreateUserUploadModelObject();
+            badUserUploadModel.UserAddress = "";
+            return badUserUploadModel;
         }
 
         public static UserUploadModel GenerateDuplicateEmailUserUploadModel()
+        {
+            var badUserUploadModel = CreateUserUploadModelObject();
+            badUserUploadModel.Email = UserConsts.RootUserEmail;
+            return badUserUploadModel;
+        }
+
+        private static UserUploadModel CreateUserUploadModelObject()
         {
             return new UserUploadModel
             {
                 UserAddress = UserConsts.DefaultAddress,
                 RequesterUserId = UserConsts.RootUserId,
-                Email = UserConsts.RootUserEmail,
+                Email = "tester.testerson@testing.com",
                 Password = UserConsts.TestUserPassword,
                 FirstName = UserConsts.TestUserFirstName,
                 LastName = UserConsts.TestUserLastName,
