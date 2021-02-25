@@ -16,7 +16,7 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Setup nuget sources
-      run: dotnet nuget add source https://nuget.pkg.github.com/AdamBOD/index.json -n GPR -u AdamBOD -p ${{ secrets.GPR_TOKEN }} --store-password-in-clear-text
+      run: dotnet nuget add source https://nuget.pkg.github.com/Web-Env/index.json -n GPR -u AdamBOD -p ${{ secrets.GPR_TOKEN }} --store-password-in-clear-text
     - name: Clean
       run: dotnet clean ./CMS.API.sln -- configuration Release && dotnet nuget locals all --clear
     - name: Restore dependencies
