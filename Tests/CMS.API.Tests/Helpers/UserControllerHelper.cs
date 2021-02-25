@@ -10,7 +10,7 @@ namespace CMS.API.Tests.Helpers
         {
             return new UserUploadModel
             {
-                UserAddress = "255.255.255.255",
+                UserAddress = UserConsts.DefaultAddress,
                 RequesterUserId = UserConsts.RootUserId,
                 Email = "tester.testerson@testing.com",
                 Password = UserConsts.TestUserPassword,
@@ -46,7 +46,7 @@ namespace CMS.API.Tests.Helpers
         {
             return new UserUploadModel
             {
-                UserAddress = "255.255.255.255",
+                UserAddress = UserConsts.DefaultAddress,
                 RequesterUserId = UserConsts.RootUserId,
                 Email = UserConsts.RootUserEmail,
                 Password = UserConsts.TestUserPassword,
