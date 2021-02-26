@@ -1,6 +1,8 @@
 ﻿using CMS.API.Controllers;
+using CMS.API.Infrastructure.Settings;
 using CMS.API.Tests.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -12,7 +14,8 @@ namespace CMS.API.Tests.ControllerTests
         private readonly UserController _userController;
         public UserControllerTests(DatabaseFixture fixture) : base(fixture)
         {
-            _userController = new UserController(RepositoryManager, Mapper);
+            IOptions<SmtpSettings> smtpSettings = Options.Create(SmtpSettings);
+            _userController = new UserController(RepositoryManager, Mapper, smtpSettings);
         }
 
         [Fact]

@@ -21,6 +21,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CMS.API.DownloadModels\CMS.API.DownloadModels.csproj" />
+    <ProjectReference Include="..\CMS.API.Infrastructure\CMS.API.Infrastructure.csproj" />
+    <ProjectReference Include="..\CMS.API.Mailer\CMS.API.Mailer.csproj" />
     <ProjectReference Include="..\CMS.API.UploadModels\CMS.API.UploadModels.csproj" />
   </ItemGroup>
 
