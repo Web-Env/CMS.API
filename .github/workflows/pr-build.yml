@@ -21,6 +21,12 @@ jobs:
       run: dotnet clean ./CMS.API.sln -- configuration Release && dotnet nuget locals all --clear
     - name: Restore dependencies
       run: dotnet restore --disable-parallel
+    - name: Configure App Settings
+      uses: microsoft/variable-substitution@v1 
+      with:
+        files: './CMS.API/appsettings.json'
+      env:
+        SmtpSettings.emailSmtpPassword: ${{ secrets.SMTP_PASSWORD }}
     - name: Build
       run: dotnet build --no-restore
     - name: Test
