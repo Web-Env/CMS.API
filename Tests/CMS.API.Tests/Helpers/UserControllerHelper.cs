@@ -31,7 +31,7 @@ namespace CMS.API.Tests.Helpers
             {
                 UserAddress = UserConsts.DefaultAddress,
                 RequesterUserId = UserConsts.RootUserId,
-                Email = "tester.testerson@testing.com",
+                Email = "noreply@webenv.io",
                 Password = UserConsts.TestUserPassword,
                 FirstName = UserConsts.TestUserFirstName,
                 LastName = UserConsts.TestUserLastName,

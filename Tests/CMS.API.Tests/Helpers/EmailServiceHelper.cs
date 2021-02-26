@@ -21,5 +21,17 @@ namespace CMS.API.Tests.Helpers
                 EmailSmtpPassword = smtpConfig["SmtpSettings:emailSmtpPassword"],
             };
         }
+        public static OrganisationSettings GetOrganisationSettings()
+        {
+            var organisationConfig = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            return new OrganisationSettings
+            {
+                OrganisationName = organisationConfig["OrganisationSettings:organisationName"],
+                OrganisationUrl = organisationConfig["OrganisationSettings:organisationUrl"]
+            };
+        }
     }
 }

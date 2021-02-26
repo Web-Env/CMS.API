@@ -22,12 +22,15 @@ namespace CMS.API.Controllers
     public class UserController : CustomControllerBase
     {
         private readonly EmailService _emailService;
+        private readonly OrganisationSettings _organisationSettings;
 
         public UserController(IRepositoryManager repositoryManager,
                               IMapper mapper,
-                              IOptions<SmtpSettings> smtpSettings) : base(repositoryManager, mapper)
+                              IOptions<SmtpSettings> smtpSettings,
+                              IOptions<OrganisationSettings> organisationSettings) : base(repositoryManager, mapper)
         {
             _emailService = new EmailService(smtpSettings.Value);
+            _organisationSettings = organisationSettings.Value;
         }
 
         [HttpPost]
@@ -74,10 +77,12 @@ namespace CMS.API.Controllers
             await _emailService.SendEmail(
                 $"{registeredUser.FirstName} {registeredUser.LastName}",
                 registeredUser.Email,
-                "Welcome",
+                $"Welcome to {_organisationSettings.OrganisationName}",
                 EmailCreationHelper.NewUserCreateEmail(
-                    $"{registeredUser.FirstName} {registeredUser.LastName}",
-                    registeredUser.Email,
+                    registeredUser.FirstName,
+                    registeredUser.LastName,
+                    _organisationSettings.OrganisationName,
+                    _organisationSettings.OrganisationUrl,
                     passwordSetLink
                 )
             );

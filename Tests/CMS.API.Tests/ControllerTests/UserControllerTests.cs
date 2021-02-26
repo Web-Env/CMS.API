@@ -15,7 +15,8 @@ namespace CMS.API.Tests.ControllerTests
         public UserControllerTests(DatabaseFixture fixture) : base(fixture)
         {
             IOptions<SmtpSettings> smtpSettings = Options.Create(SmtpSettings);
-            _userController = new UserController(RepositoryManager, Mapper, smtpSettings);
+            IOptions<OrganisationSettings> organisationSettings = Options.Create(OrganisationSettings);
+            _userController = new UserController(RepositoryManager, Mapper, smtpSettings, organisationSettings);
         }
 
         [Fact]

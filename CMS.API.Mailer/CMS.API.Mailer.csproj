@@ -5,6 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Templates\UserWelcomeEmail.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Templates\UserWelcomeEmail.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MailKit" Version="2.10.1" />
   </ItemGroup>
 
