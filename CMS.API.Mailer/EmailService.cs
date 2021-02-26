@@ -1,5 +1,4 @@
 ﻿using CMS.API.Infrastructure.Settings;
-using MailKit;
 using MailKit.Net.Smtp;
 using MimeKit;
 using System;

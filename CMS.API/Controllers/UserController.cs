@@ -56,7 +56,12 @@ namespace CMS.API.Controllers
             
             try
             {
-                await SendWelcomeEmail(registeredUser, passwordSet.ResetIdentifier);
+                var emailDelivered = await SendWelcomeEmail(registeredUser, passwordSet.ResetIdentifier);
+
+                if (!emailDelivered)
+                {
+                    throw (new Exception());
+                }
             }
             catch(Exception err)
             {
@@ -72,9 +77,9 @@ namespace CMS.API.Controllers
             return Ok();
         }
 
-        private async Task SendWelcomeEmail(User registeredUser, string passwordSetLink)
+        private async Task<bool> SendWelcomeEmail(User registeredUser, string passwordSetLink)
         {
-            await _emailService.SendEmail(
+            return await _emailService.SendEmail(
                 $"{registeredUser.FirstName} {registeredUser.LastName}",
                 registeredUser.Email,
                 $"Welcome to {_organisationSettings.OrganisationName}",

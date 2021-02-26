@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 
 namespace CMS.API.Mailer.Helpers
@@ -7,7 +8,7 @@ namespace CMS.API.Mailer.Helpers
     {
         public static string NewUserCreateEmail(string firstName, string lastName, string organisationName, string organisationUrl, string passwordSetLink)
         {
-            var htmlString = File.ReadAllText("Templates/UserWelcomeEmail.html", Encoding.UTF8);
+            var htmlString = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Templates/UserWelcomeEmail.html"), Encoding.UTF8);
 
             return FormatHtmlString(htmlString, firstName, lastName, organisationName, organisationUrl, passwordSetLink);
         }
