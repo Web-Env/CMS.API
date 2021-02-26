@@ -56,7 +56,8 @@ namespace CMS.API.Controllers
             
             try
             {
-                var emailDelivered = await SendWelcomeEmail(registeredUser, passwordSet.ResetIdentifier);
+                var emailDelivered = await SendWelcomeEmail(registeredUser, passwordSet.ResetIdentifier)
+                                            .ConfigureAwait(false);
 
                 if (!emailDelivered)
                 {
@@ -65,7 +66,7 @@ namespace CMS.API.Controllers
             }
             catch(Exception err)
             {
-                await RevertUserCreation(registeredUser, auditLog, passwordSet);
+                await RevertUserCreation(registeredUser, auditLog, passwordSet).ConfigureAwait(false);
                 return BadRequest(
                     new EmailDoesNotExistException(
                         "This Email address does not exist",
