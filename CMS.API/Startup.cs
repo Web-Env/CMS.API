@@ -1,3 +1,4 @@
+using CMS.API.Infrastructure.Settings;
 using CMS.Domain.Repositories;
 using CMS.Domain.Repositories.Contexts;
 using CMS.Domain.Repositories.Interfaces;
@@ -28,6 +29,11 @@ namespace CMS.API
             services.AddControllers();
 
             services.Add(new ServiceDescriptor(typeof(IRepositoryManager), new RepositoryManager(ConfigureRepositoryContext())));
+
+            var smtpSettingsSection = Configuration.GetSection("SmtpSettings");
+            var organisationSettingsSection = Configuration.GetSection("OrganisationSettings");
+            services.Configure<SmtpSettings>(smtpSettingsSection);
+            services.Configure<OrganisationSettings>(organisationSettingsSection);
 
             services.AddSwaggerGen(c =>
             {

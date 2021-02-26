@@ -5,6 +5,7 @@ using CMS.Domain.Enums;
 using CMS.Domain.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CMS.API.Controllers
@@ -21,7 +22,7 @@ namespace CMS.API.Controllers
             _mapper = mapper;
         }
 
-        protected async Task LogAction(UserActionCategory actionCategory, UserAction action, Guid userId, string userAddress, DateTime occurredOn)
+        protected async Task<AuditLog> LogAction(UserActionCategory actionCategory, UserAction action, Guid userId, string userAddress, DateTime occurredOn)
         {
             var auditLog = new AuditLog
             {
@@ -32,7 +33,7 @@ namespace CMS.API.Controllers
                 OccurredOn = occurredOn
             };
 
-            await RepositoryManager.AuditLogRepository.AddAsync(auditLog);
+            return await RepositoryManager.AuditLogRepository.AddAsync(auditLog);
         }
 
         protected TDownloadModel MapEntityToDownloadModel<TEntity, TDownloadModel>(TEntity entity)
@@ -43,6 +44,35 @@ namespace CMS.API.Controllers
         protected TEntity MapUploadModelToEntity<TEntity>(IUploadModel uploadModel)
         {
             return _mapper.Map<TEntity>(uploadModel);
+        }
+
+        protected async Task<PasswordReset> GeneratePasswordSetLink(Guid userId, string requesterAddress)
+        {
+            var passwordReset = new PasswordReset
+            {
+                ResetIdentifier = GenerateResetIdentifier(),
+                UserId = userId,
+                Expiry = DateTime.Now.AddDays(15),
+                RequesterAddress = requesterAddress,
+                Active = true
+            };
+
+            await RepositoryManager.PasswordResetRepository.AddAsync(passwordReset);
+
+            return passwordReset;
+        }
+
+        private string GenerateResetIdentifier()
+        {
+            var random = new Random();
+
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var resetIdentifier = new string(
+                Enumerable.Repeat(chars, 32)
+                          .Select(s => s[random.Next(s.Length)])
+                          .ToArray());
+
+            return resetIdentifier;
         }
     }
 }

@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\CMS.API.Mailer\CMS.API.Mailer.csproj" />
     <ProjectReference Include="..\..\CMS.API\CMS.API.csproj" />
   </ItemGroup>
 

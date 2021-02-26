@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using CMS.API.Infrastructure.Settings;
 using CMS.API.Mappers;
 using CMS.API.Tests.Funcs;
+using CMS.API.Tests.Helpers;
 using CMS.Domain.Entities;
 using CMS.Domain.Repositories;
 using CMS.Domain.Repositories.Contexts;
@@ -17,6 +19,9 @@ namespace CMS.API.Tests.ControllerTests
         public IRepositoryManager RepositoryManager { get; private set; }
         public IMapper Mapper { get; private set; }
 
+        public SmtpSettings SmtpSettings { get; private set; }
+        public OrganisationSettings OrganisationSettings { get; private set; }
+
         protected ControllerTestBase(DatabaseFixture fixture)
         {
             _databaseFixture = fixture;
@@ -27,6 +32,9 @@ namespace CMS.API.Tests.ControllerTests
                 cfg.AddProfile(new EntityToDownloadModel());
             });
             Mapper = mockMapper.CreateMapper();
+            SmtpSettings = EmailServiceHelper.GetSmtpSettings();
+            OrganisationSettings = EmailServiceHelper.GetOrganisationSettings();
+
             AsyncContext.Run(() => UserFunc.CreateRootUser(GetContext()));
         }
 

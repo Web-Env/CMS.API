@@ -3,6 +3,14 @@
 /CMS.API/obj
 /CMS.API/debug
 
+/CMS.API.Infrastructure/bin
+/CMS.API.Infrastructure/obj
+/CMS.API.Infrastructure/debug
+
+/CMS.API.Mailer/bin
+/CMS.API.Mailer/obj
+/CMS.API.Mailer/debug
+
 /CMS.API.UploadModels/bin
 /CMS.API.UploadModels/obj
 /CMS.API.UploadModels/debug
