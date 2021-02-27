@@ -10,7 +10,8 @@
         public static string RootUserFirstName { get; } = "Root";
         public static string RootUserLastName { get; } = "Rooterson";
 
-        public static string TestUserPassword { get; } = "B6087C3884A4323CB1F1BB663E33EA355FD99B224FC101E76322E98B1660883E"; //TestUserPassword
+        public static string TestUserEmail { get; } = "test@cms.com";
+        public static string TestUserHashedPassword { get; } = "B6087C3884A4323CB1F1BB663E33EA355FD99B224FC101E76322E98B1660883E"; //TestUserPassword
         public static string TestUserFirstName { get; } = "Test";
         public static string TestUserLastName { get; } = "Testerson";
 

@@ -13,7 +13,7 @@ namespace CMS.API.Controllers
     [Route("[controller]")]
     public class AuthController : CustomControllerBase
     {
-        private AuthenticationService _authenticationService;
+        private readonly AuthenticationService _authenticationService;
         public AuthController(IRepositoryManager repositoryManager,
                               IMapper mapper,
                               AuthenticationService authenticationService) : base(repositoryManager, mapper)

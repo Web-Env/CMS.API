@@ -18,7 +18,7 @@ namespace CMS.API.Infrastructure.Encryption
 
             var cipher = new RSACryptoServiceProvider();
             cipher.FromXmlString(privateKey);
-            byte[] cipherText = Convert.FromBase64String(input); ;
+            byte[] cipherText = Convert.FromBase64String(input);
             byte[] decryptedText = cipher.Decrypt(cipherText, false);
 
             return Encoding.UTF8.GetString(decryptedText);

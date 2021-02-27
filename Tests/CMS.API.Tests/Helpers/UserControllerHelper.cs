@@ -32,7 +32,7 @@ namespace CMS.API.Tests.Helpers
                 UserAddress = UserConsts.DefaultAddress,
                 RequesterUserId = UserConsts.RootUserIdEncrypted,
                 Email = "noreply@webenv.io",
-                Password = UserConsts.TestUserPassword,
+                Password = UserConsts.TestUserHashedPassword,
                 FirstName = UserConsts.TestUserFirstName,
                 LastName = UserConsts.TestUserLastName,
                 IsAdmin = false,

@@ -1,4 +1,5 @@
 ﻿using CMS.API.DownloadModels;
+using CMS.API.Infrastructure.Exceptions;
 using CMS.API.Services.Authentication;
 using CMS.API.Services.Tests.Helpers;
 using CMS.API.Tests;
@@ -11,7 +12,7 @@ namespace CMS.API.Services.Tests.AuthenticationTests
     [Trait("Category", "Unit")]
     public class AuthenticationServiceTests : ServiceTestBase
     {
-        private AuthenticationService _authenticationService;
+        private readonly AuthenticationService _authenticationService;
         public AuthenticationServiceTests(DatabaseFixture databaseFixture) : base(databaseFixture)
         {
             _authenticationService = new AuthenticationService();
@@ -22,7 +23,7 @@ namespace CMS.API.Services.Tests.AuthenticationTests
         {
             //Arrange
             var context = NewContext();
-            var authenticationRequest = AuthenticationRequestHelper.CreateAuthenticationRequest();
+            var authenticationRequest = AuthenticationRequestHelper.CreateRootUserAuthenticationRequest();
             await UserFunc.CreateRootUser(context);
 
             //Act
@@ -34,6 +35,35 @@ namespace CMS.API.Services.Tests.AuthenticationTests
             //Assert
             Assert.NotNull(authenticationResponse);
             Assert.IsType<AuthenticationResponse>(authenticationResponse);
+        }
+
+        [Fact]
+        public async Task AuthenticateAsync_ShouldThrowExceptionIfUserExistsAndCredentialsInvalid()
+        {
+            //Arrange
+            var context = NewContext();
+            var authenticationRequest = AuthenticationRequestHelper.CreateRootUserAuthenticationRequest();
+            authenticationRequest.Password = "";
+            await UserFunc.CreateRootUser(context);
+
+            //Assert
+            await Assert.ThrowsAsync<AuthenticationException>(async() => await _authenticationService.AuthenticateAsync(
+                authenticationRequest,
+                RepositoryManager.UserRepository
+            ));
+        }
+
+        [Fact]
+        public async Task AuthenticateAsync_ShouldThrowExceptionIfUserDoesNotExist()
+        {
+            //Arrange
+            var authenticationRequest = AuthenticationRequestHelper.CreateTestUserAuthenticationRequest();
+
+            //Assert
+            await Assert.ThrowsAsync<AuthenticationException>(async () => await _authenticationService.AuthenticateAsync(
+                authenticationRequest,
+                RepositoryManager.UserRepository
+            ));
         }
     }
 }
