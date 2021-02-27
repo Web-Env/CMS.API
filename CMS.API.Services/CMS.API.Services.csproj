@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CMS.Domain.All" Version="0.0.1-CI-113" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CMS.API.DownloadModels\CMS.API.DownloadModels.csproj" />
+    <ProjectReference Include="..\CMS.API.Infrastructure\CMS.API.Infrastructure.csproj" />
+    <ProjectReference Include="..\CMS.API.UploadModels\CMS.API.UploadModels.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CMS.API.Exceptions;
+using CMS.API.Infrastructure.Exceptions;
 using CMS.API.Infrastructure.Settings;
 using CMS.API.Mailer;
 using CMS.API.Mailer.Helpers;
@@ -34,9 +34,9 @@ namespace CMS.API.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Post(UserUploadModel user)
         {
+            user = DecryptIncomingData(user);
             var existingEmail = await RepositoryManager.UserRepository.FindAsync(u => u.Email == user.Email);
             if (existingEmail.Any())
             {

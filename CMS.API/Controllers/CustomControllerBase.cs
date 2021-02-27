@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CMS.API.Infrastructure.Encryption;
 using CMS.API.UploadModels;
 using CMS.Domain.Entities;
 using CMS.Domain.Enums;
@@ -20,6 +21,15 @@ namespace CMS.API.Controllers
         {
             RepositoryManager = repositoryManager;
             _mapper = mapper;
+        }
+
+        protected T DecryptIncomingData<T>(T incomingData) where T : UploadModelBase
+        {
+            incomingData.RequesterUserId = DecryptionService.DecryptString(incomingData.RequesterUserId);
+            incomingData.CreatedBy = DecryptionService.DecryptString(incomingData.CreatedBy);
+            incomingData.LastUpdatedBy = DecryptionService.DecryptString(incomingData.LastUpdatedBy);
+
+            return incomingData;
         }
 
         protected async Task<AuditLog> LogAction(UserActionCategory actionCategory, UserAction action, Guid userId, string userAddress, DateTime occurredOn)

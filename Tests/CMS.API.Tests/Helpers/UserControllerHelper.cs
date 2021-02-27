@@ -37,9 +37,9 @@ namespace CMS.API.Tests.Helpers
                 LastName = UserConsts.TestUserLastName,
                 IsAdmin = false,
                 CreatedOn = DateTime.Now,
-                CreatedBy = Guid.Empty,
+                CreatedBy = "",
                 LastUpdatedOn = DateTime.Now,
-                LastUpdatedBy = Guid.Empty
+                LastUpdatedBy = ""
             };
         }
     }

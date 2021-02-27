@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
-    <PackageReference Include="CMS.Domain.All" Version="0.0.1-CI-102" />
+    <PackageReference Include="CMS.Domain.All" Version="0.0.1-CI-113" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.3" />
@@ -23,6 +23,7 @@
     <ProjectReference Include="..\CMS.API.DownloadModels\CMS.API.DownloadModels.csproj" />
     <ProjectReference Include="..\CMS.API.Infrastructure\CMS.API.Infrastructure.csproj" />
     <ProjectReference Include="..\CMS.API.Mailer\CMS.API.Mailer.csproj" />
+    <ProjectReference Include="..\CMS.API.Services\CMS.API.Services.csproj" />
     <ProjectReference Include="..\CMS.API.UploadModels\CMS.API.UploadModels.csproj" />
   </ItemGroup>
 

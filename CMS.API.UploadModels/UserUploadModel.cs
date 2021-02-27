@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace CMS.API.UploadModels
 {
@@ -18,15 +17,5 @@ namespace CMS.API.UploadModels
         public string LastName { get; set; }
 
         public bool IsAdmin { get; set; }
-
-        [Required]
-        public DateTime CreatedOn { get; set; }
-
-        [Required]
-        public Guid CreatedBy { get; set; }
-
-        public DateTime LastUpdatedOn { get; set; }
-
-        public Guid LastUpdatedBy { get; set; }
     }
 }

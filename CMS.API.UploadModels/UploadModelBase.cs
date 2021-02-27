@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace CMS.API.UploadModels
 {
@@ -9,5 +10,17 @@ namespace CMS.API.UploadModels
 
         [Required]
         public string RequesterUserId { get; set; }
+
+        [Required]
+        public DateTime CreatedOn { get; set; }
+
+        [Required]
+        public string CreatedBy { get; set; }
+
+        [Required]
+        public DateTime LastUpdatedOn { get; set; }
+
+        [Required]
+        public string LastUpdatedBy { get; set; }
     }
 }
