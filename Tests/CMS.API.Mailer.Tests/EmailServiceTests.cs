@@ -1,11 +1,10 @@
 ﻿using CMS.API.Infrastructure.Settings;
-using CMS.API.Mailer;
 using CMS.API.Mailer.Helpers;
 using CMS.API.Tests.Helpers;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace CMS.API.Tests.MailerTests
+namespace CMS.API.Mailer.Tests
 {
     [Trait("Category", "Unit")]
     public class EmailServiceTests

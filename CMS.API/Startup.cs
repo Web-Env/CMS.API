@@ -1,3 +1,5 @@
+using CMS.API.Infrastructure.Extensions;
+using CMS.API.Services.Authentication;
 using CMS.API.Infrastructure.Settings;
 using CMS.Domain.Repositories;
 using CMS.Domain.Repositories.Contexts;
@@ -25,10 +27,13 @@ namespace CMS.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(Startup));
             services.AddControllers();
 
+            services.AddAsymmetricAuthentication();
+
+            services.AddTransient<AuthenticationService>();
             services.Add(new ServiceDescriptor(typeof(IRepositoryManager), new RepositoryManager(ConfigureRepositoryContext())));
+            services.AddAutoMapper(typeof(Startup));
 
             var smtpSettingsSection = Configuration.GetSection("SmtpSettings");
             var organisationSettingsSection = Configuration.GetSection("OrganisationSettings");
@@ -81,6 +86,8 @@ namespace CMS.API
 
             app.UseRouting();
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -100,7 +107,7 @@ namespace CMS.API
         private CMSRepositoryContext ConfigureRepositoryContext()
         {
             var options = new DbContextOptionsBuilder<CMSRepositoryContext>()
-                .UseSqlServer("Server=localhost;Database=CMS;Trusted_Connection=True;")
+                .UseSqlServer(Configuration.GetConnectionString("CMSDb"))
                 .Options;
             CMSRepositoryContext context = new CMSRepositoryContext(options);
 

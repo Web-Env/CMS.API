@@ -1,4 +1,4 @@
-﻿namespace CMS.API.Exceptions
+﻿namespace CMS.API.Infrastructure.Exceptions
 {
     public class EmailAlreadyRegisteredException : ExceptionBase
     {
