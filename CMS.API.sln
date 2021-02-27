@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMS.API.Infrastructure", "C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMS.API.Services", "CMS.API.Services\CMS.API.Services.csproj", "{D6963C23-7C28-469D-A13E-D70D77895160}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMS.API.Mailer.Tests", "Tests\CMS.API.Mailer.Tests\CMS.API.Mailer.Tests.csproj", "{FAF26E56-5106-4035-8886-37436993192E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,12 +55,17 @@ Global
 		{D6963C23-7C28-469D-A13E-D70D77895160}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6963C23-7C28-469D-A13E-D70D77895160}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6963C23-7C28-469D-A13E-D70D77895160}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAF26E56-5106-4035-8886-37436993192E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAF26E56-5106-4035-8886-37436993192E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAF26E56-5106-4035-8886-37436993192E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAF26E56-5106-4035-8886-37436993192E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{20EC80CC-8095-4CE6-A3F2-E23FFD446845} = {36721219-C4B1-4601-BBF1-C95AA08A1DDA}
+		{FAF26E56-5106-4035-8886-37436993192E} = {36721219-C4B1-4601-BBF1-C95AA08A1DDA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {222921CF-4359-45AB-BF82-ADAF67B53CBB}

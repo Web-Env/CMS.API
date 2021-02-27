@@ -27,5 +27,11 @@ Tests/CMS.API.Tests/bin
 Tests/CMS.API.Tests/obj
 Tests/CMS.API.Tests/debug
 
+Tests/CMS.API.Mailer.Tests/bin
+Tests/CMS.API.Mailer.Tests/obj
+Tests/CMS.API.Mailer.Tests/debug
+
+CMS.API/appsettings.json
+
 # IDE - VS
 /.vs
