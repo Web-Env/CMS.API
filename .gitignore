@@ -27,9 +27,17 @@ Tests/CMS.API.Tests/bin
 Tests/CMS.API.Tests/obj
 Tests/CMS.API.Tests/debug
 
+Tests/CMS.API.Infrastructure.Tests/bin
+Tests/CMS.API.Infrastructure.Tests/obj
+Tests/CMS.API.Infrastructure.Tests/debug
+
 Tests/CMS.API.Mailer.Tests/bin
 Tests/CMS.API.Mailer.Tests/obj
 Tests/CMS.API.Mailer.Tests/debug
+
+Tests/CMS.API.Services.Tests/bin
+Tests/CMS.API.Services.Tests/obj
+Tests/CMS.API.Services.Tests/debug
 
 # IDE - VS
 /.vs

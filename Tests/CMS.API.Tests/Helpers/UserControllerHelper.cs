@@ -30,16 +30,16 @@ namespace CMS.API.Tests.Helpers
             return new UserUploadModel
             {
                 UserAddress = UserConsts.DefaultAddress,
-                RequesterUserId = UserConsts.RootUserId,
+                RequesterUserId = UserConsts.RootUserIdEncrypted,
                 Email = "noreply@webenv.io",
                 Password = UserConsts.TestUserPassword,
                 FirstName = UserConsts.TestUserFirstName,
                 LastName = UserConsts.TestUserLastName,
                 IsAdmin = false,
                 CreatedOn = DateTime.Now,
-                CreatedBy = "",
+                CreatedBy = UserConsts.RootUserIdEncrypted,
                 LastUpdatedOn = DateTime.Now,
-                LastUpdatedBy = ""
+                LastUpdatedBy = UserConsts.RootUserIdEncrypted
             };
         }
     }
