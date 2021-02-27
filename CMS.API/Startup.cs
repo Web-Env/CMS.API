@@ -107,7 +107,7 @@ namespace CMS.API
         private CMSRepositoryContext ConfigureRepositoryContext()
         {
             var options = new DbContextOptionsBuilder<CMSRepositoryContext>()
-                .UseSqlServer("Server=localhost;Database=CMS;Trusted_Connection=True;")
+                .UseSqlServer(Configuration.GetConnectionString("CMSDb"))
                 .Options;
             CMSRepositoryContext context = new CMSRepositoryContext(options);
 
