@@ -38,3 +38,5 @@ jobs:
         coverage-reports: Tests/*.Tests/coverage.opencover.xml
     - name: Build (Release)
       run: dotnet build -c Release --no-restore
+    - name: Publish (Release)
+      run: dotnet publish -c Release -o ./dist --no-build
