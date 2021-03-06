@@ -17,6 +17,8 @@ namespace CMS.API
 {
     public class Startup
     {
+        private string _corsPolicy = "CorsPolicy";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -28,6 +30,21 @@ namespace CMS.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(_corsPolicy, builder => builder
+                    .WithOrigins("http://localhost:4200")
+                    .WithOrigins("http://localhost:6200")
+                    .WithOrigins("https://localhost:4200")
+                    .WithOrigins("https://localhost:6200")
+                    .WithOrigins("https://webenv-cms.web.app")
+                    .WithOrigins("https://www.webenv-cms.web.app")
+                    .AllowCredentials()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .SetIsOriginAllowed((host) => true));
+            });
 
             services.AddAsymmetricAuthentication();
 
@@ -81,6 +98,8 @@ namespace CMS.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(_corsPolicy);
 
             app.UseHttpsRedirection();
 
