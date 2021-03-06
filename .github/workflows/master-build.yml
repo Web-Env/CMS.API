@@ -41,8 +41,6 @@ jobs:
       run: dotnet build -c Release --no-restore
     - name: Publish (Release)
       run: dotnet publish -c Release -o ./dist --no-build
-    - name: List build dir
-      run: ls -lR ./dist
     - name: Deploy (Release)
       uses: azure/webapps-deploy@v2
       with:
