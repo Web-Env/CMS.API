@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 namespace CMS.API.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]")]
     public class AuthController : CustomControllerBase
     {
@@ -35,6 +36,12 @@ namespace CMS.API.Controllers
             {
                 return BadRequest(authException);
             }
+        }
+
+        [HttpPost("validate")]
+        public IActionResult Validate()
+        {
+            return Ok();
         }
     }
 }

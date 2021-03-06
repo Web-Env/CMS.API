@@ -4,6 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <Version>0.0.1</Version>
     <Authors>Adam Barry-O'Donovan</Authors>
+    <UserSecretsId>22d317de-1c5b-4fd1-b217-363423ff84f1</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,3 +1,8 @@
+/CMS.API/CMS.API.csproj.user
+/CMS.API/.config
+/CMS.API/Properties/PublishProfiles
+/CMS.API/Properties/ServiceDependencies
+
 # Compiled output
 /CMS.API/bin
 /CMS.API/obj
