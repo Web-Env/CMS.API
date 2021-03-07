@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace CMS.API
 {
@@ -104,6 +105,12 @@ namespace CMS.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+                    ForwardedHeaders.XForwardedProto
+            });
 
             app.UseAuthentication();
 
