@@ -37,7 +37,8 @@ namespace CMS.API.Controllers
         [AllowAnonymous]
         public IActionResult Get()
         {
-            return Ok(Request.Host.Host);
+            var userAddress = Request.HttpContext.Connection.RemoteIpAddress;
+            return Ok(userAddress);
         }
 
         [HttpPost]
