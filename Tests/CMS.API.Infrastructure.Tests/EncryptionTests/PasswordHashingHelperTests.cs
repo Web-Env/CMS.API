@@ -8,7 +8,7 @@ namespace CMS.API.Infrastructure.Tests.EncryptionTests
     public class PasswordHashingHelperTests
     {
         [Fact]
-        public void HashPassword_ShouldReturnPasswordAsSHA256String()
+        public void HashPassword_ShouldReturnPasswordAsHashedString()
         {
             //Arrange
             var rootUserHashedPassword = UserConsts.RootUserHashedPassword.ToLower();
