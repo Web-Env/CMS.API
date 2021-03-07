@@ -33,6 +33,14 @@ namespace CMS.API.Controllers
             _organisationSettings = organisationSettings.Value;
         }
 
+        [HttpGet("/Ip")]
+        [AllowAnonymous]
+        public IActionResult Get()
+        {
+            var userAddress = Request.HttpContext.Connection.RemoteIpAddress;
+            return Ok(userAddress);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Post(UserUploadModel user)
         {
