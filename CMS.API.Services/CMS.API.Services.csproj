@@ -5,7 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CMS.Domain.All" Version="0.0.1-CI-113" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
+    <PackageReference Include="CMS.Domain.All" Version="0.0.1-CI-114" />
   </ItemGroup>
 
   <ItemGroup>
