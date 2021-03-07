@@ -11,7 +11,7 @@ namespace CMS.API.Infrastructure.Tests.EncryptionTests
         public void HashPassword_ShouldReturnPasswordAsHashedString()
         {
             //Arrange
-            var rootUserHashedPassword = UserConsts.RootUserHashedPassword.ToLower();
+            var rootUserHashedPassword = UserConsts.RootUserHashedPassword;
 
             //Act
             var hashedPassword = PasswordHashingHelper.HashPassword(rootUserHashedPassword);

@@ -15,6 +15,7 @@ namespace CMS.API.Controllers
     public class AuthController : CustomControllerBase
     {
         private readonly AuthenticationService _authenticationService;
+
         public AuthController(IRepositoryManager repositoryManager,
                               IMapper mapper,
                               AuthenticationService authenticationService) : base(repositoryManager, mapper)
