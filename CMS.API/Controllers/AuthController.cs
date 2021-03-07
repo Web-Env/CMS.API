@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using CMS.API.Infrastructure.Exceptions;
 using CMS.API.Services.Authentication;
-using CMS.API.UploadModels;
+using CMS.API.UploadModels.Auth;
 using CMS.Domain.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CMS.API.UploadModels
+namespace CMS.API.UploadModels.Auth
 {
     public class AuthenticationRequest
     {

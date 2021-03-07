@@ -1,8 +1,8 @@
-﻿using CMS.API.DownloadModels;
+﻿using CMS.API.DownloadModels.Auth;
 using CMS.API.Infrastructure.Encryption;
 using CMS.API.Infrastructure.Encryption.Certificates;
 using CMS.API.Infrastructure.Exceptions;
-using CMS.API.UploadModels;
+using CMS.API.UploadModels.Auth;
 using CMS.Domain.Repositories.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System;

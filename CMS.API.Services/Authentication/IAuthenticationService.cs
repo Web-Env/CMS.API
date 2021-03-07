@@ -1,5 +1,5 @@
-﻿using CMS.API.DownloadModels;
-using CMS.API.UploadModels;
+﻿using CMS.API.DownloadModels.Auth;
+using CMS.API.UploadModels.Auth;
 using CMS.Domain.Repositories.Interfaces;
 using System.Threading.Tasks;
 

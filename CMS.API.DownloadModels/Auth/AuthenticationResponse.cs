@@ -1,4 +1,4 @@
-﻿namespace CMS.API.DownloadModels
+﻿namespace CMS.API.DownloadModels.Auth
 {
     public class AuthenticationResponse
     {

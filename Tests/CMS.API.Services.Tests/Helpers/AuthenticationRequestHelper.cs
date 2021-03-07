@@ -1,5 +1,5 @@
 ﻿using CMS.API.Tests.Consts;
-using CMS.API.UploadModels;
+using CMS.API.UploadModels.Auth;
 
 namespace CMS.API.Services.Tests.Helpers
 {

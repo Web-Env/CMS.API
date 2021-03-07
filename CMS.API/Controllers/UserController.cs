@@ -3,7 +3,7 @@ using CMS.API.Infrastructure.Exceptions;
 using CMS.API.Infrastructure.Settings;
 using CMS.API.Mailer;
 using CMS.API.Mailer.Helpers;
-using CMS.API.UploadModels;
+using CMS.API.UploadModels.User;
 using CMS.Domain.Entities;
 using CMS.Domain.Enums;
 using CMS.Domain.Repositories.Interfaces;

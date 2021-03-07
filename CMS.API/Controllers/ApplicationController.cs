@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using CMS.API.DownloadModels.Application;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CMS.API.Controllers
@@ -8,12 +9,17 @@ namespace CMS.API.Controllers
     [Route("[controller]")]
     public class ApplicationController : Controller
     {
-        [HttpGet("/Ip")]
+        [HttpGet("/ip")]
         [AllowAnonymous]
         public IActionResult Get()
         {
             var userAddress = Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
-            return Ok(userAddress);
+            var ipDownloadModel = new IpDownloadModel
+            {
+                Ip = userAddress
+            };
+
+            return Ok(ipDownloadModel);
         }
     }
 }
