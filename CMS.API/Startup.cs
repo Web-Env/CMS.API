@@ -36,9 +36,7 @@ namespace CMS.API
             {
                 options.AddPolicy(_corsPolicy, builder => builder
                     .WithOrigins("http://localhost:4200")
-                    .WithOrigins("http://localhost:6200")
                     .WithOrigins("https://localhost:4200")
-                    .WithOrigins("https://localhost:6200")
                     .WithOrigins("https://webenv-cms.web.app")
                     .WithOrigins("https://www.webenv-cms.web.app")
                     .AllowCredentials()

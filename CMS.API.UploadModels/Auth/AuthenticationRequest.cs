@@ -8,7 +8,7 @@ namespace CMS.API.UploadModels.Auth
         public string UserAddress { get; set; }
 
         [Required]
-        public string EmailAddress { get; set; }
+        public string Email { get; set; }
 
         [Required]
         public string Password { get; set; }

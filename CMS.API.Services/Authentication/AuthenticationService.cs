@@ -18,7 +18,7 @@ namespace CMS.API.Services.Authentication
         public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest model, IUserRepository userRepository)
         {
             var user = (await userRepository.FindAsync(u => 
-                            u.Email == model.EmailAddress
+                            u.Email == model.Email
                         )).FirstOrDefault();
 
             if (user != null)
