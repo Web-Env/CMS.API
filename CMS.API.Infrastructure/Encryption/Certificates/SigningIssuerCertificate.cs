@@ -18,7 +18,7 @@ namespace CMS.API.Infrastructure.Encryption.Certificates
         {
             string publicXmlKey = File.ReadAllText(
                 Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                "Encryption/Keys/cms_private_key.xml")
+                "Encryption/Keys/cms_public_key.xml")
             );
             rsa.FromXmlString(publicXmlKey);
 
