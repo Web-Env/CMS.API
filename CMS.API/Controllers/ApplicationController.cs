@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using CMS.API.DownloadModels.Application;
-using CMS.Domain.Repositories.Interfaces;
-using Microsoft.AspNetCore.Authorization;
+using CMS.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CMS.API.Controllers

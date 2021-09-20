@@ -2,7 +2,7 @@
 using CMS.API.Infrastructure.Exceptions;
 using CMS.API.Services.Authentication;
 using CMS.API.UploadModels.Auth;
-using CMS.Domain.Repositories.Interfaces;
+using CMS.Domain.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

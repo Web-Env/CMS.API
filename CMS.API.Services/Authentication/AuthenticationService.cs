@@ -3,7 +3,7 @@ using CMS.API.Infrastructure.Encryption;
 using CMS.API.Infrastructure.Encryption.Certificates;
 using CMS.API.Infrastructure.Exceptions;
 using CMS.API.UploadModels.Auth;
-using CMS.Domain.Repositories.Interfaces;
+using CMS.Domain.Repositories.User.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;

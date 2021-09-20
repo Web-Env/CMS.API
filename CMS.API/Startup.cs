@@ -3,7 +3,6 @@ using CMS.API.Services.Authentication;
 using CMS.API.Infrastructure.Settings;
 using CMS.Domain.Repositories;
 using CMS.Domain.Repositories.Contexts;
-using CMS.Domain.Repositories.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.HttpOverrides;
+using WebEnv.Util.Mailer.Settings;
 
 namespace CMS.API
 {

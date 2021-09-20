@@ -1,9 +1,11 @@
 ﻿using CMS.API.Infrastructure.Consts;
 using CMS.API.Infrastructure.Encryption;
 using CMS.API.Infrastructure.Encryption.Helpers;
+using CMS.API.Infrastructure.Exceptions;
 using CMS.API.Infrastructure.Settings;
 using CMS.Domain.Entities;
-using CMS.Domain.Repositories.Interfaces;
+using CMS.Domain.Repositories;
+using CMS.Domain.Repositories.User.Interfaces;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,7 +39,7 @@ namespace CMS.API.Models.User
             Domain.Entities.User user,
             string requesterAddress,
             IRepositoryManager repositoryManager,
-            Infrastructure.Settings.SmtpSettings smtpSettings,
+            SmtpSettings smtpSettings,
             EmailSettings emailSettings)
         {
             var (emailExists, _) = await CheckUserExistsWithEmailAsync(user.Email, repositoryManager.UserRepository)
@@ -45,10 +47,10 @@ namespace CMS.API.Models.User
 
             if (emailExists)
             {
-                //throw (new EmailAlreadyRegisteredException(
-                //    "A User with this email address already exists",
-                //    "A User with this email address already exists"
-                //));
+                throw (new EmailAlreadyRegisteredException(
+                    "A User with this email address already exists",
+                    "A User with this email address already exists"
+                ));
             }
 
             user.Password = HashingHelper.HashPassword(user.Password);
@@ -72,13 +74,15 @@ namespace CMS.API.Models.User
             {
                 throw;
             }
+
+
         }
 
         public static async Task CreateNewVerficationAsync(
             string email,
             string requesterAddress,
             IRepositoryManager repositoryManager,
-            Infrastructure.Settings.SmtpSettings smtpSettings,
+            SmtpSettings smtpSettings,
             EmailSettings emailSettings,
             bool isFirstContact = false
             )
@@ -90,15 +94,15 @@ namespace CMS.API.Models.User
             {
                 if (user.IsVerified)
                 {
-                    //throw new UserAlreadyVerifiedException("User has already been verified", "User has already been verified");
+                    throw new UserAlreadyVerifiedException("User has already been verified", "User has already been verified");
                 }
 
                 try
                 {
                     if (!isFirstContact)
                     {
-                        //await DeactivateExistingUserVerificationsAsync(user.Id, repositoryManager.UserVerificationRepository)
-                        //    .ConfigureAwait(false);
+                        await DeactivateExistingUserVerificationsAsync(user.Id, repositoryManager.UserVerificationRepository)
+                            .ConfigureAwait(false);
                     }
                     var emailService = new EmailService();
                     var verificationIdentifier = ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.IdentifierLength);
@@ -136,6 +140,22 @@ namespace CMS.API.Models.User
                 {
                     throw;
                 }
+            }
+        }
+
+        private static async Task DeactivateExistingUserVerificationsAsync(Guid userId, IUserVerificationRepository verificationRepository)
+        {
+            var userVerifications = await verificationRepository.FindAsync(uv => uv.UserId == userId && (bool)uv.Active);
+
+            if (userVerifications.Any())
+            {
+                foreach (UserVerification userVerification in userVerifications)
+                {
+                    userVerification.Active = false;
+                    userVerification.LastUpdatedOn = DateTime.Now;
+                }
+
+                await verificationRepository.UpdateRangeAsync(userVerifications);
             }
         }
     }

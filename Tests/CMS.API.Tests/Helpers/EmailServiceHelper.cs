@@ -1,5 +1,6 @@
 ﻿using CMS.API.Infrastructure.Settings;
 using Microsoft.Extensions.Configuration;
+using WebEnv.Util.Mailer.Settings;
 
 namespace CMS.API.Tests.Helpers
 {

@@ -3,7 +3,7 @@ using CMS.API.Infrastructure.Encryption;
 using CMS.API.UploadModels;
 using CMS.Domain.Entities;
 using CMS.Domain.Enums;
-using CMS.Domain.Repositories.Interfaces;
+using CMS.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
