@@ -3,6 +3,7 @@ using CMS.API.Infrastructure.Exceptions;
 using CMS.API.Services.Authentication;
 using CMS.API.UploadModels.Auth;
 using CMS.Domain.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 namespace CMS.API.Controllers
 {
     [ApiController]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("[controller]")]
     public class AuthController : CustomControllerBase
     {

@@ -5,9 +5,6 @@ namespace CMS.API.UploadModels.Auth
     public class AuthenticationRequest
     {
         [Required]
-        public string UserAddress { get; set; }
-
-        [Required]
         public string Email { get; set; }
 
         [Required]

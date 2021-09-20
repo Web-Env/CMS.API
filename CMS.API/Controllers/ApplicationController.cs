@@ -1,25 +1,30 @@
-﻿using CMS.API.DownloadModels.Application;
+﻿using AutoMapper;
+using CMS.API.DownloadModels.Application;
+using CMS.Domain.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CMS.API.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("[controller]")]
-    public class ApplicationController : Controller
+    public class ApplicationController : CustomControllerBase
     {
-        [HttpGet("/ip")]
-        [AllowAnonymous]
-        public IActionResult Get()
-        {
-            var userAddress = Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
-            var ipDownloadModel = new IpDownloadModel
-            {
-                Ip = userAddress
-            };
+        public ApplicationController(IRepositoryManager repositoryManager,
+                                     IMapper mapper) : base(repositoryManager, mapper) { }
 
-            return Ok(ipDownloadModel);
+        [HttpGet("Version")]
+        public ActionResult<string> GetVersion()
+        {
+            var version = typeof(Startup).Assembly.GetName().Version.ToString();
+
+            return Ok(version);
+        }
+
+        [HttpGet("/Ip")]
+        public ActionResult<string> Get()
+        {
+            return Ok(ExtractRequesterAddress());
         }
     }
 }

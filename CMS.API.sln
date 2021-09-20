@@ -23,7 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMS.API.Mailer.Tests", "Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMS.API.Infrastructure.Tests", "Tests\CMS.API.Infrastructure.Tests\CMS.API.Infrastructure.Tests.csproj", "{E68C23F8-902F-4E75-9024-BC013ABEA1A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMS.API.Services.Tests", "Tests\CMS.API.Services.Tests\CMS.API.Services.Tests.csproj", "{2A707C4D-DBED-43F2-8D28-79B5CCC5B733}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMS.API.Services.Tests", "Tests\CMS.API.Services.Tests\CMS.API.Services.Tests.csproj", "{2A707C4D-DBED-43F2-8D28-79B5CCC5B733}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMS.API.Models", "CMS.API.Models\CMS.API.Models.csproj", "{30E7391F-2221-4EED-9AF2-CAE89456C46A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,10 @@ Global
 		{2A707C4D-DBED-43F2-8D28-79B5CCC5B733}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A707C4D-DBED-43F2-8D28-79B5CCC5B733}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A707C4D-DBED-43F2-8D28-79B5CCC5B733}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30E7391F-2221-4EED-9AF2-CAE89456C46A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30E7391F-2221-4EED-9AF2-CAE89456C46A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30E7391F-2221-4EED-9AF2-CAE89456C46A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30E7391F-2221-4EED-9AF2-CAE89456C46A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

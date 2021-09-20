@@ -20,6 +20,10 @@
 /CMS.API.Mailer/obj
 /CMS.API.Mailer/debug
 
+/CMS.API.Models/bin
+/CMS.API.Models/obj
+/CMS.API.Models/debug
+
 /CMS.API.Services/bin
 /CMS.API.Services/obj
 /CMS.API.Services/debug

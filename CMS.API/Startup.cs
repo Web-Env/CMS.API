@@ -100,7 +100,7 @@ namespace CMS.API
 
             app.UseCors(_corsPolicy);
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
