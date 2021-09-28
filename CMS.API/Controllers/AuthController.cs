@@ -24,7 +24,7 @@ namespace CMS.API.Controllers
             _authenticationService = authenticationService;
         }
 
-        [HttpPost("auth")]
+        [HttpPost("Auth")]
         [AllowAnonymous]
         public async Task<IActionResult> Authenticate(AuthenticationRequest authenticationRequest)
         {
@@ -40,7 +40,7 @@ namespace CMS.API.Controllers
             }
         }
 
-        [HttpPost("validate")]
+        [HttpGet("Validate")]
         public IActionResult Validate()
         {
             return Ok();
