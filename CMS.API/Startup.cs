@@ -52,8 +52,10 @@ namespace CMS.API
             services.AddAutoMapper(typeof(Startup));
 
             var smtpSettingsSection = Configuration.GetSection("SmtpSettings");
+            var emailSettingsSection = Configuration.GetSection("EmailSettings");
             var organisationSettingsSection = Configuration.GetSection("OrganisationSettings");
             services.Configure<SmtpSettings>(smtpSettingsSection);
+            services.Configure<EmailSettings>(emailSettingsSection);
             services.Configure<OrganisationSettings>(organisationSettingsSection);
 
             services.AddSwaggerGen(c =>

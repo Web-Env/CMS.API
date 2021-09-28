@@ -14,7 +14,7 @@ namespace CMS.API.Infrastructure.Tests.EncryptionTests
             var rootUserHashedPassword = UserConsts.RootUserHashedPassword;
 
             //Act
-            var hashedPassword = PasswordHashingHelper.HashPassword(rootUserHashedPassword);
+            var hashedPassword = HashingHelper.HashPassword(rootUserHashedPassword);
             var hashedPasswordMatchesPlainText = BCrypt.Net.BCrypt.Verify(rootUserHashedPassword, hashedPassword);
 
             //Assert

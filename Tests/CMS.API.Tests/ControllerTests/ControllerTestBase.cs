@@ -20,6 +20,7 @@ namespace CMS.API.Tests.ControllerTests
         public IMapper Mapper { get; private set; }
 
         public SmtpSettings SmtpSettings { get; private set; }
+        public EmailSettings EmailSettings { get; private set; }
         public OrganisationSettings OrganisationSettings { get; private set; }
 
         protected ControllerTestBase(DatabaseFixture fixture)

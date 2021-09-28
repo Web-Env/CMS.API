@@ -9,7 +9,6 @@ namespace CMS.API.Services.Tests.Helpers
         {
             return new AuthenticationRequest
             {
-                UserAddress = UserConsts.DefaultAddress,
                 Email = UserConsts.RootUserEmail,
                 Password = UserConsts.RootUserHashedPassword
             };
@@ -18,7 +17,6 @@ namespace CMS.API.Services.Tests.Helpers
         {
             return new AuthenticationRequest
             {
-                UserAddress = UserConsts.DefaultAddress,
                 Email = UserConsts.TestUserEmail,
                 Password = UserConsts.TestUserHashedPassword
             };

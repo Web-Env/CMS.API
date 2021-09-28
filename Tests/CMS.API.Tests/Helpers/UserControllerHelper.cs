@@ -14,7 +14,7 @@ namespace CMS.API.Tests.Helpers
         public static UserUploadModel GenerateBadUserUploadModel()
         {
             var badUserUploadModel = CreateUserUploadModelObject();
-            badUserUploadModel.UserAddress = "";
+            badUserUploadModel.Email = "";
             return badUserUploadModel;
         }
 
@@ -29,7 +29,6 @@ namespace CMS.API.Tests.Helpers
         {
             return new UserUploadModel
             {
-                UserAddress = UserConsts.DefaultAddress,
                 RequesterUserId = UserConsts.RootUserIdEncrypted,
                 Email = "noreply@webenv.io",
                 Password = UserConsts.TestUserHashedPassword,
