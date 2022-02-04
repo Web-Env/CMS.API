@@ -3,7 +3,6 @@ using CMS.API.Services.Authentication;
 using CMS.API.Infrastructure.Settings;
 using CMS.Domain.Repositories;
 using CMS.Domain.Repositories.Contexts;
-using CMS.Domain.Repositories.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -13,12 +12,13 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.HttpOverrides;
+using WebEnv.Util.Mailer.Settings;
 
 namespace CMS.API
 {
     public class Startup
     {
-        private string _corsPolicy = "CorsPolicy";
+        private readonly string _corsPolicy = "CorsPolicy";
 
         public Startup(IConfiguration configuration)
         {
@@ -36,9 +36,7 @@ namespace CMS.API
             {
                 options.AddPolicy(_corsPolicy, builder => builder
                     .WithOrigins("http://localhost:4200")
-                    .WithOrigins("http://localhost:6200")
                     .WithOrigins("https://localhost:4200")
-                    .WithOrigins("https://localhost:6200")
                     .WithOrigins("https://webenv-cms.web.app")
                     .WithOrigins("https://www.webenv-cms.web.app")
                     .AllowCredentials()
@@ -54,8 +52,10 @@ namespace CMS.API
             services.AddAutoMapper(typeof(Startup));
 
             var smtpSettingsSection = Configuration.GetSection("SmtpSettings");
+            var emailSettingsSection = Configuration.GetSection("EmailSettings");
             var organisationSettingsSection = Configuration.GetSection("OrganisationSettings");
             services.Configure<SmtpSettings>(smtpSettingsSection);
+            services.Configure<EmailSettings>(emailSettingsSection);
             services.Configure<OrganisationSettings>(organisationSettingsSection);
 
             services.AddSwaggerGen(c =>
@@ -102,7 +102,7 @@ namespace CMS.API
 
             app.UseCors(_corsPolicy);
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -116,6 +116,7 @@ namespace CMS.API
 
             app.UseAuthorization();
 
+            app.UseWebSockets();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

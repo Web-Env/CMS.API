@@ -6,9 +6,9 @@ using CMS.API.Tests.Helpers;
 using CMS.Domain.Entities;
 using CMS.Domain.Repositories;
 using CMS.Domain.Repositories.Contexts;
-using CMS.Domain.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Nito.AsyncEx;
+using WebEnv.Util.Mailer.Settings;
 using Xunit;
 
 namespace CMS.API.Tests.ControllerTests
@@ -20,6 +20,7 @@ namespace CMS.API.Tests.ControllerTests
         public IMapper Mapper { get; private set; }
 
         public SmtpSettings SmtpSettings { get; private set; }
+        public EmailSettings EmailSettings { get; private set; }
         public OrganisationSettings OrganisationSettings { get; private set; }
 
         protected ControllerTestBase(DatabaseFixture fixture)

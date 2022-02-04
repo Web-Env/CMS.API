@@ -1,10 +1,9 @@
-﻿using CMS.API.DownloadModels;
+﻿using CMS.API.DownloadModels.Auth;
 using CMS.API.Infrastructure.Encryption;
 using CMS.API.Infrastructure.Encryption.Certificates;
-using CMS.API.Infrastructure.Encryption.Helpers;
 using CMS.API.Infrastructure.Exceptions;
-using CMS.API.UploadModels;
-using CMS.Domain.Repositories.Interfaces;
+using CMS.API.UploadModels.Auth;
+using CMS.Domain.Repositories.User.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -18,26 +17,35 @@ namespace CMS.API.Services.Authentication
     {
         public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest model, IUserRepository userRepository)
         {
-            var hashedPassword = PasswordHashingHelper.HashPassword(model.Password);
-
             var user = (await userRepository.FindAsync(u => 
-                            u.Email == model.EmailAddress && 
-                            u.Password == hashedPassword
+                            u.Email == model.Email
                         )).FirstOrDefault();
 
             if (user != null)
             {
-                var encryptedUserId = EncryptionService.EncryptUserId(user.Id);
-                var authenticationResponse = new AuthenticationResponse
+                var passwordIsCorrect = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
+                if (passwordIsCorrect)
                 {
-                    UserId = encryptedUserId,
-                    Token = GenerateJwtToken(encryptedUserId),
-                    Super = user.IsAdmin,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName
-                };
+                    var encryptedUserId = EncryptionService.EncryptUserId(user.Id);
+                    var authenticationResponse = new AuthenticationResponse
+                    {
+                        UserId = encryptedUserId,
+                        Token = GenerateJwtToken(encryptedUserId),
+                        Super = user.IsAdmin,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName
+                    };
 
-                return authenticationResponse;
+                    return authenticationResponse;
+                }
+                else
+                {
+                    throw new AuthenticationException
+                    (
+                        "Invalid login",
+                        "No user found with the provided login details"
+                    );
+                }
             }
             else
             {

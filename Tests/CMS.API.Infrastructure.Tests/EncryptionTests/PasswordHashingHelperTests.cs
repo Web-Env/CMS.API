@@ -1,6 +1,5 @@
 ﻿using CMS.API.Infrastructure.Encryption.Helpers;
 using CMS.API.Tests.Consts;
-using System.Text;
 using Xunit;
 
 namespace CMS.API.Infrastructure.Tests.EncryptionTests
@@ -9,22 +8,17 @@ namespace CMS.API.Infrastructure.Tests.EncryptionTests
     public class PasswordHashingHelperTests
     {
         [Fact]
-        public void HashPassword_ShouldReturnPasswordAsSHA256String()
+        public void HashPassword_ShouldReturnPasswordAsHashedString()
         {
             //Arrange
-            var rootUserPlainTextPassword = UserConsts.RootUserPlainTextPassword;
-            var rootUserHashedPassword = UserConsts.RootUserHashedPassword.ToLower();
+            var rootUserHashedPassword = UserConsts.RootUserHashedPassword;
 
             //Act
-            var hashedPassword = PasswordHashingHelper.HashPassword(rootUserPlainTextPassword);
-            var hashedPasswordString = new StringBuilder();
-            foreach(byte b in hashedPassword)
-            {
-                hashedPasswordString.Append(b.ToString("x2"));
-            }
+            var hashedPassword = HashingHelper.HashPassword(rootUserHashedPassword);
+            var hashedPasswordMatchesPlainText = BCrypt.Net.BCrypt.Verify(rootUserHashedPassword, hashedPassword);
 
             //Assert
-            Assert.Equal(rootUserHashedPassword, hashedPasswordString.ToString());
+            Assert.True(hashedPasswordMatchesPlainText);
         }
     }
 }

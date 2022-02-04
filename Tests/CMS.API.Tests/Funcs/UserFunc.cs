@@ -1,8 +1,9 @@
-﻿using CMS.API.Tests.Consts;
+﻿using CMS.API.Infrastructure.Consts;
+using CMS.API.Infrastructure.Encryption;
+using CMS.API.Models;
+using CMS.API.Tests.Consts;
 using CMS.Domain.Entities;
 using System;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CMS.API.Tests.Funcs
@@ -13,15 +14,14 @@ namespace CMS.API.Tests.Funcs
         {
             if (context.Users.Find(Guid.Parse(UserConsts.RootUserId)) == null)
             {
-                SHA256Managed sha256Hasher = new SHA256Managed();
-                UTF8Encoding encoder = new UTF8Encoding();
-                var hashedPassword = sha256Hasher.ComputeHash(encoder.GetBytes(UserConsts.RootUserHashedPassword));
+                var hashedPassword = BCrypt.Net.BCrypt.HashPassword(UserConsts.RootUserHashedPassword, workFactor: 12);
 
                 var user = new User
                 {
                     Id = Guid.Parse(UserConsts.RootUserId),
                     Email = UserConsts.RootUserEmail,
                     Password = hashedPassword,
+                    UserSecret = EncryptionService.EncryptString(ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.IdentifierLength)),
                     FirstName = UserConsts.RootUserFirstName,
                     LastName = UserConsts.RootUserLastName,
                     IsAdmin = true,

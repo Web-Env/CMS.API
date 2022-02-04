@@ -27,32 +27,37 @@
             bottom: 5%;
         }
 
-        .email-card-container .email-card {
-            height: auto;
-            background-color: #393e46;
-            padding: 15px 25px;
-            border-radius: 5px;
-        }
+            .email-card-container .email-card {
+                height: auto;
+                background-color: #393e46;
+                padding: 15px 25px;
+                border-radius: 5px;
+            }
 
-        .email-card-container .email-card .email-card-contents {
-            color: #d9d9da;
-            font-size: 1.375em;
-        }
+                .email-card-container .email-card .email-card-contents {
+                    color: #d9d9da;
+                    font-size: 1.375em;
+                }
 
-        .email-card-container .email-card .email-card-contents .link-button-container {
-            width: 100%;
-        }
+                    .email-card-container .email-card .email-card-contents .link-button-container {
+                        width: 100%;
+                    }
 
-        .email-card-container .email-card .email-card-contents .link-button-container .link-button {
-            max-width: 100%;
-            background-color: #04cad3;
-            color: #222831;
-            padding: 10px 15px;
-            display: block;
-            font-size: 1.4em;
-            text-align: center;
-            text-decoration: none;
-        }
+                        .email-card-container .email-card .email-card-contents .link-button-container .link-button {
+                            max-width: 100%;
+                            background-color: #04cad3;
+                            color: #222831;
+                            padding: 10px 15px;
+                            display: block;
+                            font-size: 1.4em;
+                            text-align: center;
+                            text-decoration: none;
+                            cursor: pointer
+                        }
+
+                            .email-card-container .email-card .email-card-contents .link-button-container .link-button:hover {
+                                background-color: #03bac3;
+                            }
 
         @media only screen and (min-device-width: 1200px ) and (max-device-width: 1370px) {
             .email-card-container {
@@ -95,34 +100,17 @@
                 background-color: #393e46 !important;
             }
 
-            .email-card-container .email-card .email-card-contents .link-button-container .link-button {
-                background-color: #04cad3 !important;
-                color: #222831 !important;
-            }
+                .email-card-container .email-card .email-card-contents .link-button-container .link-button {
+                    background-color: #04cad3 !important;
+                    color: #222831 !important;
+                }
         }
     </style>
 </head>
 
 <body>
     <div class="email-card-container">
-        <h1 class="welcome-title">Welcome, {0}</h1>
-        <div class="email-card">
-            <div class="email-card-contents">
-                <p>
-                    Hello {0} {1},<br>
-                    Welcome to {2}.
-                    Your account for our member's area has been setup for you and all that's left for you to do is to set your
-                    password using the button below.
-                </p>
-                <div class="link-button-container">
-                    <a class="link-button" href="{3}/password/set/{4}">Set Password</a>
-                </div>
-                <p>
-                    In the member's area you'll be able to find lots of helpful tools and information to help you on your fitness
-                    journey. Make sure to check in regularly for new content and announcements!
-                </p>
-            </div>
-        </div>
+        {0}
     </div>
 </body>
 </html>

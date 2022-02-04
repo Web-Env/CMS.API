@@ -1,5 +1,6 @@
 ﻿using CMS.API.Infrastructure.Settings;
 using Microsoft.Extensions.Configuration;
+using WebEnv.Util.Mailer.Settings;
 
 namespace CMS.API.Tests.Helpers
 {
@@ -21,6 +22,7 @@ namespace CMS.API.Tests.Helpers
                 EmailSmtpPassword = smtpConfig["SmtpSettings:emailSmtpPassword"],
             };
         }
+
         public static OrganisationSettings GetOrganisationSettings()
         {
             var organisationConfig = new ConfigurationBuilder()

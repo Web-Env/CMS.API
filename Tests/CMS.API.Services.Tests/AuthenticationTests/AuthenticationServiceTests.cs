@@ -1,4 +1,4 @@
-﻿using CMS.API.DownloadModels;
+﻿using CMS.API.DownloadModels.Auth;
 using CMS.API.Infrastructure.Exceptions;
 using CMS.API.Services.Authentication;
 using CMS.API.Services.Tests.Helpers;

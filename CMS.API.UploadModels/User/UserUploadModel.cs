@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CMS.API.UploadModels
+namespace CMS.API.UploadModels.User
 {
     public class UserUploadModel : UploadModelBase
     {

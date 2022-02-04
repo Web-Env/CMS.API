@@ -3,7 +3,7 @@ using CMS.API.Infrastructure.Encryption;
 using CMS.API.UploadModels;
 using CMS.Domain.Entities;
 using CMS.Domain.Enums;
-using CMS.Domain.Repositories.Interfaces;
+using CMS.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -23,6 +23,11 @@ namespace CMS.API.Controllers
             _mapper = mapper;
         }
 
+        protected string ExtractRequesterAddress()
+        {
+            return Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+        }
+
         protected T DecryptIncomingData<T>(T incomingData) where T : UploadModelBase
         {
             incomingData.RequesterUserId = DecryptionService.DecryptString(incomingData.RequesterUserId);
@@ -32,14 +37,14 @@ namespace CMS.API.Controllers
             return incomingData;
         }
 
-        protected async Task<AuditLog> LogAction(UserActionCategory actionCategory, UserAction action, Guid userId, string userAddress, DateTime occurredOn)
+        protected async Task<AuditLog> LogAction(UserActionCategory actionCategory, UserAction action, Guid userId, DateTime occurredOn)
         {
             var auditLog = new AuditLog
             {
                 ActionCategory = (short)actionCategory,
                 Action = (short)action,
                 UserId = userId,
-                UserAddress = userAddress,
+                UserAddress = ExtractRequesterAddress(),
                 OccurredOn = occurredOn
             };
 
@@ -60,9 +65,9 @@ namespace CMS.API.Controllers
         {
             var passwordReset = new PasswordReset
             {
-                ResetIdentifier = GenerateResetIdentifier(),
-                UserId = userId,
-                Expiry = DateTime.Now.AddDays(15),
+                Identifier = GenerateResetIdentifier(),
+                UserId = EncryptionService.EncryptUserId(userId),
+                ExpiryDate = DateTime.Now.AddDays(15),
                 RequesterAddress = requesterAddress,
                 Active = true
             };

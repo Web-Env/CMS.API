@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CMS.API.DownloadModels
+namespace CMS.API.DownloadModels.User
 {
     public class UserDownloadModel : DownloadModelBase
     {

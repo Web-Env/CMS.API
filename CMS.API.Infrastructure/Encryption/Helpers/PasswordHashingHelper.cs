@@ -3,13 +3,40 @@ using System.Text;
 
 namespace CMS.API.Infrastructure.Encryption.Helpers
 {
-    public static class PasswordHashingHelper
+    public static class HashingHelper
     {
-        public static byte[] HashPassword(string password)
+        public static string HashPassword(string password)
         {
-            SHA256Managed sha256Hasher = new SHA256Managed();
-            UTF8Encoding encoder = new UTF8Encoding();
-            return sha256Hasher.ComputeHash(encoder.GetBytes(password));
+            return BCrypt.Net.BCrypt.HashPassword(password, workFactor: 12);
+        }
+
+        public static string HashIdentifier(string identifier)
+        {
+            return HashString(identifier, 2);
+        }
+
+        private static string HashString(string plainTextString, int iterations = 1)
+        {
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(plainTextString));
+
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+
+                if (iterations == 1)
+                {
+                    return builder.ToString();
+                }
+                else
+                {
+                    iterations--;
+                    return HashString(builder.ToString(), iterations);
+                }
+            }
         }
     }
 }

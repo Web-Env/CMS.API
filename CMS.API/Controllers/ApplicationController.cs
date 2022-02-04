@@ -1,19 +1,28 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using CMS.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CMS.API.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("[controller]")]
-    public class ApplicationController : Controller
+    public class ApplicationController : CustomControllerBase
     {
-        [HttpGet("/Ip")]
-        [AllowAnonymous]
-        public IActionResult Get()
+        public ApplicationController(IRepositoryManager repositoryManager,
+                                     IMapper mapper) : base(repositoryManager, mapper) { }
+
+        [HttpGet("Version")]
+        public ActionResult<string> GetVersion()
         {
-            var userAddress = Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
-            return Ok(userAddress);
+            var version = typeof(Startup).Assembly.GetName().Version.ToString();
+
+            return Ok(version);
+        }
+
+        [HttpGet("/Ip")]
+        public ActionResult<string> Get()
+        {
+            return Ok(ExtractRequesterAddress());
         }
     }
 }

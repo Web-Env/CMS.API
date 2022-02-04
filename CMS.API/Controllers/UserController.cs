@@ -1,104 +1,245 @@
 ﻿using AutoMapper;
+using CMS.API.Infrastructure.Encryption.Helpers;
 using CMS.API.Infrastructure.Exceptions;
 using CMS.API.Infrastructure.Settings;
-using CMS.API.Mailer;
-using CMS.API.Mailer.Helpers;
-using CMS.API.UploadModels;
+using CMS.API.Models.User;
+using CMS.API.UploadModels.User;
 using CMS.Domain.Entities;
-using CMS.Domain.Enums;
-using CMS.Domain.Repositories.Interfaces;
+using CMS.Domain.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
-using System.Linq;
+using System.Net;
+using System.Net.WebSockets;
+using System.Threading;
 using System.Threading.Tasks;
+using WebEnv.Util.Mailer.Settings;
 
 namespace CMS.API.Controllers
 {
     [ApiController]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("[controller]")]
     public class UserController : CustomControllerBase
     {
-        private readonly EmailService _emailService;
+        private SmtpSettings _smtpSettings;
+        private readonly EmailSettings _emailSettings;
         private readonly OrganisationSettings _organisationSettings;
 
         public UserController(IRepositoryManager repositoryManager,
                               IMapper mapper,
                               IOptions<SmtpSettings> smtpSettings,
+                              IOptions<EmailSettings> emailSettings,
                               IOptions<OrganisationSettings> organisationSettings) : base(repositoryManager, mapper)
         {
-            _emailService = new EmailService(smtpSettings.Value);
+            _smtpSettings = smtpSettings.Value;
+            _emailSettings = emailSettings.Value;
             _organisationSettings = organisationSettings.Value;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Post(UserUploadModel user)
+        [HttpPost("CreateUser")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CreateUser(UserUploadModel user)
         {
-            user = DecryptIncomingData(user);
-            var existingEmail = await RepositoryManager.UserRepository.FindAsync(u => u.Email == user.Email);
-            if (existingEmail.Any())
-            {
-                return BadRequest(
-                    new EmailAlreadyRegisteredException(
-                        "A User with this email address already exists",
-                        "A User with this email address already exists"
-                    )
-                );
-            }
-
-            var newUser = MapUploadModelToEntity<User>(user);
-
-            var registeredUser = await RepositoryManager.UserRepository.AddAsync(newUser);
-            var auditLog = await LogAction(UserActionCategory.User, UserAction.Create, Guid.Parse(user.RequesterUserId), user.UserAddress, DateTime.Now);
-            var passwordSet = await GeneratePasswordSetLink(registeredUser.Id, user.UserAddress);
-            
             try
             {
-                var emailDelivered = await SendWelcomeEmail(registeredUser, passwordSet.ResetIdentifier)
-                                            .ConfigureAwait(false);
+                var newUser = MapUploadModelToEntity<User>(user);
 
-                if (!emailDelivered)
-                {
-                    throw (new Exception());
-                }
+                await UserModel.CreateNewUserAsync(
+                    newUser,
+                    ExtractRequesterAddress(),
+                    RepositoryManager,
+                    _smtpSettings,
+                    _emailSettings);
+
+                return Ok();
             }
-            catch(Exception err)
+            catch (EmailAlreadyRegisteredException err)
             {
-                await RevertUserCreation(registeredUser, auditLog, passwordSet).ConfigureAwait(false);
-                return BadRequest(
-                    new EmailDoesNotExistException(
-                        "This Email address does not exist",
-                        err.Message
-                    )
-                );
+                return BadRequest(new EmailAlreadyRegisteredException(err.ErrorMessage, err.ErrorData));
             }
-
-            return Ok();
+            catch (Exception err)
+            {
+                return Problem();
+            }
         }
 
-        private async Task<bool> SendWelcomeEmail(User registeredUser, string passwordSetLink)
+        [HttpPost("Verify")]
+        [AllowAnonymous]
+        public async Task<IActionResult> VerifyUser(string verificationIdentifier)
         {
-            return await _emailService.SendEmail(
-                $"{registeredUser.FirstName} {registeredUser.LastName}",
-                registeredUser.Email,
-                $"Welcome to {_organisationSettings.OrganisationName}",
-                EmailCreationHelper.NewUserCreateEmail(
-                    registeredUser.FirstName,
-                    registeredUser.LastName,
-                    _organisationSettings.OrganisationName,
-                    _organisationSettings.OrganisationUrl,
-                    passwordSetLink
-                )
-            );
+            try
+            {
+                await UserModel.VerifyUserAsync(
+                    verificationIdentifier,
+                    ExtractRequesterAddress(),
+                    RepositoryManager);
+
+                return Ok();
+            }
+            catch (InvalidTokenException err)
+            {
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorMessage));
+            }
+            catch (Exception err)
+            {
+                return Problem();
+            }
         }
 
-        private async Task RevertUserCreation(User registeredUser, AuditLog auditLog, PasswordReset passwordSet)
+        [HttpGet("Verify/Validate")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ValidateVerificationIdentifier(string verificationIdentifier)
         {
-            await RepositoryManager.UserRepository.RemoveAsync(registeredUser);
-            await RepositoryManager.AuditLogRepository.RemoveAsync(auditLog);
-            await RepositoryManager.PasswordResetRepository.RemoveAsync(passwordSet);
+            try
+            {
+                var verificationIdentifierIsValid = await UserModel.ValidateVerificationIdentifierAsync(
+                    HashingHelper.HashIdentifier(verificationIdentifier),
+                    RepositoryManager.UserVerificationRepository);
+
+                if (verificationIdentifierIsValid)
+                {
+                    return Ok();
+                }
+
+                return BadRequest();
+            }
+            catch (InvalidTokenException err)
+            {
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorMessage));
+            }
+            catch (Exception err)
+            {
+                return Problem();
+            }
+        }
+
+        [HttpPost("Verify/New")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CreateNewVerification(string email)
+        {
+            try
+            {
+                await UserModel.CreateNewVerficationAsync(
+                    email,
+                    ExtractRequesterAddress(),
+                    RepositoryManager,
+                    _smtpSettings,
+                    _emailSettings);
+
+                return Ok();
+            }
+            catch (UserAlreadyVerifiedException err)
+            {
+                return BadRequest(new UserAlreadyVerifiedException(err.ErrorMessage, err.ErrorData));
+            }
+            catch (Exception err)
+            {
+                return Problem();
+            }
+        }
+
+        [HttpPost("ForgotPassword")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(PasswordResetUploadModel passwordResetUploadModel)
+        {
+            try
+            {
+                await UserModel.ResetPasswordAsync(
+                    passwordResetUploadModel.PasswordResetToken,
+                    passwordResetUploadModel.NewPassword,
+                    ExtractRequesterAddress(),
+                    RepositoryManager);
+
+                return Ok();
+            }
+            catch (InvalidTokenException err)
+            {
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorMessage));
+            }
+            catch (Exception err)
+            {
+                return Problem();
+            }
+        }
+
+        [HttpGet("ForgotPassword/Validate")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ValidatePasswordResetToken(string passwordResetToken)
+        {
+            try
+            {
+                var passwordResetTokenIsValid = await UserModel.ValidatePasswordResetTokenAsync(
+                    passwordResetToken,
+                    RepositoryManager.PasswordResetRepository);
+
+                if (passwordResetTokenIsValid)
+                {
+                    return Ok();
+                }
+
+                return BadRequest();
+            }
+            catch (InvalidTokenException err)
+            {
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorMessage));
+            }
+            catch (Exception err)
+            {
+                return Problem();
+            }
+        }
+
+        [HttpPost("ForgotPassword/New")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CreateNewResetPassword(string emailAddress)
+        {
+            try
+            {
+                await UserModel.CreateNewResetPasswordAsync(
+                    emailAddress,
+                    ExtractRequesterAddress(),
+                    RepositoryManager,
+                    _smtpSettings,
+                    _emailSettings);
+
+                return Ok();
+            }
+            catch (Exception err)
+            {
+                return Problem();
+            }
+        }
+
+        [HttpGet("/ws")]
+        [AllowAnonymous]
+        public async Task GetWebSocket()
+        {
+            if (HttpContext.WebSockets.IsWebSocketRequest)
+            {
+                using WebSocket webSocket = await
+                                   HttpContext.WebSockets.AcceptWebSocketAsync();
+
+                await Echo(HttpContext, webSocket);
+            }
+            else
+            {
+                HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            }
+        }
+
+        private async Task Echo(HttpContext context, WebSocket webSocket)
+        {
+            var buffer = new byte[1024 * 4];
+            WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+            while (!result.CloseStatus.HasValue)
+            {
+                result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+            }
+            await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
         }
     }
 }

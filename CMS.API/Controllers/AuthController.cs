@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using CMS.API.Infrastructure.Exceptions;
 using CMS.API.Services.Authentication;
-using CMS.API.UploadModels;
-using CMS.Domain.Repositories.Interfaces;
+using CMS.API.UploadModels.Auth;
+using CMS.Domain.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -10,11 +11,12 @@ using System.Threading.Tasks;
 namespace CMS.API.Controllers
 {
     [ApiController]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("[controller]")]
     public class AuthController : CustomControllerBase
     {
         private readonly AuthenticationService _authenticationService;
+
         public AuthController(IRepositoryManager repositoryManager,
                               IMapper mapper,
                               AuthenticationService authenticationService) : base(repositoryManager, mapper)
@@ -22,7 +24,7 @@ namespace CMS.API.Controllers
             _authenticationService = authenticationService;
         }
 
-        [HttpPost("auth")]
+        [HttpPost("Auth")]
         [AllowAnonymous]
         public async Task<IActionResult> Authenticate(AuthenticationRequest authenticationRequest)
         {
@@ -34,11 +36,11 @@ namespace CMS.API.Controllers
             }
             catch(AuthenticationException authException)
             {
-                return BadRequest(authException);
+                return BadRequest(authException.ErrorMessage);
             }
         }
 
-        [HttpPost("validate")]
+        [HttpGet("Validate")]
         public IActionResult Validate()
         {
             return Ok();
