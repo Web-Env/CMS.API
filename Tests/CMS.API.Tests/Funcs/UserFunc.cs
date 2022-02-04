@@ -1,4 +1,7 @@
-﻿using CMS.API.Tests.Consts;
+﻿using CMS.API.Infrastructure.Consts;
+using CMS.API.Infrastructure.Encryption;
+using CMS.API.Models;
+using CMS.API.Tests.Consts;
 using CMS.Domain.Entities;
 using System;
 using System.Threading.Tasks;
@@ -18,6 +21,7 @@ namespace CMS.API.Tests.Funcs
                     Id = Guid.Parse(UserConsts.RootUserId),
                     Email = UserConsts.RootUserEmail,
                     Password = hashedPassword,
+                    UserSecret = EncryptionService.EncryptString(ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.IdentifierLength)),
                     FirstName = UserConsts.RootUserFirstName,
                     LastName = UserConsts.RootUserLastName,
                     IsAdmin = true,
