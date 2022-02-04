@@ -8,9 +8,13 @@ using CMS.Domain.Entities;
 using CMS.Domain.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
+using System.Net;
+using System.Net.WebSockets;
+using System.Threading;
 using System.Threading.Tasks;
 using WebEnv.Util.Mailer.Settings;
 
@@ -208,6 +212,34 @@ namespace CMS.API.Controllers
             {
                 return Problem();
             }
+        }
+
+        [HttpGet("/ws")]
+        [AllowAnonymous]
+        public async Task GetWebSocket()
+        {
+            if (HttpContext.WebSockets.IsWebSocketRequest)
+            {
+                using WebSocket webSocket = await
+                                   HttpContext.WebSockets.AcceptWebSocketAsync();
+
+                await Echo(HttpContext, webSocket);
+            }
+            else
+            {
+                HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            }
+        }
+
+        private async Task Echo(HttpContext context, WebSocket webSocket)
+        {
+            var buffer = new byte[1024 * 4];
+            WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+            while (!result.CloseStatus.HasValue)
+            {
+                result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+            }
+            await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
         }
     }
 }
