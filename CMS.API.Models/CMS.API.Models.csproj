@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CMS.API.Infrastructure\CMS.API.Infrastructure.csproj" />
+    <ProjectReference Include="..\CMS.API.UploadModels\CMS.API.UploadModels.csproj" />
   </ItemGroup>
 
 </Project>
