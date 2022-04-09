@@ -2,11 +2,11 @@
 using CMS.API.UploadModels.User;
 using CMS.Domain.Entities;
 
-namespace CMS.API.Mappers
+namespace CMS.API.Infrastructure.Mappers
 {
-    public class UploadModelToEntity : Profile
+    public class UploadModelToEntityProfile : Profile
     {
-        public UploadModelToEntity()
+        public UploadModelToEntityProfile()
         {
             CreateMap<UserUploadModel, User>();
         }

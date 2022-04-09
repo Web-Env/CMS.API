@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CMS.API.Infrastructure.Settings;
-using CMS.API.Mappers;
+using CMS.API.Infrastructure.Mappers;
 using CMS.API.Tests.Funcs;
 using CMS.API.Tests.Helpers;
 using CMS.Domain.Entities;
@@ -29,8 +29,8 @@ namespace CMS.API.Tests.ControllerTests
             RepositoryManager = new RepositoryManager(CreateTestRepositoryContext());
             var mockMapper = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile(new UploadModelToEntity());
-                cfg.AddProfile(new EntityToDownloadModel());
+                cfg.AddProfile(new UploadModelToEntityProfile());
+                cfg.AddProfile(new EntityToDownloadModelProfile());
             });
             Mapper = mockMapper.CreateMapper();
             SmtpSettings = EmailServiceHelper.GetSmtpSettings();

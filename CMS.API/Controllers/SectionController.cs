@@ -24,7 +24,6 @@ namespace CMS.API.Controllers
         {
             try
             {
-                var test = ExtractUserSecretFromToken();
                 if (await IsUserValidAsync())
                 {
                     var sections = await SectionModel.GetSectionsPageAsync(page, pageSize, RepositoryManager.SectionRepository);

@@ -2,5 +2,6 @@
 {
     public class DownloadModelBase : IDownloadModel
     {
+        public string Id { get; set; }
     }
 }

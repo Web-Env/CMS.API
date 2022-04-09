@@ -29,16 +29,10 @@ namespace CMS.API.Tests.Helpers
         {
             return new UserUploadModel
             {
-                RequesterUserId = UserConsts.RootUserIdEncrypted,
                 Email = "noreply@webenv.io",
-                Password = UserConsts.TestUserHashedPassword,
                 FirstName = UserConsts.TestUserFirstName,
                 LastName = UserConsts.TestUserLastName,
-                IsAdmin = false,
-                CreatedOn = DateTime.Now,
-                CreatedBy = UserConsts.RootUserIdEncrypted,
-                LastUpdatedOn = DateTime.Now,
-                LastUpdatedBy = UserConsts.RootUserIdEncrypted
+                IsAdmin = false
             };
         }
     }

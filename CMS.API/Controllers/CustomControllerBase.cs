@@ -7,6 +7,7 @@ using CMS.Domain.Enums;
 using CMS.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -80,14 +81,14 @@ namespace CMS.API.Controllers
             }
         }
 
-        protected T DecryptIncomingData<T>(T incomingData) where T : UploadModelBase
-        {
-            incomingData.RequesterUserId = DecryptionService.DecryptString(incomingData.RequesterUserId);
-            incomingData.CreatedBy = DecryptionService.DecryptString(incomingData.CreatedBy);
-            incomingData.LastUpdatedBy = DecryptionService.DecryptString(incomingData.LastUpdatedBy);
+        //protected T DecryptIncomingData<T>(T incomingData) where T : UploadModelBase
+        //{
+        //    incomingData.RequesterUserId = DecryptionService.DecryptString(incomingData.RequesterUserId);
+        //    incomingData.CreatedBy = DecryptionService.DecryptString(incomingData.CreatedBy);
+        //    incomingData.LastUpdatedBy = DecryptionService.DecryptString(incomingData.LastUpdatedBy);
 
-            return incomingData;
-        }
+        //    return incomingData;
+        //}
 
         protected async Task<AuditLog> LogAction(UserActionCategory actionCategory, UserAction action, Guid userId, DateTime occurredOn)
         {
@@ -106,6 +107,11 @@ namespace CMS.API.Controllers
         protected TDownloadModel MapEntityToDownloadModel<TEntity, TDownloadModel>(TEntity entity)
         {
             return _mapper.Map<TDownloadModel>(entity);
+        }
+
+        protected List<TDownloadModel> MapEntitiesToDownloadModels<TEntity, TDownloadModel>(IEnumerable<TEntity> entity)
+        {
+            return _mapper.Map<IEnumerable<TEntity>, List<TDownloadModel>>(entity);
         }
 
         protected TEntity MapUploadModelToEntity<TEntity>(IUploadModel uploadModel)

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CMS.API.DownloadModels.User;
 using CMS.API.Infrastructure.Encryption.Helpers;
 using CMS.API.Infrastructure.Exceptions;
 using CMS.API.Infrastructure.Settings;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.WebSockets;
 using System.Threading;
@@ -40,22 +42,76 @@ namespace CMS.API.Controllers
             _organisationSettings = organisationSettings.Value;
         }
 
-        [HttpPost("CreateUser")]
-        [AllowAnonymous]
-        public async Task<IActionResult> CreateUser(UserUploadModel user)
+        [HttpGet("GetAll")]
+        public async Task<ActionResult<IEnumerable<UserDownloadModel>>> GetUsers(int page, int pageSize)
         {
             try
             {
-                var newUser = MapUploadModelToEntity<User>(user);
+                var users = await UserModel.GetUsersPageAsync(RepositoryManager.UserRepository, page, pageSize);
 
-                await UserModel.CreateNewUserAsync(
-                    newUser,
-                    ExtractRequesterAddress(),
-                    RepositoryManager,
-                    _smtpSettings,
-                    _emailSettings);
+                return Ok(MapEntitiesToDownloadModels<User, UserDownloadModel>(users));
+            }
+            catch (EmailAlreadyRegisteredException err)
+            {
+                return BadRequest(new EmailAlreadyRegisteredException(err.ErrorMessage, err.ErrorData));
+            }
+            catch (Exception err)
+            {
+                return Problem();
+            }
+        }
 
-                return Ok();
+        [HttpPost("CreateUser")]
+        public async Task<ActionResult<UserDownloadModel>> CreateUser(UserUploadModel user)
+        {
+            try
+            {
+                var userIsAdmin = await UserModel.CheckUserIsAdminByIdAsync(ExtractUserIdFromToken(), RepositoryManager.UserRepository);
+
+                if (userIsAdmin)
+                {
+                    var newUser = MapUploadModelToEntity<User>(user);
+
+                    var requesterId = ExtractUserIdFromToken();
+
+                    if (user.IsAdmin)
+                    {
+                        if (user.AdminPassword != null)
+                        {
+                            var requesterIsValidAdmin = await UserModel.CheckUserCredentialsValidAsync(
+                                RepositoryManager.UserRepository,
+                                requesterId,
+                                user.AdminPassword);
+
+                            if (!requesterIsValidAdmin)
+                            {
+                                return Forbid();
+                            }
+                        }
+                        else
+                        {
+                            return Forbid();
+                        }
+                    }
+
+                    newUser.CreatedBy = requesterId;
+                    newUser.CreatedOn = DateTime.Now;
+                    newUser.LastUpdatedBy = requesterId;
+                    newUser.LastUpdatedOn = DateTime.Now;
+
+                    await UserModel.CreateNewUserAsync(
+                        newUser,
+                        ExtractRequesterAddress(),
+                        RepositoryManager,
+                        _smtpSettings,
+                        _emailSettings);
+
+                    return Ok(MapEntityToDownloadModel<User, UserDownloadModel>(newUser));
+                }
+                else
+                {
+                    return Forbid();
+                }
             }
             catch (EmailAlreadyRegisteredException err)
             {
@@ -142,9 +198,9 @@ namespace CMS.API.Controllers
             }
         }
 
-        [HttpPost("ForgotPassword")]
+        [HttpPost("SetPassword")]
         [AllowAnonymous]
-        public async Task<IActionResult> ResetPassword(PasswordResetUploadModel passwordResetUploadModel)
+        public async Task<IActionResult> SetPassword(PasswordResetUploadModel passwordResetUploadModel)
         {
             try
             {

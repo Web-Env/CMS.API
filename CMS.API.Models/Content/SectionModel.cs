@@ -22,9 +22,9 @@ namespace CMS.API.Models.Content
                 Title = sectionUploadModel.Title,
                 Path = sectionUploadModel.Path,
                 Active = sectionUploadModel.Active,
-                CreatedOn = sectionUploadModel.CreatedOn,
+                CreatedOn = DateTime.Now,
                 CreatedBy = userId,
-                LastUpdatedOn = sectionUploadModel.LastUpdatedOn,
+                LastUpdatedOn = DateTime.Now,
                 LastUpdatedBy = userId
             };
 

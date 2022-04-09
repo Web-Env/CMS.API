@@ -10,6 +10,7 @@ using CMS.Domain.Entities;
 using CMS.Domain.Repositories;
 using CMS.Domain.Repositories.User.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebEnv.Util.Mailer;
@@ -23,6 +24,12 @@ namespace CMS.API.Models.User
         {
             var user = await userRepository.GetByIdAsync(userId);
             return user != null;
+        }
+
+        public static async Task<bool> CheckUserIsAdminByIdAsync(Guid userId, IUserRepository userRepository)
+        {
+            var user = await userRepository.GetByIdAsync(userId);
+            return user.IsAdmin;
         }
 
         public static async Task<Domain.Entities.User> GetUserByIdAsync(Guid userId, IUserRepository userRepository)
@@ -44,7 +51,29 @@ namespace CMS.API.Models.User
             return (false, null);
         }
 
-        public static async Task CreateNewUserAsync(
+        public static async Task<bool> CheckUserCredentialsValidAsync(IUserRepository userRepository, Guid userId, string password)
+        {
+            var user = (await userRepository.FindAsync(u =>
+                            u.Id == userId
+                        )).FirstOrDefault();
+
+            if (user != null)
+            {
+                var passwordIsCorrect = BCrypt.Net.BCrypt.Verify(password, user.Password);
+                
+                return passwordIsCorrect;
+            }
+
+            return false;
+        }
+
+        public static async Task<IEnumerable<Domain.Entities.User>> GetUsersPageAsync(IUserRepository userRepository, int page, int pageSize)
+        {
+            var users = await userRepository.GetPageAsync(page, pageSize);
+            return users;
+        }
+
+        public static async Task<Domain.Entities.User> CreateNewUserAsync(
             Domain.Entities.User user,
             string requesterAddress,
             IRepositoryManager repositoryManager,
@@ -57,12 +86,11 @@ namespace CMS.API.Models.User
             if (emailExists)
             {
                 throw (new EmailAlreadyRegisteredException(
-                    "A User with this email address already exists",
-                    "A User with this email address already exists"
+                    "A user with this email address already exists",
+                    "A user with this email address already exists"
                 ));
             }
 
-            user.Password = HashingHelper.HashPassword(user.Password);
             user.UserSecret = EncryptionService.EncryptString(ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.IdentifierLength));
             user.CreatedOn = DateTime.Now;
 
@@ -78,6 +106,7 @@ namespace CMS.API.Models.User
                     emailSettings,
                     isFirstContact: true).ConfigureAwait(false);
 
+                return user;
             }
             catch (Exception)
             {

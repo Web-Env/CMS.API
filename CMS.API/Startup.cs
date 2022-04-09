@@ -49,7 +49,7 @@ namespace CMS.API
 
             services.AddTransient<AuthenticationService>();
             services.Add(new ServiceDescriptor(typeof(IRepositoryManager), new RepositoryManager(ConfigureRepositoryContext())));
-            services.AddAutoMapper(typeof(Startup));
+            services.AddCustomMappers();
 
             var smtpSettingsSection = Configuration.GetSection("SmtpSettings");
             var emailSettingsSection = Configuration.GetSection("EmailSettings");
