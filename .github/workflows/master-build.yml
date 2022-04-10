@@ -27,6 +27,7 @@ jobs:
         files: './CMS.API/appsettings.json'
       env:
         SmtpSettings.emailSmtpPassword: ${{ secrets.SMTP_PASSWORD }}
+        EmailSettings.PrimaryRedirectDomain: ${{ secrets.PRIMARY_REDIRECT_DOMAIN }}
         ConnectionStrings.CMSDb: ${{ secrets.PRODUCTION_CONNECTION_STRING }}
     - name: Build (Debug)
       run: dotnet build --no-restore
