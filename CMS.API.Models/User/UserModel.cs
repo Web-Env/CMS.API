@@ -98,7 +98,7 @@ namespace CMS.API.Models.User
             {
                 await repositoryManager.UserRepository.AddAsync(user);
 
-                await CreateNewResetPasswordAsync(
+                await CreateNewVerficationForNewUserAsync(
                     user.Email,
                     requesterAddress,
                     repositoryManager,
@@ -110,6 +110,83 @@ namespace CMS.API.Models.User
             catch (Exception)
             {
                 throw;
+            }
+        }
+
+        public static async Task CreateNewVerficationForNewUserAsync(
+           string email,
+           string requesterAddress,
+           IRepositoryManager repositoryManager,
+           SmtpSettings smtpSettings,
+           EmailSettings emailSettings
+           )
+        {
+            var (exists, user) = await CheckUserExistsWithEmailAsync(email, repositoryManager.UserRepository)
+                .ConfigureAwait(false);
+
+            if (exists)
+            {
+                if (user.IsVerified)
+                {
+                    throw new UserAlreadyVerifiedException("User has already been verified", "User has already been verified");
+                }
+
+                try
+                {
+                    var emailService = new EmailService();
+                    var resetIdentifier = ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.IdentifierLength);
+                    var verificationIdentifier = ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.IdentifierLength);
+                    var hashedResetIdentifier = HashingHelper.HashIdentifier(resetIdentifier);
+                    var hashedVerificationIdentifier = HashingHelper.HashIdentifier(verificationIdentifier);
+                    var encryptedUserId = EncryptionService.EncryptString(user.Id.ToString());
+                    var encryptedIdentifier = EncryptionService.EncryptString(resetIdentifier);
+                    var encodedEncryptedIdentifier = System.Web.HttpUtility.UrlEncode(encryptedIdentifier);
+
+                    var passwordReset = new PasswordReset
+                    {
+                        Identifier = hashedResetIdentifier,
+                        UserId = encryptedUserId,
+                        ExpiryDate = DateTime.Now.AddHours(1),
+                        RequesterAddress = requesterAddress,
+                        Active = true,
+                        CreatedOn = DateTime.Now,
+                        LastUpdatedOn = DateTime.Now
+                    };
+
+                    var verification = new UserVerification
+                    {
+                        Identifier = hashedVerificationIdentifier,
+                        UserId = user.Id,
+                        ExpiryDate = DateTime.Now.AddDays(7),
+                        RequesterAddress = requesterAddress,
+                        Active = true,
+                        CreatedOn = DateTime.Now,
+                        LastUpdatedOn = DateTime.Now
+                    };
+
+                    var verificationViewModel = new LinkEmailViewModel
+                    {
+                        FullName = $"{user.FirstName} {user.LastName}",
+                        UrlDomain = emailSettings.PrimaryRedirectDomain,
+                        Link = encodedEncryptedIdentifier
+                    };
+
+                    await repositoryManager.UserVerificationRepository.AddAsync(verification);
+
+                    var verificationMessage = emailService.CreateHtmlMessage(
+                        smtpSettings,
+                        $"{user.FirstName} {user.LastName}",
+                        user.Email,
+                        "Welcome",
+                        EmailCreationHelper.CreateWelcomeVerificationEmailString(verificationViewModel));
+
+                    await emailService.SendEmailAsync(smtpSettings, verificationMessage);
+
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
             }
         }
 
@@ -369,6 +446,9 @@ namespace CMS.API.Models.User
                     var encryptedIdentifier = EncryptionService.EncryptString(resetIdentifier);
                     var encodedEncryptedIdentifier = System.Web.HttpUtility.UrlEncode(encryptedIdentifier);
 
+                    await DeactivateExistingPasswordResetsAsync(encryptedUserId, repositoryManager.PasswordResetRepository)
+                            .ConfigureAwait(false);
+
                     var passwordReset = new PasswordReset
                     {
                         Identifier = hashedResetIdentifier,
@@ -401,6 +481,22 @@ namespace CMS.API.Models.User
                 {
                     throw;
                 }
+            }
+        }
+
+        private static async Task DeactivateExistingPasswordResetsAsync(string encryptedUserId, IPasswordResetRepository passwordResetRepository)
+        {
+            var userActivePasswordResets = await passwordResetRepository.FindAsync(x => x.UserId == encryptedUserId && (bool)x.Active);
+
+            if (userActivePasswordResets.Any())
+            {
+                foreach (PasswordReset activePasswordReset in userActivePasswordResets)
+                {
+                    activePasswordReset.Active = false;
+                    activePasswordReset.LastUpdatedOn = DateTime.Now;
+                }
+
+                await passwordResetRepository.UpdateRangeAsync(userActivePasswordResets);
             }
         }
     }
