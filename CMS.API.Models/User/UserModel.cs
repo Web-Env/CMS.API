@@ -98,13 +98,12 @@ namespace CMS.API.Models.User
             {
                 await repositoryManager.UserRepository.AddAsync(user);
 
-                await CreateNewVerficationAsync(
+                await CreateNewResetPasswordAsync(
                     user.Email,
                     requesterAddress,
                     repositoryManager,
                     smtpSettings,
-                    emailSettings,
-                    isFirstContact: true).ConfigureAwait(false);
+                    emailSettings).ConfigureAwait(false);
 
                 return user;
             }
