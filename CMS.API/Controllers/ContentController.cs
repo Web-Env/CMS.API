@@ -16,20 +16,20 @@ namespace CMS.API.Controllers
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("[controller]")]
-    public class SectionController : CustomControllerBase
+    public class ContentController : CustomControllerBase
     {
-        public SectionController(IRepositoryManager repositoryManager, IMapper mapper) : base(repositoryManager, mapper) { }
+        public ContentController(IRepositoryManager repositoryManager, IMapper mapper) : base(repositoryManager, mapper) { }
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<SectionDownloadModel>>> GetSections(int page, int pageSize)
+        public async Task<ActionResult<IEnumerable<ContentDownloadModel>>> GetSections(int page, int pageSize)
         {
             try
             {
                 if (await IsUserValidAsync())
                 {
-                    var sections = await SectionModel.GetSectionsPageAsync(page, pageSize, RepositoryManager.SectionRepository);
+                    var sections = await ContentModel.GetContentPageAsync(page, pageSize, RepositoryManager.ContentRepository);
 
-                    return Ok(MapEntitiesToDownloadModels<Section, SectionDownloadModel>(sections));
+                    return Ok(MapEntitiesToDownloadModels<Content, ContentDownloadModel>(sections));
                 }
                 else
                 {
@@ -47,16 +47,16 @@ namespace CMS.API.Controllers
 
 
         [HttpPost("Add")]
-        public async Task<ActionResult<SectionDownloadModel>> AddSection(SectionUploadModel sectionUploadModel)
+        public async Task<ActionResult<ContentDownloadModel>> AddContent(ContentUploadModel contentUploadModel)
         {
             try
             {
-                var section = await SectionModel.AddSectionAsync(
-                    sectionUploadModel,
+                var content = await ContentModel.AddContentAsync(
+                    contentUploadModel,
                     ExtractUserIdFromToken(),
-                    RepositoryManager.SectionRepository);
+                    RepositoryManager.ContentRepository);
 
-                return Ok(MapEntityToDownloadModel<Section, SectionDownloadModel>(section));
+                return Ok(MapEntityToDownloadModel<Content, ContentDownloadModel>(content));
             }
             catch (Exception err)
             {

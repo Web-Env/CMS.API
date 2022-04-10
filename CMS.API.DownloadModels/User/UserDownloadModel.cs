@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CMS.API.DownloadModels.User
+﻿namespace CMS.API.DownloadModels.User
 {
     public class UserDownloadModel : DownloadModelBase
     {
@@ -11,13 +9,5 @@ namespace CMS.API.DownloadModels.User
         public string LastName { get; set; }
 
         public bool IsAdmin { get; set; }
-
-        public DateTime CreatedOn { get; set; }
-
-        public Guid CreatedBy { get; set; }
-
-        public DateTime LastUpdatedOn { get; set; }
-
-        public Guid LastUpdatedBy { get; set; }
     }
 }
