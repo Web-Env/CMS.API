@@ -26,19 +26,22 @@ namespace CMS.API.Models.Content
                 };
                 var sectionContents = contents.Where(c => c.SectionId == section.Id);
 
-                foreach (var sectionContent in sectionContents)
+                if (sectionContents.Any())
                 {
-                    sectionSidebarButton.SubButtons.Add(new SidebarButtonDownloadModel
+                    foreach (var sectionContent in sectionContents)
                     {
-                        Title = sectionContent.Title,
-                        Path = $"{section.Path}/{sectionContent.Path}",
-                        CreatedOn = sectionContent.CreatedOn
-                    });
+                        sectionSidebarButton.SubButtons.Add(new SidebarButtonDownloadModel
+                        {
+                            Title = sectionContent.Title,
+                            Path = $"{section.Path}/{sectionContent.Path}",
+                            CreatedOn = sectionContent.CreatedOn
+                        });
 
-                    sectionContentIds.Add(sectionContent.Id);
+                        sectionContentIds.Add(sectionContent.Id);
+                    }
+
+                    sidebarButtons.Add(sectionSidebarButton);
                 }
-
-                sidebarButtons.Add(sectionSidebarButton);
             }
 
             foreach (var content in contents.Where(c => !sectionContentIds.Contains(c.Id)))
