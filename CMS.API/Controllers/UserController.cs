@@ -47,9 +47,25 @@ namespace CMS.API.Controllers
         {
             try
             {
-                var users = await UserModel.GetUsersPageAsync(RepositoryManager.UserRepository, page, pageSize);
+                if (await IsUserValidAsync())
+                {
+                    var userIsAdmin = await UserModel.CheckUserIsAdminByIdAsync(ExtractUserIdFromToken(), RepositoryManager.UserRepository);
 
-                return Ok(MapEntitiesToDownloadModels<User, UserDownloadModel>(users));
+                    if (userIsAdmin)
+                    {
+                        var users = await UserModel.GetUsersPageAsync(RepositoryManager.UserRepository, page, pageSize);
+
+                        return Ok(MapEntitiesToDownloadModels<User, UserDownloadModel>(users));
+                    }
+                    else
+                    {
+                        return Forbid();
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
             }
             catch (EmailAlreadyRegisteredException err)
             {
@@ -66,51 +82,58 @@ namespace CMS.API.Controllers
         {
             try
             {
-                var userIsAdmin = await UserModel.CheckUserIsAdminByIdAsync(ExtractUserIdFromToken(), RepositoryManager.UserRepository);
-
-                if (userIsAdmin)
+                if (await IsUserValidAsync())
                 {
-                    var newUser = MapUploadModelToEntity<User>(user);
+                    var userIsAdmin = await UserModel.CheckUserIsAdminByIdAsync(ExtractUserIdFromToken(), RepositoryManager.UserRepository);
 
-                    var requesterId = ExtractUserIdFromToken();
-
-                    if (user.IsAdmin)
+                    if (userIsAdmin)
                     {
-                        if (user.AdminPassword != null)
-                        {
-                            var requesterIsValidAdmin = await UserModel.CheckUserCredentialsValidAsync(
-                                RepositoryManager.UserRepository,
-                                requesterId,
-                                user.AdminPassword);
+                        var newUser = MapUploadModelToEntity<User>(user);
 
-                            if (!requesterIsValidAdmin)
+                        var requesterId = ExtractUserIdFromToken();
+
+                        if (user.IsAdmin)
+                        {
+                            if (user.AdminPassword != null)
+                            {
+                                var requesterIsValidAdmin = await UserModel.CheckUserCredentialsValidAsync(
+                                    RepositoryManager.UserRepository,
+                                    requesterId,
+                                    user.AdminPassword);
+
+                                if (!requesterIsValidAdmin)
+                                {
+                                    return Forbid();
+                                }
+                            }
+                            else
                             {
                                 return Forbid();
                             }
                         }
-                        else
-                        {
-                            return Forbid();
-                        }
+
+                        newUser.CreatedBy = requesterId;
+                        newUser.CreatedOn = DateTime.Now;
+                        newUser.LastUpdatedBy = requesterId;
+                        newUser.LastUpdatedOn = DateTime.Now;
+
+                        await UserModel.CreateNewUserAsync(
+                            newUser,
+                            ExtractRequesterAddress(),
+                            RepositoryManager,
+                            _smtpSettings,
+                            _emailSettings);
+
+                        return Ok(MapEntityToDownloadModel<User, UserDownloadModel>(newUser));
                     }
-
-                    newUser.CreatedBy = requesterId;
-                    newUser.CreatedOn = DateTime.Now;
-                    newUser.LastUpdatedBy = requesterId;
-                    newUser.LastUpdatedOn = DateTime.Now;
-
-                    await UserModel.CreateNewUserAsync(
-                        newUser,
-                        ExtractRequesterAddress(),
-                        RepositoryManager,
-                        _smtpSettings,
-                        _emailSettings);
-
-                    return Ok(MapEntityToDownloadModel<User, UserDownloadModel>(newUser));
+                    else
+                    {
+                        return Forbid();
+                    }
                 }
                 else
                 {
-                    return Forbid();
+                    return Unauthorized();
                 }
             }
             catch (EmailAlreadyRegisteredException err)

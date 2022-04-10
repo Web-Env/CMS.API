@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CMS.API.DownloadModels.Content;
 using CMS.API.Models.Content;
+using CMS.API.Models.User;
 using CMS.API.UploadModels.Content;
 using CMS.Domain.Entities;
 using CMS.Domain.Repositories;
@@ -27,9 +28,18 @@ namespace CMS.API.Controllers
             {
                 if (await IsUserValidAsync())
                 {
-                    var sections = await ContentModel.GetContentPageAsync(page, pageSize, RepositoryManager.ContentRepository);
+                    var userIsAdmin = await UserModel.CheckUserIsAdminByIdAsync(ExtractUserIdFromToken(), RepositoryManager.UserRepository);
 
-                    return Ok(MapEntitiesToDownloadModels<Content, ContentDownloadModel>(sections));
+                    if (userIsAdmin)
+                    {
+                        var sections = await ContentModel.GetContentPageAsync(page, pageSize, RepositoryManager.ContentRepository);
+
+                        return Ok(MapEntitiesToDownloadModels<Content, ContentDownloadModel>(sections));
+                    }
+                    else
+                    {
+                        return Forbid();
+                    }
                 }
                 else
                 {
@@ -51,12 +61,28 @@ namespace CMS.API.Controllers
         {
             try
             {
-                var content = await ContentModel.AddContentAsync(
-                    contentUploadModel,
-                    ExtractUserIdFromToken(),
-                    RepositoryManager.ContentRepository);
+                if (await IsUserValidAsync())
+                {
+                    var userIsAdmin = await UserModel.CheckUserIsAdminByIdAsync(ExtractUserIdFromToken(), RepositoryManager.UserRepository);
 
-                return Ok(MapEntityToDownloadModel<Content, ContentDownloadModel>(content));
+                    if (userIsAdmin)
+                    {
+                        var content = await ContentModel.AddContentAsync(
+                        contentUploadModel,
+                        ExtractUserIdFromToken(),
+                        RepositoryManager.ContentRepository);
+
+                        return Ok(MapEntityToDownloadModel<Content, ContentDownloadModel>(content));
+                    }
+                    else
+                    {
+                        return Forbid();
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
             }
             catch (Exception err)
             {
