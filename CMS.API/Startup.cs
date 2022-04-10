@@ -13,6 +13,7 @@ using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.HttpOverrides;
 using WebEnv.Util.Mailer.Settings;
+using CMS.Domain.Entities;
 
 namespace CMS.API
 {
@@ -131,12 +132,12 @@ namespace CMS.API
             });
         }
 
-        private CMSRepositoryContext ConfigureRepositoryContext()
+        private CMSContext ConfigureRepositoryContext()
         {
-            var options = new DbContextOptionsBuilder<CMSRepositoryContext>()
+            var options = new DbContextOptionsBuilder<CMSContext>()
                 .UseSqlServer(Configuration.GetConnectionString("CMSDb"))
                 .Options;
-            CMSRepositoryContext context = new CMSRepositoryContext(options);
+            CMSContext context = new CMSContext(options);
 
             return context;
         }

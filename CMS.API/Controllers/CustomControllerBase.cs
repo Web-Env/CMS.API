@@ -81,15 +81,6 @@ namespace CMS.API.Controllers
             }
         }
 
-        //protected T DecryptIncomingData<T>(T incomingData) where T : UploadModelBase
-        //{
-        //    incomingData.RequesterUserId = DecryptionService.DecryptString(incomingData.RequesterUserId);
-        //    incomingData.CreatedBy = DecryptionService.DecryptString(incomingData.CreatedBy);
-        //    incomingData.LastUpdatedBy = DecryptionService.DecryptString(incomingData.LastUpdatedBy);
-
-        //    return incomingData;
-        //}
-
         protected async Task<AuditLog> LogAction(UserActionCategory actionCategory, UserAction action, Guid userId, DateTime occurredOn)
         {
             var auditLog = new AuditLog

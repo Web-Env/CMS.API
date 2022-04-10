@@ -39,12 +39,12 @@ namespace CMS.API.Tests.ControllerTests
             AsyncContext.Run(() => UserFunc.CreateRootUser(GetContext()));
         }
 
-        public CMSRepositoryContext CreateTestRepositoryContext()
+        public CMSContext CreateTestRepositoryContext()
         {
-            var options = new DbContextOptionsBuilder<CMSRepositoryContext>()
+            var options = new DbContextOptionsBuilder<CMSContext>()
                 .UseSqlite(_databaseFixture.GetConnection())
                 .Options;
-            CMSRepositoryContext context = new CMSRepositoryContext(options);
+            CMSContext context = new CMSContext(options);
 
             return context;
         }
