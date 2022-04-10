@@ -146,7 +146,7 @@ namespace CMS.API.Models.User
                     {
                         Identifier = hashedResetIdentifier,
                         UserId = encryptedUserId,
-                        ExpiryDate = DateTime.Now.AddHours(1),
+                        ExpiryDate = DateTime.Now.AddDays(7),
                         RequesterAddress = requesterAddress,
                         Active = true,
                         CreatedOn = DateTime.Now,
@@ -171,6 +171,7 @@ namespace CMS.API.Models.User
                         Link = encodedEncryptedIdentifier
                     };
 
+                    await repositoryManager.PasswordResetRepository.AddAsync(passwordReset);
                     await repositoryManager.UserVerificationRepository.AddAsync(verification);
 
                     var verificationMessage = emailService.CreateHtmlMessage(
