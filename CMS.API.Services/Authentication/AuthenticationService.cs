@@ -30,7 +30,7 @@ namespace CMS.API.Services.Authentication
                     var authenticationResponse = new AuthenticationResponse
                     {
                         UserId = encryptedUserId,
-                        Token = GenerateJwtToken(encryptedUserId),
+                        Token = GenerateJwtToken(user.Id.ToString(), user.UserSecret),
                         Super = user.IsAdmin,
                         FirstName = user.FirstName,
                         LastName = user.LastName
@@ -57,9 +57,9 @@ namespace CMS.API.Services.Authentication
             }
         }
 
-        private string GenerateJwtToken(string userId)
+        private string GenerateJwtToken(string userId, string userSecret)
         {
-            SecurityTokenDescriptor tokenDescriptor = GetTokenDescriptor(userId);
+            SecurityTokenDescriptor tokenDescriptor = GetTokenDescriptor(userId, userSecret);
 
             var tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken = tokenHandler.CreateToken(tokenDescriptor);
@@ -68,7 +68,7 @@ namespace CMS.API.Services.Authentication
             return token;
         }
 
-        private SecurityTokenDescriptor GetTokenDescriptor(string userId)
+        private SecurityTokenDescriptor GetTokenDescriptor(string userId, string userSecret)
         {
             const int expiringDays = 365;
             var signingAudienceCertificate = new SigningAudienceCertificate();
@@ -76,7 +76,8 @@ namespace CMS.API.Services.Authentication
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new [] {
-                    new Claim(ClaimTypes.NameIdentifier, userId)
+                    new Claim(ClaimTypes.Name, userId),
+                    new Claim(ClaimTypes.NameIdentifier, userSecret)
                 }),
                 Expires = DateTime.UtcNow.AddDays(expiringDays),
                 SigningCredentials = signingAudienceCertificate.GetAudienceSigningKey()

@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
 using CMS.API.Infrastructure.Encryption;
+using CMS.API.Models.User;
 using CMS.API.UploadModels;
 using CMS.Domain.Entities;
 using CMS.Domain.Enums;
 using CMS.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace CMS.API.Controllers
@@ -28,13 +31,54 @@ namespace CMS.API.Controllers
             return Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
         }
 
-        protected T DecryptIncomingData<T>(T incomingData) where T : UploadModelBase
+        protected Guid ExtractUserIdFromToken()
         {
-            incomingData.RequesterUserId = DecryptionService.DecryptString(incomingData.RequesterUserId);
-            incomingData.CreatedBy = DecryptionService.DecryptString(incomingData.CreatedBy);
-            incomingData.LastUpdatedBy = DecryptionService.DecryptString(incomingData.LastUpdatedBy);
+            var userIdString = User.FindFirst(ClaimTypes.Name)?.Value;
+            var userId = Guid.Parse(userIdString);
 
-            return incomingData;
+            return userId;
+        }
+
+        protected string ExtractUserSecretFromToken()
+        {
+            var userSecret = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            return userSecret;
+        }
+
+        protected async Task<bool> IsUserValidAsync()
+        {
+            var userIsValid = await UserModel.CheckUserExistsByIdAsync(
+                ExtractUserIdFromToken(), RepositoryManager.UserRepository);
+
+            if (userIsValid)
+            {
+                var user = await UserModel.GetUserByIdAsync(
+                    ExtractUserIdFromToken(), RepositoryManager.UserRepository);
+
+                if (user.UserSecret != null)
+                {
+                    var decryptedUserSecret = DecryptionService.DecryptString(user.UserSecret);
+                    var decryptedExtractedUserSecret = DecryptionService.DecryptString(ExtractUserSecretFromToken());
+
+                    if (decryptedUserSecret == decryptedExtractedUserSecret)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return userIsValid;
+            }
         }
 
         protected async Task<AuditLog> LogAction(UserActionCategory actionCategory, UserAction action, Guid userId, DateTime occurredOn)
@@ -54,6 +98,11 @@ namespace CMS.API.Controllers
         protected TDownloadModel MapEntityToDownloadModel<TEntity, TDownloadModel>(TEntity entity)
         {
             return _mapper.Map<TDownloadModel>(entity);
+        }
+
+        protected List<TDownloadModel> MapEntitiesToDownloadModels<TEntity, TDownloadModel>(IEnumerable<TEntity> entity)
+        {
+            return _mapper.Map<IEnumerable<TEntity>, List<TDownloadModel>>(entity);
         }
 
         protected TEntity MapUploadModelToEntity<TEntity>(IUploadModel uploadModel)

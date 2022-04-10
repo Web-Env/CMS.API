@@ -18,12 +18,12 @@ namespace CMS.API.Services.Tests
             RepositoryManager = new RepositoryManager(CreateTestRepositoryContext());
         }
 
-        public CMSRepositoryContext CreateTestRepositoryContext()
+        public CMSContext CreateTestRepositoryContext()
         {
-            var options = new DbContextOptionsBuilder<CMSRepositoryContext>()
+            var options = new DbContextOptionsBuilder<CMSContext>()
                 .UseSqlite(_databaseFixture.GetConnection())
                 .Options;
-            CMSRepositoryContext context = new CMSRepositoryContext(options);
+            CMSContext context = new CMSContext(options);
 
             return context;
         }

@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace CMS.API.Mappers.Converters
+namespace CMS.API.Infrastructure.Mappers.Converters
 {
     public class HashConverter : IValueConverter<string, byte[]>
     {
