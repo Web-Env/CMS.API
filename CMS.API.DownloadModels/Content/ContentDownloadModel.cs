@@ -9,5 +9,7 @@
         public string SectionId { get; set; }
 
         public SectionDownloadModel Section { get; set; }
+
+        public string Content { get; set; }
     }
 }

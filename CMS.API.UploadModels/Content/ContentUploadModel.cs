@@ -14,6 +14,9 @@ namespace CMS.API.UploadModels.Content
         public Guid? SectionId { get; set; }
 
         [Required]
+        public string Content { get; set; }
+
+        [Required]
         public bool Active { get; set; }
     }
 }
