@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using CMS.API.Infrastructure.Settings;
 using CMS.API.Infrastructure.Mappers;
+using CMS.API.Infrastructure.Settings;
 using CMS.API.Tests.Funcs;
 using CMS.API.Tests.Helpers;
 using CMS.Domain.Entities;
 using CMS.Domain.Repositories;
-using CMS.Domain.Repositories.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Nito.AsyncEx;
 using WebEnv.Util.Mailer.Settings;
