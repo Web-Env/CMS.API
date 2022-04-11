@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CMS.Domain.Repositories;
+using CMS.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CMS.API.Controllers
@@ -8,8 +8,8 @@ namespace CMS.API.Controllers
     [Route("[controller]")]
     public class ApplicationController : CustomControllerBase
     {
-        public ApplicationController(IRepositoryManager repositoryManager,
-                                     IMapper mapper) : base(repositoryManager, mapper) { }
+        public ApplicationController(CMSContext cmsContext,
+                                     IMapper mapper) : base(cmsContext, mapper) { }
 
         [HttpGet("Version")]
         public ActionResult<string> GetVersion()

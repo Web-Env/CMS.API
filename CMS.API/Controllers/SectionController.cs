@@ -4,7 +4,6 @@ using CMS.API.Models.Content;
 using CMS.API.Models.User;
 using CMS.API.UploadModels.Content;
 using CMS.Domain.Entities;
-using CMS.Domain.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +18,7 @@ namespace CMS.API.Controllers
     [Route("[controller]")]
     public class SectionController : CustomControllerBase
     {
-        public SectionController(IRepositoryManager repositoryManager, IMapper mapper) : base(repositoryManager, mapper) { }
+        public SectionController(CMSContext cmsContext, IMapper mapper) : base(cmsContext, mapper) { }
 
         [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<SectionDownloadModel>>> GetSections(int page, int pageSize)

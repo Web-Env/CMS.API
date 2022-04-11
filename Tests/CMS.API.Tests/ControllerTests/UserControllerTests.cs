@@ -18,7 +18,7 @@ namespace CMS.API.Tests.ControllerTests
             IOptions<SmtpSettings> smtpSettings = Options.Create(SmtpSettings);
             IOptions<EmailSettings> emailSettings = Options.Create(EmailSettings);
             IOptions<OrganisationSettings> organisationSettings = Options.Create(OrganisationSettings);
-            _userController = new UserController(RepositoryManager, Mapper, smtpSettings, emailSettings, organisationSettings);
+            _userController = new UserController(CreateTestRepositoryContext(), Mapper, smtpSettings, emailSettings, organisationSettings);
         }
 
         //[Fact]

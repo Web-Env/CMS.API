@@ -6,7 +6,6 @@ using CMS.API.Infrastructure.Settings;
 using CMS.API.Models.User;
 using CMS.API.UploadModels.User;
 using CMS.Domain.Entities;
-using CMS.Domain.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -31,11 +30,11 @@ namespace CMS.API.Controllers
         private readonly EmailSettings _emailSettings;
         private readonly OrganisationSettings _organisationSettings;
 
-        public UserController(IRepositoryManager repositoryManager,
+        public UserController(CMSContext cmsContext,
                               IMapper mapper,
                               IOptions<SmtpSettings> smtpSettings,
                               IOptions<EmailSettings> emailSettings,
-                              IOptions<OrganisationSettings> organisationSettings) : base(repositoryManager, mapper)
+                              IOptions<OrganisationSettings> organisationSettings) : base(cmsContext, mapper)
         {
             _smtpSettings = smtpSettings.Value;
             _emailSettings = emailSettings.Value;

@@ -2,7 +2,7 @@
 using CMS.API.DownloadModels.Content;
 using CMS.API.Models.Content;
 using CMS.API.Models.User;
-using CMS.Domain.Repositories;
+using CMS.Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +17,7 @@ namespace CMS.API.Controllers
     [Route("[controller]")]
     public class SidebarController : CustomControllerBase
     {
-        public SidebarController(IRepositoryManager repositoryManager, IMapper mapper) : base(repositoryManager, mapper) { }
+        public SidebarController(CMSContext cmsContext, IMapper mapper) : base(cmsContext, mapper) { }
 
         [HttpGet("GetSidebarButtons")]
         public async Task<ActionResult<IEnumerable<SidebarButtonDownloadModel>>> GetSidebarButtons()

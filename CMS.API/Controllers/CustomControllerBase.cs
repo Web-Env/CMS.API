@@ -19,10 +19,10 @@ namespace CMS.API.Controllers
         public IRepositoryManager RepositoryManager { get; private set; }
         private readonly IMapper _mapper;
 
-        public CustomControllerBase(IRepositoryManager repositoryManager,
+        public CustomControllerBase(CMSContext cmsContext,
                                     IMapper mapper)
         {
-            RepositoryManager = repositoryManager;
+            RepositoryManager = new RepositoryManager(cmsContext);
             _mapper = mapper;
         }
 

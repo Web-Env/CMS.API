@@ -5,7 +5,6 @@ using CMS.API.Models.Content;
 using CMS.API.Models.User;
 using CMS.API.UploadModels.Content;
 using CMS.Domain.Entities;
-using CMS.Domain.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,9 +24,9 @@ namespace CMS.API.Controllers
         private readonly IMapper _mapper;
 
         public ContentController(
-            IRepositoryManager repositoryManager, 
+            CMSContext cmsContext, 
             IMapper mapper, 
-            IOptions<AzureStorageSettings> azureStorageSettings) : base(repositoryManager, mapper)
+            IOptions<AzureStorageSettings> azureStorageSettings) : base(cmsContext, mapper)
         {
             _azureStorageSettings = azureStorageSettings.Value;
             _mapper = mapper;

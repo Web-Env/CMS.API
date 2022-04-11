@@ -2,7 +2,7 @@
 using CMS.API.Infrastructure.Exceptions;
 using CMS.API.Services.Authentication;
 using CMS.API.UploadModels.Auth;
-using CMS.Domain.Repositories;
+using CMS.Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +17,9 @@ namespace CMS.API.Controllers
     {
         private readonly AuthenticationService _authenticationService;
 
-        public AuthController(IRepositoryManager repositoryManager,
+        public AuthController(CMSContext cmsContext,
                               IMapper mapper,
-                              AuthenticationService authenticationService) : base(repositoryManager, mapper)
+                              AuthenticationService authenticationService) : base(cmsContext, mapper)
         {
             _authenticationService = authenticationService;
         }

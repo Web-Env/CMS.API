@@ -49,7 +49,11 @@ namespace CMS.API
             services.AddAsymmetricAuthentication();
 
             services.AddTransient<AuthenticationService>();
-            services.Add(new ServiceDescriptor(typeof(IRepositoryManager), new RepositoryManager(ConfigureRepositoryContext())));
+            //services.Add(new ServiceDescriptor(typeof(IRepositoryManager), new RepositoryManager(ConfigureRepositoryContext())));
+            services.AddDbContext<CMSContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("CMSDb")),
+                ServiceLifetime.Scoped
+            );
             services.AddCustomMappers();
 
             var smtpSettingsSection = Configuration.GetSection("SmtpSettings");
