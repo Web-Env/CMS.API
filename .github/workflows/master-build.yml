@@ -28,6 +28,7 @@ jobs:
       env:
         SmtpSettings.emailSmtpPassword: ${{ secrets.SMTP_PASSWORD }}
         EmailSettings.PrimaryRedirectDomain: ${{ secrets.PRIMARY_REDIRECT_DOMAIN }}
+        AzureStorageSettings.ConnectionString: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
         ConnectionStrings.CMSDb: ${{ secrets.PRODUCTION_CONNECTION_STRING }}
     - name: Build (Debug)
       run: dotnet build --no-restore
