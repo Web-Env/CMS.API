@@ -129,5 +129,39 @@ namespace CMS.API.Controllers
                 return Problem();
             }
         }
+
+        [HttpDelete("Remove")]
+        public async Task<ActionResult<ContentDownloadModel>> RemoveContent(Guid contentId)
+        {
+            try
+            {
+                if (await IsUserValidAsync())
+                {
+                    var userIsAdmin = await UserModel.CheckUserIsAdminByIdAsync(ExtractUserIdFromToken(), RepositoryManager.UserRepository);
+
+                    if (userIsAdmin)
+                    {
+                        await ContentModel.DeleteContentAsync(
+                            contentId,
+                            RepositoryManager.ContentRepository,
+                            _azureStorageSettings.ConnectionString);
+
+                        return Ok();
+                    }
+                    else
+                    {
+                        return Forbid();
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception err)
+            {
+                return Problem();
+            }
+        }
     }
 }

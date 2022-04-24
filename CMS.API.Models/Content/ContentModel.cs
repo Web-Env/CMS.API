@@ -49,7 +49,7 @@ namespace CMS.API.Models.Content
 
         public static async Task<Domain.Entities.Content> AddContentAsync(
             ContentUploadModel contentUploadModel, 
-            Guid userId, 
+            Guid userId,
             IContentRepository contentRepository,
             string azureStorageConnectionString)
         {
@@ -86,6 +86,21 @@ namespace CMS.API.Models.Content
             }
 
             return content;
+        }
+
+        public static async Task DeleteContentAsync(
+            Guid contentId,
+            IContentRepository contentRepository,
+            string azureStorageConnectionString)
+        {
+            var contentIdString = contentId.ToString().ToLower();
+            BlobServiceClient blobServiceClient = new BlobServiceClient(azureStorageConnectionString);
+            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(contentIdString);
+
+            await containerClient.DeleteAsync();
+
+            var content = await contentRepository.GetByIdAsync(contentId);
+            await contentRepository.RemoveAsync(content);
         }
     }
 }
