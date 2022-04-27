@@ -33,7 +33,7 @@ namespace CMS.API.Controllers
         }
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<ContentDownloadModel>>> GetSections(int page, int pageSize)
+        public async Task<ActionResult<IEnumerable<ContentDownloadModel>>> GetContents(int page, int pageSize)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace CMS.API.Controllers
 
 
         [HttpGet("Get")]
-        public async Task<ActionResult<IEnumerable<ContentDownloadModel>>> GetSections(string contentPath)
+        public async Task<ActionResult<IEnumerable<ContentDownloadModel>>> GetContent(string contentPath)
         {
             try
             {
@@ -97,6 +97,41 @@ namespace CMS.API.Controllers
 
         [HttpPost("Add")]
         public async Task<ActionResult<ContentDownloadModel>> AddContent(ContentUploadModel contentUploadModel)
+        {
+            try
+            {
+                if (await IsUserValidAsync())
+                {
+                    var userIsAdmin = await UserModel.CheckUserIsAdminByIdAsync(ExtractUserIdFromToken(), RepositoryManager.UserRepository);
+
+                    if (userIsAdmin)
+                    {
+                        var content = await ContentModel.AddContentAsync(
+                            contentUploadModel,
+                            ExtractUserIdFromToken(),
+                            RepositoryManager.ContentRepository,
+                            _azureStorageSettings.ConnectionString);
+
+                        return Ok(MapEntityToDownloadModel<Content, ContentDownloadModel>(content));
+                    }
+                    else
+                    {
+                        return Forbid();
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception err)
+            {
+                return Problem();
+            }
+        }
+
+        [HttpPost("Update")]
+        public async Task<ActionResult<ContentDownloadModel>> EditContent(ContentUploadModel contentUploadModel)
         {
             try
             {
