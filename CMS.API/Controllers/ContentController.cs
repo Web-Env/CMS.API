@@ -130,7 +130,7 @@ namespace CMS.API.Controllers
             }
         }
 
-        [HttpPost("Update")]
+        [HttpPut("Update")]
         public async Task<ActionResult<ContentDownloadModel>> EditContent(ContentUploadModel contentUploadModel)
         {
             try
@@ -141,7 +141,7 @@ namespace CMS.API.Controllers
 
                     if (userIsAdmin)
                     {
-                        var content = await ContentModel.AddContentAsync(
+                        var content = await ContentModel.UpdateContentAsync(
                             contentUploadModel,
                             ExtractUserIdFromToken(),
                             RepositoryManager.ContentRepository,
