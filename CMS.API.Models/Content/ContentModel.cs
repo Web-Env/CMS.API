@@ -73,7 +73,7 @@ namespace CMS.API.Models.Content
 
             await contentRepository.AddAsync(content);
 
-            await UploadContentBlobAsync(content.Id, contentUploadModel, azureStorageConnectionString);
+            await UploadContentBlobAsync(content.Id, contentUploadModel, azureStorageConnectionString).ConfigureAwait(false);
 
             return content;
         }
@@ -112,8 +112,8 @@ namespace CMS.API.Models.Content
 
             await contentRepository.UpdateAsync(content);
 
-            await DeleteContentBlobAsync(content.Id, azureStorageConnectionString);
-            await UploadContentBlobToContainerAsync(content.Id, contentUploadModel, azureStorageConnectionString);
+            await DeleteContentBlobAsync(content.Id, azureStorageConnectionString).ConfigureAwait(false);
+            await UploadContentBlobToContainerAsync(content.Id, contentUploadModel, azureStorageConnectionString).ConfigureAwait(false);
 
             return content;
         }
@@ -150,7 +150,7 @@ namespace CMS.API.Models.Content
             IContentRepository contentRepository,
             string azureStorageConnectionString)
         {
-            await DeleteContentBlobContainerAsync(contentId, azureStorageConnectionString);
+            await DeleteContentBlobContainerAsync(contentId, azureStorageConnectionString).ConfigureAwait(false);
 
             var content = await contentRepository.GetByIdAsync(contentId);
             await contentRepository.RemoveAsync(content);
