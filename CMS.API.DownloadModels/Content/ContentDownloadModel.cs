@@ -1,4 +1,6 @@
-﻿namespace CMS.API.DownloadModels.Content
+﻿using CMS.API.DownloadModels.User;
+
+namespace CMS.API.DownloadModels.Content
 {
     public class ContentDownloadModel : DownloadModelBase
     {
@@ -11,5 +13,7 @@
         public SectionDownloadModel Section { get; set; }
 
         public string Content { get; set; }
+
+        public new UserDownloadModel CreatedBy { get; set; }
     }
 }

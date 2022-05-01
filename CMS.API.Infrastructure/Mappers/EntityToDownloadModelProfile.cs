@@ -15,7 +15,7 @@ namespace CMS.API.Infrastructure.Mappers
                 .ForMember(dest => dest.SectionId, src => src.MapFrom(a => a.SectionId))
                 .ForMember(dest => dest.Section, src => src.MapFrom(a => a.Section))
                 .ForMember(dest => dest.CreatedOn, src => src.MapFrom(a => a.CreatedOn))
-                .ForMember(dest => dest.CreatedBy, src => src.MapFrom(a => a.CreatedBy))
+                .ForMember(dest => dest.CreatedBy, src => src.MapFrom(a => a.CreatedByNavigation))
                 .ForMember(dest => dest.LastUpdatedOn, src => src.MapFrom(a => a.LastUpdatedOn))
                 .ForMember(dest => dest.LastUpdatedBy, src => src.MapFrom(a => a.LastUpdatedBy));
 
@@ -23,7 +23,7 @@ namespace CMS.API.Infrastructure.Mappers
                 .ForMember(dest => dest.Title, src => src.MapFrom(a => a.Title))
                 .ForMember(dest => dest.Path, src => src.MapFrom(a => a.Path))
                 .ForMember(dest => dest.CreatedOn, src => src.MapFrom(a => a.CreatedOn))
-                .ForMember(dest => dest.CreatedBy, src => src.MapFrom(a => a.CreatedBy))
+                .ForMember(dest => dest.CreatedBy, src => src.MapFrom(a => a.CreatedByNavigation))
                 .ForMember(dest => dest.LastUpdatedOn, src => src.MapFrom(a => a.LastUpdatedOn))
                 .ForMember(dest => dest.LastUpdatedBy, src => src.MapFrom(a => a.LastUpdatedBy));
 

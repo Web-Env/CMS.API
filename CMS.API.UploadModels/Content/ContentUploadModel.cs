@@ -5,6 +5,8 @@ namespace CMS.API.UploadModels.Content
 {
     public class ContentUploadModel : UploadModelBase
     {
+        public Guid? Id { get; set; }
+
         [Required]
         public string Title { get; set; }
 
