@@ -28,7 +28,7 @@ namespace CMS.API.Models.Content
         {
             var content = await contentRepository.GetByPathAsync(contentPath);
 
-            var contentId = content.Id.ToString().ToLower();
+            var contentId = content.Id.ToString().ToLowerInvariant();
             BlobServiceClient blobServiceClient = new BlobServiceClient(azureStorageConnectionString);
             BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(contentId);
             BlobClient blobClient = containerClient.GetBlobClient(contentId);
@@ -83,7 +83,7 @@ namespace CMS.API.Models.Content
             ContentUploadModel contentUploadModel, 
             string azureStorageConnectionString)
         {
-            var contentIdString = contentId.ToString().ToLower();
+            var contentIdString = contentId.ToString().ToLowerInvariant();
             BlobServiceClient blobServiceClient = new BlobServiceClient(azureStorageConnectionString);
             BlobContainerClient containerClient = await blobServiceClient.CreateBlobContainerAsync(contentIdString);
             BlobClient blobClient = containerClient.GetBlobClient(contentIdString);
@@ -123,7 +123,7 @@ namespace CMS.API.Models.Content
             ContentUploadModel contentUploadModel,
             string azureStorageConnectionString)
         {
-            var contentIdString = contentId.ToString().ToLower();
+            var contentIdString = contentId.ToString().ToLowerInvariant();
             BlobServiceClient blobServiceClient = new BlobServiceClient(azureStorageConnectionString);
             BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(contentIdString);
             BlobClient blobClient = containerClient.GetBlobClient(contentIdString);
@@ -138,7 +138,7 @@ namespace CMS.API.Models.Content
 
         private static async Task DeleteContentBlobAsync(Guid contentId, string azureStorageConnectionString)
         {
-            var contentIdString = contentId.ToString().ToLower();
+            var contentIdString = contentId.ToString().ToLowerInvariant();
             BlobServiceClient blobServiceClient = new BlobServiceClient(azureStorageConnectionString);
             BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(contentIdString);
 
@@ -158,7 +158,7 @@ namespace CMS.API.Models.Content
 
         private static async Task DeleteContentBlobContainerAsync(Guid contentId, string azureStorageConnectionString)
         {
-            var contentIdString = contentId.ToString().ToLower();
+            var contentIdString = contentId.ToString().ToLowerInvariant();
             BlobServiceClient blobServiceClient = new BlobServiceClient(azureStorageConnectionString);
             BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(contentIdString);
 
