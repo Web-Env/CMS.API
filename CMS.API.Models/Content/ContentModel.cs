@@ -26,7 +26,7 @@ namespace CMS.API.Models.Content
             string azureStorageConnectionString,
             IMapper mapper)
         {
-            var content = (await contentRepository.FindAsync(c => c.Path == contentPath)).FirstOrDefault();
+            var content = await contentRepository.GetByPathAsync(contentPath);
 
             var contentId = content.Id.ToString().ToLower();
             BlobServiceClient blobServiceClient = new BlobServiceClient(azureStorageConnectionString);
