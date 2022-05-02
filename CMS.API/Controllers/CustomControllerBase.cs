@@ -6,6 +6,7 @@ using CMS.Domain.Entities;
 using CMS.Domain.Enums;
 using CMS.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,12 +18,15 @@ namespace CMS.API.Controllers
     public class CustomControllerBase : ControllerBase
     {
         public IRepositoryManager RepositoryManager { get; private set; }
+        protected readonly ILogger Logger;
         private readonly IMapper _mapper;
 
         public CustomControllerBase(CMSContext cmsContext,
+                                    ILogger<CustomControllerBase> logger,
                                     IMapper mapper)
         {
             RepositoryManager = new RepositoryManager(cmsContext);
+            Logger = logger;
             _mapper = mapper;
         }
 
@@ -137,6 +141,11 @@ namespace CMS.API.Controllers
                           .ToArray());
 
             return resetIdentifier;
+        }
+
+        protected void LogException(Exception exception)
+        {
+            Logger.LogError(exception, exception.Message);
         }
     }
 }

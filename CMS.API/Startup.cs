@@ -9,7 +9,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Rollbar;
+using Rollbar.NetCore.AspNet;
 using System.Collections.Generic;
 using WebEnv.Util.Mailer.Settings;
 
@@ -60,10 +63,27 @@ namespace CMS.API
             var emailSettingsSection = Configuration.GetSection("EmailSettings");
             var organisationSettingsSection = Configuration.GetSection("OrganisationSettings");
             var azureStorageSettings = Configuration.GetSection("AzureStorageSettings");
+            var rollbarSettingsSection = Configuration.GetSection("Rollbar");
             services.Configure<SmtpSettings>(smtpSettingsSection);
             services.Configure<EmailSettings>(emailSettingsSection);
             services.Configure<OrganisationSettings>(organisationSettingsSection);
             services.Configure<AzureStorageSettings>(azureStorageSettings);
+
+            var rollbarSettings = new RollbarSettings
+            {
+                AccessToken = rollbarSettingsSection.GetValue<string>("AccessToken"),
+                Environment = rollbarSettingsSection.GetValue<string>("Environment")
+            };
+
+            services.AddHttpContextAccessor();
+
+            ConfigureRollbarSingleton(rollbarSettings);
+
+            services.AddRollbarLogger(loggerOptions =>
+            {
+                loggerOptions.Filter =
+                  (loggerName, loglevel) => loglevel >= LogLevel.Warning;
+            });
 
             services.AddSwaggerGen(c =>
             {
@@ -99,6 +119,12 @@ namespace CMS.API
             });
         }
 
+        private void ConfigureRollbarSingleton(RollbarSettings rollbarSettings)
+        {
+            RollbarLocator.RollbarInstance
+              .Configure(new RollbarLoggerConfig(rollbarSettings.AccessToken, rollbarSettings.Environment));
+        }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -106,6 +132,8 @@ namespace CMS.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseRollbarMiddleware();
 
             app.UseCors(_corsPolicy);
 
