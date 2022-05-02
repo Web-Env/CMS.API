@@ -166,7 +166,7 @@ namespace CMS.API.Controllers
         }
 
         [HttpDelete("Remove")]
-        public async Task<ActionResult<ContentDownloadModel>> RemoveContent(Guid contentId)
+        public async Task<ActionResult> RemoveContent(Guid contentId)
         {
             try
             {

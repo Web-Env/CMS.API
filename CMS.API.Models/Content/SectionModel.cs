@@ -1,8 +1,10 @@
-﻿using CMS.API.UploadModels.Content;
+﻿using CMS.API.Infrastructure.Exceptions;
+using CMS.API.UploadModels.Content;
 using CMS.Domain.Entities;
 using CMS.Domain.Repositories.Content.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CMS.API.Models.Content
@@ -29,6 +31,21 @@ namespace CMS.API.Models.Content
             };
 
             return await sectionRepository.AddAsync(section);
+        }
+
+        public static async Task DeleteSectionAsync(Guid sectionId, ISectionRepository sectionRepository)
+        {
+            var section = await sectionRepository.GetByIdAsync(sectionId);
+
+            if (section.Contents.Any())
+            {
+                throw new SectionHasContentException(
+                    "This Section has Content associated with it",
+                    "This Section has Content associated with it"
+                );
+            }
+
+            await sectionRepository.RemoveByIdAsync(sectionId);
         }
     }
 }

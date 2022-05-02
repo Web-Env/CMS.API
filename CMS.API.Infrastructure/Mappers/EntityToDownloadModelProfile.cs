@@ -22,6 +22,7 @@ namespace CMS.API.Infrastructure.Mappers
             CreateMap<Section, SectionDownloadModel>()
                 .ForMember(dest => dest.Title, src => src.MapFrom(a => a.Title))
                 .ForMember(dest => dest.Path, src => src.MapFrom(a => a.Path))
+                .ForMember(dest => dest.Contents, src => src.MapFrom(a => a.Contents))
                 .ForMember(dest => dest.CreatedOn, src => src.MapFrom(a => a.CreatedOn))
                 .ForMember(dest => dest.CreatedBy, src => src.MapFrom(a => a.CreatedByNavigation))
                 .ForMember(dest => dest.LastUpdatedOn, src => src.MapFrom(a => a.LastUpdatedOn))
