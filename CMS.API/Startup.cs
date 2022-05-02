@@ -63,7 +63,7 @@ namespace CMS.API
             var emailSettingsSection = Configuration.GetSection("EmailSettings");
             var organisationSettingsSection = Configuration.GetSection("OrganisationSettings");
             var azureStorageSettings = Configuration.GetSection("AzureStorageSettings");
-            var rollbarSettingsSection = Configuration.GetSection("Rollbar");
+            var rollbarSettingsSection = Configuration.GetSection("RollbarSettings");
             services.Configure<SmtpSettings>(smtpSettingsSection);
             services.Configure<EmailSettings>(emailSettingsSection);
             services.Configure<OrganisationSettings>(organisationSettingsSection);
