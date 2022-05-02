@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CMS.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace CMS.API.Controllers
 {
@@ -9,7 +10,8 @@ namespace CMS.API.Controllers
     public class ApplicationController : CustomControllerBase
     {
         public ApplicationController(CMSContext cmsContext,
-                                     IMapper mapper) : base(cmsContext, mapper) { }
+                                     ILogger<ApplicationController> logger,
+                                     IMapper mapper) : base(cmsContext, logger, mapper) { }
 
         [HttpGet("Version")]
         public ActionResult<string> GetVersion()
