@@ -1,19 +1,17 @@
 using CMS.API.Infrastructure.Extensions;
-using CMS.API.Services.Authentication;
 using CMS.API.Infrastructure.Settings;
-using CMS.Domain.Repositories;
-using CMS.Domain.Repositories.Contexts;
+using CMS.API.Services.Authentication;
+using CMS.Domain.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.HttpOverrides;
 using WebEnv.Util.Mailer.Settings;
-using CMS.Domain.Entities;
 
 namespace CMS.API
 {
@@ -43,7 +41,7 @@ namespace CMS.API
                     .AllowCredentials()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
-                    .SetIsOriginAllowed((host) => true));
+                    .SetIsOriginAllowed((_) => true));
             });
 
             services.AddAsymmetricAuthentication();
@@ -108,7 +106,7 @@ namespace CMS.API
 
             app.UseCors(_corsPolicy);
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 

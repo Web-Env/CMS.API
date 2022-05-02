@@ -1,9 +1,6 @@
 ﻿using CMS.API.Controllers;
 using CMS.API.Infrastructure.Settings;
-using CMS.API.Tests.Helpers;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.Threading.Tasks;
 using WebEnv.Util.Mailer.Settings;
 using Xunit;
 

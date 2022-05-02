@@ -24,8 +24,8 @@ namespace CMS.API.Controllers
         private readonly IMapper _mapper;
 
         public ContentController(
-            CMSContext cmsContext, 
-            IMapper mapper, 
+            CMSContext cmsContext,
+            IMapper mapper,
             IOptions<AzureStorageSettings> azureStorageSettings) : base(cmsContext, mapper)
         {
             _azureStorageSettings = azureStorageSettings.Value;
@@ -75,7 +75,7 @@ namespace CMS.API.Controllers
                 if (await IsUserValidAsync())
                 {
                     var content = await ContentModel.GetContentAsync(
-                        contentPath, 
+                        contentPath,
                         RepositoryManager.ContentRepository,
                         _azureStorageSettings.ConnectionString,
                         _mapper);

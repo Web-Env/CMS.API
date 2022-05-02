@@ -47,7 +47,7 @@ namespace CMS.API.Services.Tests.AuthenticationTests
             await UserFunc.CreateRootUser(context);
 
             //Assert
-            await Assert.ThrowsAsync<AuthenticationException>(async() => await _authenticationService.AuthenticateAsync(
+            await Assert.ThrowsAsync<AuthenticationException>(async () => await _authenticationService.AuthenticateAsync(
                 authenticationRequest,
                 RepositoryManager.UserRepository
             ));

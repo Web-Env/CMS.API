@@ -17,7 +17,7 @@ namespace CMS.API.Services.Authentication
     {
         public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest model, IUserRepository userRepository)
         {
-            var user = (await userRepository.FindAsync(u => 
+            var user = (await userRepository.FindAsync(u =>
                             u.Email == model.Email
                         )).FirstOrDefault();
 
@@ -75,7 +75,7 @@ namespace CMS.API.Services.Authentication
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new [] {
+                Subject = new ClaimsIdentity(new[] {
                     new Claim(ClaimTypes.Name, userId),
                     new Claim(ClaimTypes.NameIdentifier, userSecret)
                 }),

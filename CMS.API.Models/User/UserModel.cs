@@ -60,7 +60,7 @@ namespace CMS.API.Models.User
             if (user != null)
             {
                 var passwordIsCorrect = BCrypt.Net.BCrypt.Verify(password, user.Password);
-                
+
                 return passwordIsCorrect;
             }
 
@@ -94,23 +94,16 @@ namespace CMS.API.Models.User
             user.UserSecret = EncryptionService.EncryptString(ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.IdentifierLength));
             user.CreatedOn = DateTime.Now;
 
-            try
-            {
-                await repositoryManager.UserRepository.AddAsync(user);
+            await repositoryManager.UserRepository.AddAsync(user);
 
-                await CreateNewVerficationForNewUserAsync(
-                    user.Email,
-                    requesterAddress,
-                    repositoryManager,
-                    smtpSettings,
-                    emailSettings).ConfigureAwait(false);
+            await CreateNewVerficationForNewUserAsync(
+                user.Email,
+                requesterAddress,
+                repositoryManager,
+                smtpSettings,
+                emailSettings).ConfigureAwait(false);
 
-                return user;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return user;
         }
 
         public static async Task CreateNewVerficationForNewUserAsync(
@@ -131,63 +124,55 @@ namespace CMS.API.Models.User
                     throw new UserAlreadyVerifiedException("User has already been verified", "User has already been verified");
                 }
 
-                try
+                var emailService = new EmailService();
+                var resetIdentifier = ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.IdentifierLength);
+                var verificationIdentifier = ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.IdentifierLength);
+                var hashedResetIdentifier = HashingHelper.HashIdentifier(resetIdentifier);
+                var hashedVerificationIdentifier = HashingHelper.HashIdentifier(verificationIdentifier);
+                var encryptedUserId = EncryptionService.EncryptString(user.Id.ToString());
+                var encryptedIdentifier = EncryptionService.EncryptString(resetIdentifier);
+                var encodedEncryptedIdentifier = System.Web.HttpUtility.UrlEncode(encryptedIdentifier);
+
+                var passwordReset = new PasswordReset
                 {
-                    var emailService = new EmailService();
-                    var resetIdentifier = ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.IdentifierLength);
-                    var verificationIdentifier = ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.IdentifierLength);
-                    var hashedResetIdentifier = HashingHelper.HashIdentifier(resetIdentifier);
-                    var hashedVerificationIdentifier = HashingHelper.HashIdentifier(verificationIdentifier);
-                    var encryptedUserId = EncryptionService.EncryptString(user.Id.ToString());
-                    var encryptedIdentifier = EncryptionService.EncryptString(resetIdentifier);
-                    var encodedEncryptedIdentifier = System.Web.HttpUtility.UrlEncode(encryptedIdentifier);
+                    Identifier = hashedResetIdentifier,
+                    UserId = encryptedUserId,
+                    ExpiryDate = DateTime.Now.AddDays(7),
+                    RequesterAddress = requesterAddress,
+                    Active = true,
+                    CreatedOn = DateTime.Now,
+                    LastUpdatedOn = DateTime.Now
+                };
 
-                    var passwordReset = new PasswordReset
-                    {
-                        Identifier = hashedResetIdentifier,
-                        UserId = encryptedUserId,
-                        ExpiryDate = DateTime.Now.AddDays(7),
-                        RequesterAddress = requesterAddress,
-                        Active = true,
-                        CreatedOn = DateTime.Now,
-                        LastUpdatedOn = DateTime.Now
-                    };
-
-                    var verification = new UserVerification
-                    {
-                        Identifier = hashedVerificationIdentifier,
-                        UserId = user.Id,
-                        ExpiryDate = DateTime.Now.AddDays(7),
-                        RequesterAddress = requesterAddress,
-                        Active = true,
-                        CreatedOn = DateTime.Now,
-                        LastUpdatedOn = DateTime.Now
-                    };
-
-                    var verificationViewModel = new LinkEmailViewModel
-                    {
-                        FullName = $"{user.FirstName} {user.LastName}",
-                        UrlDomain = emailSettings.PrimaryRedirectDomain,
-                        Link = encodedEncryptedIdentifier
-                    };
-
-                    await repositoryManager.PasswordResetRepository.AddAsync(passwordReset);
-                    await repositoryManager.UserVerificationRepository.AddAsync(verification);
-
-                    var verificationMessage = emailService.CreateHtmlMessage(
-                        smtpSettings,
-                        $"{user.FirstName} {user.LastName}",
-                        user.Email,
-                        "Welcome",
-                        EmailCreationHelper.CreateWelcomeVerificationEmailString(verificationViewModel));
-
-                    await emailService.SendEmailAsync(smtpSettings, verificationMessage);
-
-                }
-                catch (Exception)
+                var verification = new UserVerification
                 {
-                    throw;
-                }
+                    Identifier = hashedVerificationIdentifier,
+                    UserId = user.Id,
+                    ExpiryDate = DateTime.Now.AddDays(7),
+                    RequesterAddress = requesterAddress,
+                    Active = true,
+                    CreatedOn = DateTime.Now,
+                    LastUpdatedOn = DateTime.Now
+                };
+
+                var verificationViewModel = new LinkEmailViewModel
+                {
+                    FullName = $"{user.FirstName} {user.LastName}",
+                    UrlDomain = emailSettings.PrimaryRedirectDomain,
+                    Link = encodedEncryptedIdentifier
+                };
+
+                await repositoryManager.PasswordResetRepository.AddAsync(passwordReset);
+                await repositoryManager.UserVerificationRepository.AddAsync(verification);
+
+                var verificationMessage = emailService.CreateHtmlMessage(
+                    smtpSettings,
+                    $"{user.FirstName} {user.LastName}",
+                    user.Email,
+                    "Welcome",
+                    EmailCreationHelper.CreateWelcomeVerificationEmailString(verificationViewModel));
+
+                await emailService.SendEmailAsync(smtpSettings, verificationMessage);
             }
         }
 
@@ -210,53 +195,45 @@ namespace CMS.API.Models.User
                     throw new UserAlreadyVerifiedException("User has already been verified", "User has already been verified");
                 }
 
-                try
+                if (!isFirstContact)
                 {
-                    if (!isFirstContact)
-                    {
-                        await DeactivateExistingUserVerificationsAsync(user.Id, repositoryManager.UserVerificationRepository)
-                            .ConfigureAwait(false);
-                    }
-
-                    var emailService = new EmailService();
-                    var verificationIdentifier = ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.IdentifierLength);
-                    var hashedVerificationIdentifier = HashingHelper.HashIdentifier(verificationIdentifier);
-
-                    var verification = new UserVerification
-                    {
-                        Identifier = hashedVerificationIdentifier,
-                        UserId = user.Id,
-                        ExpiryDate = DateTime.Now.AddDays(7),
-                        RequesterAddress = requesterAddress,
-                        Active = true,
-                        CreatedOn = DateTime.Now,
-                        LastUpdatedOn = DateTime.Now
-                    };
-                    var verificationViewModel = new LinkEmailViewModel
-                    {
-                        FullName = $"{user.FirstName} {user.LastName}",
-                        UrlDomain = emailSettings.PrimaryRedirectDomain,
-                        Link = verificationIdentifier
-                    };
-
-                    await repositoryManager.UserVerificationRepository.AddAsync(verification);
-
-                    var verificationMessage = emailService.CreateHtmlMessage(
-                        smtpSettings,
-                        $"{user.FirstName} {user.LastName}",
-                        user.Email,
-                        isFirstContact ? "Welcome" : "Verify Your Account",
-                        isFirstContact ?
-                            EmailCreationHelper.CreateWelcomeVerificationEmailString(verificationViewModel) :
-                            EmailCreationHelper.CreateVerificationEmailString(verificationViewModel));
-
-                    await emailService.SendEmailAsync(smtpSettings, verificationMessage);
-
+                    await DeactivateExistingUserVerificationsAsync(user.Id, repositoryManager.UserVerificationRepository)
+                        .ConfigureAwait(false);
                 }
-                catch (Exception)
+
+                var emailService = new EmailService();
+                var verificationIdentifier = ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.IdentifierLength);
+                var hashedVerificationIdentifier = HashingHelper.HashIdentifier(verificationIdentifier);
+
+                var verification = new UserVerification
                 {
-                    throw;
-                }
+                    Identifier = hashedVerificationIdentifier,
+                    UserId = user.Id,
+                    ExpiryDate = DateTime.Now.AddDays(7),
+                    RequesterAddress = requesterAddress,
+                    Active = true,
+                    CreatedOn = DateTime.Now,
+                    LastUpdatedOn = DateTime.Now
+                };
+                var verificationViewModel = new LinkEmailViewModel
+                {
+                    FullName = $"{user.FirstName} {user.LastName}",
+                    UrlDomain = emailSettings.PrimaryRedirectDomain,
+                    Link = verificationIdentifier
+                };
+
+                await repositoryManager.UserVerificationRepository.AddAsync(verification);
+
+                var verificationMessage = emailService.CreateHtmlMessage(
+                    smtpSettings,
+                    $"{user.FirstName} {user.LastName}",
+                    user.Email,
+                    isFirstContact ? "Welcome" : "Verify Your Account",
+                    isFirstContact ?
+                        EmailCreationHelper.CreateWelcomeVerificationEmailString(verificationViewModel) :
+                        EmailCreationHelper.CreateVerificationEmailString(verificationViewModel));
+
+                await emailService.SendEmailAsync(smtpSettings, verificationMessage);
             }
         }
 
@@ -438,50 +415,43 @@ namespace CMS.API.Models.User
 
             if (exists)
             {
-                try
+                var emailService = new EmailService();
+                var resetIdentifier = ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.IdentifierLength);
+                var hashedResetIdentifier = HashingHelper.HashIdentifier(resetIdentifier);
+                var encryptedUserId = EncryptionService.EncryptString(user.Id.ToString());
+                var encryptedIdentifier = EncryptionService.EncryptString(resetIdentifier);
+                var encodedEncryptedIdentifier = System.Web.HttpUtility.UrlEncode(encryptedIdentifier);
+
+                await DeactivateExistingPasswordResetsAsync(encryptedUserId, repositoryManager.PasswordResetRepository)
+                        .ConfigureAwait(false);
+
+                var passwordReset = new PasswordReset
                 {
-                    var emailService = new EmailService();
-                    var resetIdentifier = ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.IdentifierLength);
-                    var hashedResetIdentifier = HashingHelper.HashIdentifier(resetIdentifier);
-                    var encryptedUserId = EncryptionService.EncryptString(user.Id.ToString());
-                    var encryptedIdentifier = EncryptionService.EncryptString(resetIdentifier);
-                    var encodedEncryptedIdentifier = System.Web.HttpUtility.UrlEncode(encryptedIdentifier);
-
-                    await DeactivateExistingPasswordResetsAsync(encryptedUserId, repositoryManager.PasswordResetRepository)
-                            .ConfigureAwait(false);
-
-                    var passwordReset = new PasswordReset
-                    {
-                        Identifier = hashedResetIdentifier,
-                        UserId = encryptedUserId,
-                        ExpiryDate = DateTime.Now.AddHours(1),
-                        RequesterAddress = requesterAddress,
-                        Active = true,
-                        CreatedOn = DateTime.Now,
-                        LastUpdatedOn = DateTime.Now
-                    };
-                    var verificationViewModel = new LinkEmailViewModel
-                    {
-                        FullName = $"{user.FirstName} {user.LastName}",
-                        UrlDomain = emailSettings.PrimaryRedirectDomain,
-                        Link = encodedEncryptedIdentifier
-                    };
-
-                    await repositoryManager.PasswordResetRepository.AddAsync(passwordReset);
-
-                    var verificationMessage = emailService.CreateHtmlMessage(
-                        smtpSettings,
-                        $"{user.FirstName} {user.LastName}",
-                        user.Email,
-                        "Reset Your Password",
-                        EmailCreationHelper.CreatePasswordResetEmailString(verificationViewModel));
-
-                    await emailService.SendEmailAsync(smtpSettings, verificationMessage);
-                }
-                catch (Exception)
+                    Identifier = hashedResetIdentifier,
+                    UserId = encryptedUserId,
+                    ExpiryDate = DateTime.Now.AddHours(1),
+                    RequesterAddress = requesterAddress,
+                    Active = true,
+                    CreatedOn = DateTime.Now,
+                    LastUpdatedOn = DateTime.Now
+                };
+                var verificationViewModel = new LinkEmailViewModel
                 {
-                    throw;
-                }
+                    FullName = $"{user.FirstName} {user.LastName}",
+                    UrlDomain = emailSettings.PrimaryRedirectDomain,
+                    Link = encodedEncryptedIdentifier
+                };
+
+                await repositoryManager.PasswordResetRepository.AddAsync(passwordReset);
+
+                var verificationMessage = emailService.CreateHtmlMessage(
+                    smtpSettings,
+                    $"{user.FirstName} {user.LastName}",
+                    user.Email,
+                    "Reset Your Password",
+                    EmailCreationHelper.CreatePasswordResetEmailString(verificationViewModel));
+
+                await emailService.SendEmailAsync(smtpSettings, verificationMessage);
             }
         }
 
