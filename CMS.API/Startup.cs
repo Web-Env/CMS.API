@@ -82,7 +82,7 @@ namespace CMS.API
             services.AddRollbarLogger(loggerOptions =>
             {
                 loggerOptions.Filter =
-                  (loggerName, loglevel) => loglevel >= LogLevel.Warning;
+                  (_, loglevel) => loglevel >= LogLevel.Warning;
             });
 
             services.AddSwaggerGen(c =>
@@ -127,7 +127,7 @@ namespace CMS.API
             );
 
             RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
-            dataSecurityOptions.ScrubFields = new string[]
+            dataSecurityOptions.ScrubFields = new []
             {
               "url",
               "method",
