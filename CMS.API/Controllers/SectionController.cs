@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CMS.API.DownloadModels.Content;
+using CMS.API.Infrastructure.Exceptions;
 using CMS.API.Models.Content;
 using CMS.API.Models.User;
 using CMS.API.UploadModels.Content;
@@ -82,6 +83,44 @@ namespace CMS.API.Controllers
                 {
                     return Unauthorized();
                 }
+            }
+            catch (Exception err)
+            {
+                return Problem();
+            }
+        }
+
+        [HttpDelete("Remove")]
+        public async Task<ActionResult> RemoveSection(Guid sectionId)
+        {
+            try
+            {
+                if (await IsUserValidAsync())
+                {
+                    var userIsAdmin = await UserModel.CheckUserIsAdminByIdAsync(ExtractUserIdFromToken(), RepositoryManager.UserRepository);
+
+                    if (userIsAdmin)
+                    {
+                        await SectionModel.DeleteSectionAsync(
+                            sectionId,
+                            RepositoryManager.SectionRepository
+                        );
+
+                        return Ok();
+                    }
+                    else
+                    {
+                        return Forbid();
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (SectionHasContentException err)
+            {
+                return BadRequest(new SectionHasContentException(err.Message, err.ErrorData));
             }
             catch (Exception err)
             {
