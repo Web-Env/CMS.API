@@ -2,12 +2,10 @@
 using Azure.Storage.Blobs;
 using CMS.API.DownloadModels.Content;
 using CMS.API.UploadModels.Content;
-using CMS.Domain.Entities;
 using CMS.Domain.Repositories.Content.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -48,7 +46,7 @@ namespace CMS.API.Models.Content
         }
 
         public static async Task<Domain.Entities.Content> AddContentAsync(
-            ContentUploadModel contentUploadModel, 
+            ContentUploadModel contentUploadModel,
             Guid userId,
             IContentRepository contentRepository,
             string azureStorageConnectionString)
@@ -79,8 +77,8 @@ namespace CMS.API.Models.Content
         }
 
         private static async Task UploadContentBlobAsync(
-            Guid contentId, 
-            ContentUploadModel contentUploadModel, 
+            Guid contentId,
+            ContentUploadModel contentUploadModel,
             string azureStorageConnectionString)
         {
             var contentIdString = contentId.ToString().ToLowerInvariant();
@@ -162,7 +160,7 @@ namespace CMS.API.Models.Content
             BlobServiceClient blobServiceClient = new BlobServiceClient(azureStorageConnectionString);
             BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(contentIdString);
 
-            await containerClient.DeleteAsync(); 
+            await containerClient.DeleteAsync();
         }
     }
 }

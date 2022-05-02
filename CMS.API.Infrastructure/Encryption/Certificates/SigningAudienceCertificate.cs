@@ -17,7 +17,7 @@ namespace CMS.API.Infrastructure.Encryption.Certificates
         public SigningCredentials GetAudienceSigningKey()
         {
             string privateXmlKey = File.ReadAllText(
-                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, 
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                 "Encryption/Keys/cms_private_key.xml")
             );
             rsa.FromXmlString(privateXmlKey);

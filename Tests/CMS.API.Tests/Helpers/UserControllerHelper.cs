@@ -1,6 +1,5 @@
 ﻿using CMS.API.Tests.Consts;
 using CMS.API.UploadModels.User;
-using System;
 
 namespace CMS.API.Tests.Helpers
 {
@@ -8,7 +7,7 @@ namespace CMS.API.Tests.Helpers
     {
         public static UserUploadModel GenerateUserUploadModel()
         {
-            return CreateUserUploadModelObject();   
+            return CreateUserUploadModelObject();
         }
 
         public static UserUploadModel GenerateBadUserUploadModel()

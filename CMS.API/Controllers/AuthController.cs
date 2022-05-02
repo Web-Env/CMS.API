@@ -34,7 +34,7 @@ namespace CMS.API.Controllers
 
                 return Ok(response);
             }
-            catch(AuthenticationException authException)
+            catch (AuthenticationException authException)
             {
                 return BadRequest(authException.ErrorMessage);
             }
