@@ -9,6 +9,7 @@ using CMS.Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -27,10 +28,11 @@ namespace CMS.API.Controllers
         private readonly OrganisationSettings _organisationSettings;
 
         public UserController(CMSContext cmsContext,
+                              ILogger<UserController> logger,
                               IMapper mapper,
                               IOptions<SmtpSettings> smtpSettings,
                               IOptions<EmailSettings> emailSettings,
-                              IOptions<OrganisationSettings> organisationSettings) : base(cmsContext, mapper)
+                              IOptions<OrganisationSettings> organisationSettings) : base(cmsContext, logger, mapper)
         {
             _smtpSettings = smtpSettings.Value;
             _emailSettings = emailSettings.Value;
@@ -68,6 +70,8 @@ namespace CMS.API.Controllers
             }
             catch (Exception err)
             {
+                LogException(err);
+
                 return Problem();
             }
         }
@@ -137,6 +141,8 @@ namespace CMS.API.Controllers
             }
             catch (Exception err)
             {
+                LogException(err);
+
                 return Problem();
             }
         }
@@ -160,6 +166,8 @@ namespace CMS.API.Controllers
             }
             catch (Exception err)
             {
+                LogException(err);
+
                 return Problem();
             }
         }
@@ -187,6 +195,8 @@ namespace CMS.API.Controllers
             }
             catch (Exception err)
             {
+                LogException(err);
+
                 return Problem();
             }
         }
@@ -212,6 +222,8 @@ namespace CMS.API.Controllers
             }
             catch (Exception err)
             {
+                LogException(err);
+
                 return Problem();
             }
         }
@@ -236,6 +248,8 @@ namespace CMS.API.Controllers
             }
             catch (Exception err)
             {
+                LogException(err);
+
                 return Problem();
             }
         }
@@ -263,6 +277,8 @@ namespace CMS.API.Controllers
             }
             catch (Exception err)
             {
+                LogException(err);
+
                 return Problem();
             }
         }
@@ -284,6 +300,8 @@ namespace CMS.API.Controllers
             }
             catch (Exception err)
             {
+                LogException(err);
+
                 return Problem();
             }
         }

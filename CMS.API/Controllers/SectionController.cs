@@ -8,6 +8,7 @@ using CMS.Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -19,7 +20,9 @@ namespace CMS.API.Controllers
     [Route("[controller]")]
     public class SectionController : CustomControllerBase
     {
-        public SectionController(CMSContext cmsContext, IMapper mapper) : base(cmsContext, mapper) { }
+        public SectionController(CMSContext cmsContext,
+                                 ILogger<SectionController> logger, 
+                                 IMapper mapper) : base(cmsContext, logger, mapper) { }
 
         [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<SectionDownloadModel>>> GetSections(int page, int pageSize)
@@ -48,7 +51,7 @@ namespace CMS.API.Controllers
             }
             catch (Exception err)
             {
-                //LogException(err);
+                LogException(err);
 
                 return Problem();
             }
@@ -86,6 +89,8 @@ namespace CMS.API.Controllers
             }
             catch (Exception err)
             {
+                LogException(err);
+
                 return Problem();
             }
         }
@@ -124,6 +129,8 @@ namespace CMS.API.Controllers
             }
             catch (Exception err)
             {
+                LogException(err);
+
                 return Problem();
             }
         }

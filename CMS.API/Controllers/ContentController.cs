@@ -8,6 +8,7 @@ using CMS.Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -25,8 +26,9 @@ namespace CMS.API.Controllers
 
         public ContentController(
             CMSContext cmsContext,
+            ILogger<ContentController> logger,
             IMapper mapper,
-            IOptions<AzureStorageSettings> azureStorageSettings) : base(cmsContext, mapper)
+            IOptions<AzureStorageSettings> azureStorageSettings) : base(cmsContext, logger, mapper)
         {
             _azureStorageSettings = azureStorageSettings.Value;
             _mapper = mapper;
@@ -59,7 +61,7 @@ namespace CMS.API.Controllers
             }
             catch (Exception err)
             {
-                //LogException(err);
+                LogException(err);
 
                 return Problem();
             }
@@ -89,7 +91,7 @@ namespace CMS.API.Controllers
             }
             catch (Exception err)
             {
-                //LogException(err);
+                LogException(err);
 
                 return Problem();
             }
@@ -126,6 +128,8 @@ namespace CMS.API.Controllers
             }
             catch (Exception err)
             {
+                LogException(err);
+
                 return Problem();
             }
         }
@@ -161,6 +165,8 @@ namespace CMS.API.Controllers
             }
             catch (Exception err)
             {
+                LogException(err);
+
                 return Problem();
             }
         }
@@ -195,6 +201,8 @@ namespace CMS.API.Controllers
             }
             catch (Exception err)
             {
+                LogException(err);
+
                 return Problem();
             }
         }

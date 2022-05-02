@@ -6,6 +6,8 @@ using CMS.Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace CMS.API.Controllers
@@ -18,8 +20,9 @@ namespace CMS.API.Controllers
         private readonly AuthenticationService _authenticationService;
 
         public AuthController(CMSContext cmsContext,
+                              ILogger<AuthController> logger,
                               IMapper mapper,
-                              AuthenticationService authenticationService) : base(cmsContext, mapper)
+                              AuthenticationService authenticationService) : base(cmsContext, logger, mapper)
         {
             _authenticationService = authenticationService;
         }
@@ -37,6 +40,12 @@ namespace CMS.API.Controllers
             catch (AuthenticationException authException)
             {
                 return BadRequest(authException.ErrorMessage);
+            }
+            catch (Exception err)
+            {
+                LogException(err);
+
+                return Problem();
             }
         }
 

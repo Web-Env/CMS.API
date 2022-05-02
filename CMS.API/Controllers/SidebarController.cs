@@ -6,6 +6,7 @@ using CMS.Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,7 +18,9 @@ namespace CMS.API.Controllers
     [Route("[controller]")]
     public class SidebarController : CustomControllerBase
     {
-        public SidebarController(CMSContext cmsContext, IMapper mapper) : base(cmsContext, mapper) { }
+        public SidebarController(CMSContext cmsContext,
+                                 ILogger<SidebarController> logger, 
+                                 IMapper mapper) : base(cmsContext, logger, mapper) { }
 
         [HttpGet("GetSidebarButtons")]
         public async Task<ActionResult<IEnumerable<SidebarButtonDownloadModel>>> GetSidebarButtons()
@@ -44,7 +47,7 @@ namespace CMS.API.Controllers
             }
             catch (Exception err)
             {
-                //LogException(err);
+                LogException(err);
 
                 return Problem();
             }

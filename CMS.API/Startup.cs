@@ -121,8 +121,21 @@ namespace CMS.API
 
         private void ConfigureRollbarSingleton(RollbarSettings rollbarSettings)
         {
-            RollbarLocator.RollbarInstance
-              .Configure(new RollbarLoggerConfig(rollbarSettings.AccessToken, rollbarSettings.Environment));
+            RollbarInfrastructureConfig config = new RollbarInfrastructureConfig(
+                rollbarSettings.AccessToken,
+                rollbarSettings.Environment
+            );
+
+            RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
+            dataSecurityOptions.ScrubFields = new string[]
+            {
+              "url",
+              "method",
+            };
+
+            config.RollbarLoggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
+
+            RollbarInfrastructure.Instance.Init(config);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
