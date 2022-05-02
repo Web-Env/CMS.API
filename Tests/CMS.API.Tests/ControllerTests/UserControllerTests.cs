@@ -10,13 +10,13 @@ namespace CMS.API.Tests.ControllerTests
     public class UserControllerTests : ControllerTestBase
     {
         private readonly UserController _userController;
-        public UserControllerTests(DatabaseFixture fixture) : base(fixture)
-        {
-            IOptions<SmtpSettings> smtpSettings = Options.Create(SmtpSettings);
-            IOptions<EmailSettings> emailSettings = Options.Create(EmailSettings);
-            IOptions<OrganisationSettings> organisationSettings = Options.Create(OrganisationSettings);
-            _userController = new UserController(CreateTestRepositoryContext(), Mapper, smtpSettings, emailSettings, organisationSettings);
-        }
+        //public UserControllerTests(DatabaseFixture fixture) : base(fixture)
+        //{
+        //    IOptions<SmtpSettings> smtpSettings = Options.Create(SmtpSettings);
+        //    IOptions<EmailSettings> emailSettings = Options.Create(EmailSettings);
+        //    IOptions<OrganisationSettings> organisationSettings = Options.Create(OrganisationSettings);
+        //    _userController = new UserController(CreateTestRepositoryContext(), Mapper, smtpSettings, emailSettings, organisationSettings);
+        //}
 
         //[Fact]
         //public async Task Post_WithBadModel_ShouldReturnBadResult()
