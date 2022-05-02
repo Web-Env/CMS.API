@@ -206,5 +206,34 @@ namespace CMS.API.Controllers
                 return Problem();
             }
         }
+
+        [HttpPost("TrackUserTime")]
+        public async Task<ActionResult> TrackUserTime(Guid contentId, int interval)
+        {
+            try
+            {
+                if (await IsUserValidAsync())
+                {
+                    await ContentModel.TrackUserTime(
+                        contentId,
+                        ExtractUserIdFromToken(),
+                        interval,
+                        RepositoryManager
+                    );
+
+                    return Ok();
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception err)
+            {
+                LogException(err);
+
+                return Problem();
+            }
+        }
     }
 }

@@ -2,6 +2,8 @@
 using Azure.Storage.Blobs;
 using CMS.API.DownloadModels.Content;
 using CMS.API.UploadModels.Content;
+using CMS.Domain.Entities;
+using CMS.Domain.Repositories;
 using CMS.Domain.Repositories.Content.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -161,6 +163,35 @@ namespace CMS.API.Models.Content
             BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(contentIdString);
 
             await containerClient.DeleteAsync();
+        }
+
+        public static async Task TrackUserTime(Guid contentId, Guid userId, int interval, IRepositoryManager repositoryManager)
+        {
+            var contentTimeTracking = await repositoryManager.ContentTimeTrackingRepository.GetByContentIdAndUserIdAsync(
+                contentId,
+                userId
+            );
+
+            if (contentTimeTracking == null)
+            {
+                contentTimeTracking = new ContentTimeTracking
+                {
+                    ContentId = contentId,
+                    UserId = userId
+                };
+            }
+
+            contentTimeTracking.TotalTime += interval;
+            contentTimeTracking.LastSeen = DateTime.Now;
+
+            if (contentTimeTracking.Id == Guid.Empty)
+            {
+                await repositoryManager.ContentTimeTrackingRepository.AddAsync(contentTimeTracking);
+            }
+            else
+            {
+                await repositoryManager.ContentTimeTrackingRepository.UpdateAsync(contentTimeTracking);
+            }
         }
     }
 }
