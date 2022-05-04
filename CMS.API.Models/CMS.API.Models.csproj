@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Storage.Blobs" Version="12.11.0" />
-    <PackageReference Include="CMS.Domain.All" Version="0.0.1-CI-135" />
+    <PackageReference Include="CMS.Domain.All" Version="0.0.1-CI-141" />
     <PackageReference Include="MailKit" Version="2.15.0" />
     <PackageReference Include="MimeKit" Version="2.15.1" />
     <PackageReference Include="WebEnv.Util.Mailer" Version="1.1.0-CI-7" />
