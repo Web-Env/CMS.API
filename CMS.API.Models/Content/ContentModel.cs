@@ -165,6 +165,13 @@ namespace CMS.API.Models.Content
             await containerClient.DeleteAsync();
         }
 
+        public static async Task<IEnumerable<ContentTimeTracking>> GetUserTimeTrackingAsync(
+            Guid userId, 
+            IContentTimeTrackingRepository contentTimeTrackingRepository)
+        {
+            return await contentTimeTrackingRepository.GetByUserIdAsync(userId).ConfigureAwait(false);
+        }
+
         public static async Task TrackUserTime(Guid contentId, Guid userId, int interval, IRepositoryManager repositoryManager)
         {
             var contentTimeTracking = await repositoryManager.ContentTimeTrackingRepository.GetByContentIdAndUserIdAsync(

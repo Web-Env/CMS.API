@@ -64,9 +64,38 @@ namespace CMS.API.Controllers
                     return Unauthorized();
                 }
             }
-            catch (EmailAlreadyRegisteredException err)
+            catch (Exception err)
             {
-                return BadRequest(new EmailAlreadyRegisteredException(err.ErrorMessage, err.ErrorData));
+                LogException(err);
+
+                return Problem();
+            }
+        }
+
+        [HttpGet("GetById")]
+        public async Task<ActionResult<UserDownloadModel>> GetUserById(Guid userId)
+        {
+            try
+            {
+                if (await IsUserValidAsync())
+                {
+                    var userIsAdmin = await UserModel.CheckUserIsAdminByIdAsync(ExtractUserIdFromToken(), RepositoryManager.UserRepository);
+
+                    if (userIsAdmin)
+                    {
+                        var user = await UserModel.GetUserByIdAsync(userId, RepositoryManager.UserRepository);
+
+                        return Ok(MapEntityToDownloadModel<User, UserDownloadModel>(user));
+                    }
+                    else
+                    {
+                        return Forbid();
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
             }
             catch (Exception err)
             {

@@ -45,9 +45,9 @@ namespace CMS.API.Controllers
 
                     if (userIsAdmin)
                     {
-                        var sections = await ContentModel.GetContentPageAsync(page, pageSize, RepositoryManager.ContentRepository);
+                        var contents = await ContentModel.GetContentPageAsync(page, pageSize, RepositoryManager.ContentRepository);
 
-                        return Ok(MapEntitiesToDownloadModels<Content, ContentDownloadModel>(sections));
+                        return Ok(MapEntitiesToDownloadModels<Content, ContentDownloadModel>(contents));
                     }
                     else
                     {
@@ -206,8 +206,47 @@ namespace CMS.API.Controllers
                 return Problem();
             }
         }
+        [HttpGet("ContentTimeTracking/GetAllByUserId")]
+        public async Task<ActionResult> TrackUserTime(Guid userId)
+        {
+            try
+            {
+                if (await IsUserValidAsync())
+                {
+                    var userIsAdmin = await UserModel.CheckUserIsAdminByIdAsync(ExtractUserIdFromToken(), RepositoryManager.UserRepository);
 
-        [HttpPost("TrackUserTime")]
+                    if (userIsAdmin)
+                    {
+                        var contentTimeTrackings = await ContentModel.GetUserTimeTrackingAsync(
+                            userId,
+                            RepositoryManager.ContentTimeTrackingRepository
+                        );
+
+                        return Ok(
+                            MapEntitiesToDownloadModels<ContentTimeTracking, ContentTimeTrackingDownloadModel>(
+                                contentTimeTrackings
+                            )
+                        );
+                    }
+                    else
+                    {
+                        return Forbid();
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception err)
+            {
+                LogException(err);
+
+                return Problem();
+            }
+        }
+
+        [HttpPost("ContentTimeTracking/Record")]
         public async Task<ActionResult> TrackUserTime(Guid contentId, int interval)
         {
             try

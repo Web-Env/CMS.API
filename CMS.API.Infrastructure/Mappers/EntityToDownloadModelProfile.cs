@@ -19,6 +19,13 @@ namespace CMS.API.Infrastructure.Mappers
                 .ForMember(dest => dest.LastUpdatedOn, src => src.MapFrom(a => a.LastUpdatedOn))
                 .ForMember(dest => dest.LastUpdatedBy, src => src.MapFrom(a => a.LastUpdatedBy));
 
+            CreateMap<ContentTimeTracking, ContentTimeTrackingDownloadModel>()
+                .ForMember(dest => dest.Id, src => src.MapFrom(a => a.Id))
+                .ForMember(dest => dest.ContentId, src => src.MapFrom(a => a.ContentId))
+                .ForMember(dest => dest.UserId, src => src.MapFrom(a => a.UserId))
+                .ForMember(dest => dest.TotalTime, src => src.MapFrom(a => a.TotalTime))
+                .ForMember(dest => dest.LastSeen, src => src.MapFrom(a => a.LastSeen));
+
             CreateMap<Section, SectionDownloadModel>()
                 .ForMember(dest => dest.Title, src => src.MapFrom(a => a.Title))
                 .ForMember(dest => dest.Path, src => src.MapFrom(a => a.Path))
