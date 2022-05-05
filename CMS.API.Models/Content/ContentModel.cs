@@ -26,9 +26,22 @@ namespace CMS.API.Models.Content
             string azureStorageConnectionString,
             IMapper mapper)
         {
-            var content = await contentRepository.GetByPathAsync(contentPath);
+            Domain.Entities.Content content = null;
+            if (!string.IsNullOrWhiteSpace(contentPath))
+            {
+                content = await contentRepository.GetByPathAsync(contentPath);
+            }
+            else
+            {
+                content = new Domain.Entities.Content
+                {
+                    Title = "Home",
+                    Path = "",
+                    Url = ""
+                };
+            }
 
-            var contentId = content.Id.ToString().ToLowerInvariant();
+            var contentId = content != null ? content.Id.ToString().ToLowerInvariant() : Guid.Empty.ToString().ToLowerInvariant();
             BlobServiceClient blobServiceClient = new BlobServiceClient(azureStorageConnectionString);
             BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(contentId);
             BlobClient blobClient = containerClient.GetBlobClient(contentId);
@@ -102,15 +115,26 @@ namespace CMS.API.Models.Content
             IContentRepository contentRepository,
             string azureStorageConnectionString)
         {
-            var content = await contentRepository.GetByIdAsync(contentUploadModel.Id.Value);
+            Domain.Entities.Content content = null;
+            if (contentUploadModel.Id != Guid.Empty)
+            {
+                content = await contentRepository.GetByIdAsync(contentUploadModel.Id.Value);
 
-            content.Title = contentUploadModel.Title;
-            content.Path = contentUploadModel.Path;
-            content.SectionId = contentUploadModel.SectionId;
-            content.LastUpdatedOn = DateTime.Now;
-            content.LastUpdatedBy = userId;
+                content.Title = contentUploadModel.Title;
+                content.Path = contentUploadModel.Path;
+                content.SectionId = contentUploadModel.SectionId;
+                content.LastUpdatedOn = DateTime.Now;
+                content.LastUpdatedBy = userId;
 
-            await contentRepository.UpdateAsync(content);
+                await contentRepository.UpdateAsync(content);
+            }
+            else
+            {
+                content = new Domain.Entities.Content
+                {
+                    Id = contentUploadModel.Id.Value
+                };
+            }
 
             await DeleteContentBlobAsync(content.Id, azureStorageConnectionString).ConfigureAwait(false);
             await UploadContentBlobToContainerAsync(content.Id, contentUploadModel, azureStorageConnectionString).ConfigureAwait(false);
@@ -147,13 +171,16 @@ namespace CMS.API.Models.Content
 
         public static async Task DeleteContentAsync(
             Guid contentId,
-            IContentRepository contentRepository,
+            IRepositoryManager repositoryManager,
             string azureStorageConnectionString)
         {
             await DeleteContentBlobContainerAsync(contentId, azureStorageConnectionString).ConfigureAwait(false);
 
-            var content = await contentRepository.GetByIdAsync(contentId);
-            await contentRepository.RemoveAsync(content);
+            var content = await repositoryManager.ContentRepository.GetByIdAsync(contentId);
+            var contentTimeTrackings = await repositoryManager.ContentTimeTrackingRepository.GetByContentIdAsync(contentId);
+
+            await repositoryManager.ContentTimeTrackingRepository.RemoveRangeAsync(contentTimeTrackings);
+            await repositoryManager.ContentRepository.RemoveAsync(content);
         }
 
         private static async Task DeleteContentBlobContainerAsync(Guid contentId, string azureStorageConnectionString)

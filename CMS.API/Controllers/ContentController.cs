@@ -182,12 +182,19 @@ namespace CMS.API.Controllers
 
                     if (userIsAdmin)
                     {
-                        await ContentModel.DeleteContentAsync(
-                            contentId,
-                            RepositoryManager.ContentRepository,
-                            _azureStorageSettings.ConnectionString);
+                        if (contentId != Guid.Empty)
+                        {
+                            await ContentModel.DeleteContentAsync(
+                                contentId,
+                                RepositoryManager,
+                                _azureStorageSettings.ConnectionString);
 
-                        return Ok();
+                            return Ok();
+                        }
+                        else
+                        {
+                            return Forbid();
+                        }
                     }
                     else
                     {
