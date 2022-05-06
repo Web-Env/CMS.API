@@ -52,7 +52,7 @@ namespace CMS.API.Controllers
                     {
                         var users = await UserModel.GetUsersPageAsync(RepositoryManager.UserRepository, page, pageSize);
 
-                        return Ok(MapEntitiesToDownloadModels<User, UserDownloadModel>(users));
+                        return Ok(MapEntitiesToDownloadModels<VGetUser, UserDownloadModel>(users));
                     }
                     else
                     {

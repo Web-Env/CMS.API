@@ -72,7 +72,7 @@ namespace CMS.API.Models.User
             return false;
         }
 
-        public static async Task<IEnumerable<Domain.Entities.User>> GetUsersPageAsync(IUserRepository userRepository, int page, int pageSize)
+        public static async Task<IEnumerable<VGetUser>> GetUsersPageAsync(IUserRepository userRepository, int page, int pageSize)
         {
             var users = await userRepository.GetPageAsync(page, pageSize);
             return users;
