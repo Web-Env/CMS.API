@@ -8,7 +8,7 @@ namespace CMS.API.DownloadModels
 
         public DateTime CreatedOn { get; set; }
 
-        public Guid CreatedBy { get; set; }
+        public virtual Guid CreatedBy { get; set; }
 
         public DateTime LastUpdatedOn { get; set; }
 

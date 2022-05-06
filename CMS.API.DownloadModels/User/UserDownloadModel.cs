@@ -9,5 +9,7 @@
         public string LastName { get; set; }
 
         public bool IsAdmin { get; set; }
+
+        public new string CreatedBy { get; set; }
     }
 }
