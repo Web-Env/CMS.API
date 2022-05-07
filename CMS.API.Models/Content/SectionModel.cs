@@ -17,7 +17,10 @@ namespace CMS.API.Models.Content
             return sections;
         }
 
-        public static async Task<Section> AddSectionAsync(SectionUploadModel sectionUploadModel, Guid userId, ISectionRepository sectionRepository)
+        public static async Task<Section> AddSectionAsync(
+            SectionUploadModel sectionUploadModel, 
+            Guid userId, 
+            ISectionRepository sectionRepository)
         {
             var section = new Section
             {
@@ -31,6 +34,21 @@ namespace CMS.API.Models.Content
             };
 
             return await sectionRepository.AddAsync(section);
+        }
+
+        public static async Task<Section> UpdateSectionAsync(
+            SectionUploadModel sectionUploadModel, 
+            Guid userId, 
+            ISectionRepository sectionRepository)
+        {
+            var section = await sectionRepository.GetByIdAsync(sectionUploadModel.Id);
+
+            section.Title = sectionUploadModel.Title;
+            section.Path = sectionUploadModel.Path;
+            section.LastUpdatedOn = DateTime.Now;
+            section.LastUpdatedBy = userId;
+
+            return await sectionRepository.UpdateAsync(section);
         }
 
         public static async Task DeleteSectionAsync(Guid sectionId, ISectionRepository sectionRepository)
