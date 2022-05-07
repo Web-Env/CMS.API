@@ -1,4 +1,6 @@
-﻿namespace CMS.API.DownloadModels.User
+﻿using System;
+
+namespace CMS.API.DownloadModels.User
 {
     public class UserDownloadModel : DownloadModelBase
     {
@@ -7,6 +9,8 @@
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
+
+        public DateTime? ExpiresOn { get; set; }
 
         public bool IsAdmin { get; set; }
 

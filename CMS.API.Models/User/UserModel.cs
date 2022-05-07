@@ -20,26 +20,21 @@ namespace CMS.API.Models.User
 {
     public static class UserModel
     {
-        public static async Task<Domain.Entities.User> GetUserById(Guid userId, IUserRepository userRepository)
-        {
-            return await userRepository.GetByIdAsync(userId);
-        }
-
         public static async Task<bool> CheckUserExistsByIdAsync(Guid userId, IUserRepository userRepository)
         {
-            var user = await GetUserById(userId, userRepository).ConfigureAwait(false);
+            var user = await GetUserByIdAsync(userId, userRepository).ConfigureAwait(false);
             return user != null;
         }
 
         public static async Task<bool> CheckUserIsAdminByIdAsync(Guid userId, IUserRepository userRepository)
         {
-            var user = await GetUserById(userId, userRepository).ConfigureAwait(false);
+            var user = await GetUserByIdAsync(userId, userRepository).ConfigureAwait(false);
             return user.IsAdmin;
         }
 
         public static async Task<Domain.Entities.User> GetUserByIdAsync(Guid userId, IUserRepository userRepository)
         {
-            var user = await GetUserById(userId, userRepository).ConfigureAwait(false);
+            var user = await userRepository.GetByIdAsync(userId);
             return user;
         }
 

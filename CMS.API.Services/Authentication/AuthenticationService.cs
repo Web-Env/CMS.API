@@ -23,6 +23,15 @@ namespace CMS.API.Services.Authentication
 
             if (user != null)
             {
+                if (user.ExpiresOn != null && user.ExpiresOn < DateTime.Now)
+                {
+                    throw new AuthenticationException
+                    (
+                        "Invalid login",
+                        "No user found with the provided login details"
+                    );
+                }
+
                 var passwordIsCorrect = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
                 if (passwordIsCorrect)
                 {

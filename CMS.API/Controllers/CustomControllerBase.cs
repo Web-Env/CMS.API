@@ -52,13 +52,18 @@ namespace CMS.API.Controllers
 
         protected async Task<bool> IsUserValidAsync()
         {
-            var userIsValid = await UserModel.CheckUserExistsByIdAsync(
+            var userTokenIsValid = await UserModel.CheckUserExistsByIdAsync(
                 ExtractUserIdFromToken(), RepositoryManager.UserRepository);
 
-            if (userIsValid)
+            if (userTokenIsValid)
             {
                 var user = await UserModel.GetUserByIdAsync(
                     ExtractUserIdFromToken(), RepositoryManager.UserRepository);
+
+                if (user.ExpiresOn < DateTime.Now)
+                {
+                    return false;
+                }
 
                 if (user.UserSecret != null)
                 {
@@ -81,7 +86,7 @@ namespace CMS.API.Controllers
             }
             else
             {
-                return userIsValid;
+                return userTokenIsValid;
             }
         }
 
