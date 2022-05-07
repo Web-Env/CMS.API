@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CMS.API.DownloadModels.Content;
 using CMS.API.Models.Content;
-using CMS.API.Models.User;
 using CMS.Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -19,7 +18,7 @@ namespace CMS.API.Controllers
     public class SidebarController : CustomControllerBase
     {
         public SidebarController(CMSContext cmsContext,
-                                 ILogger<SidebarController> logger, 
+                                 ILogger<SidebarController> logger,
                                  IMapper mapper) : base(cmsContext, logger, mapper) { }
 
         [HttpGet("GetSidebarButtons")]

@@ -26,7 +26,7 @@ namespace CMS.API.Models.Content
             string azureStorageConnectionString,
             IMapper mapper)
         {
-            Domain.Entities.Content content = null;
+            Domain.Entities.Content content;
             if (!string.IsNullOrWhiteSpace(contentPath))
             {
                 content = await contentRepository.GetByPathAsync(contentPath);
@@ -193,7 +193,7 @@ namespace CMS.API.Models.Content
         }
 
         public static async Task<IEnumerable<ContentTimeTracking>> GetUserTimeTrackingAsync(
-            Guid userId, 
+            Guid userId,
             IContentTimeTrackingRepository contentTimeTrackingRepository)
         {
             return await contentTimeTrackingRepository.GetByUserIdAsync(userId).ConfigureAwait(false);

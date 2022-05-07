@@ -1,4 +1,4 @@
 ﻿namespace CMS.API.UploadModels
 {
-    public class UploadModelBase : IUploadModel {}
+    public class UploadModelBase : IUploadModel { }
 }

@@ -21,7 +21,7 @@ namespace CMS.API.Controllers
     public class SectionController : CustomControllerBase
     {
         public SectionController(CMSContext cmsContext,
-                                 ILogger<SectionController> logger, 
+                                 ILogger<SectionController> logger,
                                  IMapper mapper) : base(cmsContext, logger, mapper) { }
 
         [HttpGet("GetAll")]
