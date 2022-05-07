@@ -180,6 +180,49 @@ namespace CMS.API.Controllers
             }
         }
 
+        [HttpDelete("DeleteUser")]
+        public async Task<ActionResult> DeleteUser(Guid userId)
+        {
+            try
+            {
+                if (await IsUserValidAsync())
+                {
+                    var userIsAdmin = await UserModel.CheckUserIsAdminByIdAsync(ExtractUserIdFromToken(), RepositoryManager.UserRepository);
+
+                    if (userIsAdmin)
+                    {
+                        var requesterId = ExtractUserIdFromToken();
+
+                        await UserModel.DeleteUserAsync(
+                            userId,
+                            ExtractUserIdFromToken(),
+                            RepositoryManager.UserRepository
+                        );
+
+                        return Ok();
+                    }
+                    else
+                    {
+                        return Forbid();
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (EmailAlreadyRegisteredException err)
+            {
+                return BadRequest(new EmailAlreadyRegisteredException(err.ErrorMessage, err.ErrorData));
+            }
+            catch (Exception err)
+            {
+                LogException(err);
+
+                return Problem();
+            }
+        }
+
         [HttpPost("Verify")]
         [AllowAnonymous]
         public async Task<IActionResult> VerifyUser(string verificationIdentifier)

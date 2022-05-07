@@ -60,7 +60,7 @@ namespace CMS.API.Controllers
                 var user = await UserModel.GetUserByIdAsync(
                     ExtractUserIdFromToken(), RepositoryManager.UserRepository);
 
-                if (user.ExpiresOn < DateTime.Now)
+                if (user.ExpiresOn < DateTime.Now || user.Deleted)
                 {
                     return false;
                 }

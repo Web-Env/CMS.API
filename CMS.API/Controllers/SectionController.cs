@@ -95,8 +95,8 @@ namespace CMS.API.Controllers
             }
         }
 
-        [HttpDelete("Remove")]
-        public async Task<ActionResult> RemoveSection(Guid sectionId)
+        [HttpDelete("Delete")]
+        public async Task<ActionResult> DeleteSection(Guid sectionId)
         {
             try
             {

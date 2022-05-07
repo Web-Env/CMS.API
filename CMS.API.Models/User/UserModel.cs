@@ -106,6 +106,28 @@ namespace CMS.API.Models.User
             return user;
         }
 
+        public static async Task DeleteUserAsync(
+            Guid userId,
+            Guid requesterId,
+            IUserRepository userRepositoryManager
+            )
+        {
+            var user = await GetUserByIdAsync(userId, userRepositoryManager).ConfigureAwait(false);
+
+            if (user != null)
+            {
+                user.Deleted = true;
+                user.LastUpdatedOn = DateTime.Now;
+                user.LastUpdatedBy = requesterId;
+
+                await userRepositoryManager.UpdateAsync(user);
+            }
+            else
+            {
+                throw new InvalidTokenException(InvalidTokenType.TokenNotFound, "User not found");
+            }
+        }
+
         public static async Task CreateNewVerficationForNewUserAsync(
            string email,
            string requesterAddress,
