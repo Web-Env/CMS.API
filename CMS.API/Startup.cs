@@ -127,7 +127,7 @@ namespace CMS.API
             );
 
             RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
-            dataSecurityOptions.ScrubFields = new []
+            dataSecurityOptions.ScrubFields = new[]
             {
               "url",
               "method",

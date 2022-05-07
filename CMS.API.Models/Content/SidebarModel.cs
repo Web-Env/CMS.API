@@ -101,7 +101,7 @@ namespace CMS.API.Models.Content
         }
 
         public static SidebarButtonDownloadModel MapContentToSidebarButtonDownloadModel(
-            Domain.Entities.Content content, 
+            Domain.Entities.Content content,
             string sectionPath)
         {
             return new SidebarButtonDownloadModel

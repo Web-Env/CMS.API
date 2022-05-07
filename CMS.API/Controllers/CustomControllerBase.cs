@@ -3,7 +3,6 @@ using CMS.API.Infrastructure.Encryption;
 using CMS.API.Models.User;
 using CMS.API.UploadModels;
 using CMS.Domain.Entities;
-using CMS.Domain.Enums;
 using CMS.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -90,20 +89,6 @@ namespace CMS.API.Controllers
             }
         }
 
-        protected async Task<AuditLog> LogAction(UserActionCategory actionCategory, UserAction action, Guid userId, DateTime occurredOn)
-        {
-            var auditLog = new AuditLog
-            {
-                ActionCategory = (short)actionCategory,
-                Action = (short)action,
-                UserId = userId,
-                UserAddress = ExtractRequesterAddress(),
-                OccurredOn = occurredOn
-            };
-
-            return await RepositoryManager.AuditLogRepository.AddAsync(auditLog);
-        }
-
         protected TDownloadModel MapEntityToDownloadModel<TEntity, TDownloadModel>(TEntity entity)
         {
             return _mapper.Map<TDownloadModel>(entity);
@@ -117,35 +102,6 @@ namespace CMS.API.Controllers
         protected TEntity MapUploadModelToEntity<TEntity>(IUploadModel uploadModel)
         {
             return _mapper.Map<TEntity>(uploadModel);
-        }
-
-        protected async Task<PasswordReset> GeneratePasswordSetLink(Guid userId, string requesterAddress)
-        {
-            var passwordReset = new PasswordReset
-            {
-                Identifier = GenerateResetIdentifier(),
-                UserId = EncryptionService.EncryptUserId(userId),
-                ExpiryDate = DateTime.Now.AddDays(15),
-                RequesterAddress = requesterAddress,
-                Active = true
-            };
-
-            await RepositoryManager.PasswordResetRepository.AddAsync(passwordReset);
-
-            return passwordReset;
-        }
-
-        private string GenerateResetIdentifier()
-        {
-            var random = new Random();
-
-            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            var resetIdentifier = new string(
-                Enumerable.Repeat(chars, 32)
-                          .Select(s => s[random.Next(s.Length)])
-                          .ToArray());
-
-            return resetIdentifier;
         }
 
         protected void LogException(Exception exception)

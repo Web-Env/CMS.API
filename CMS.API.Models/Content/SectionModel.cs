@@ -18,8 +18,8 @@ namespace CMS.API.Models.Content
         }
 
         public static async Task<Section> AddSectionAsync(
-            SectionUploadModel sectionUploadModel, 
-            Guid userId, 
+            SectionUploadModel sectionUploadModel,
+            Guid userId,
             ISectionRepository sectionRepository)
         {
             var section = new Section
@@ -37,8 +37,8 @@ namespace CMS.API.Models.Content
         }
 
         public static async Task<Section> UpdateSectionAsync(
-            SectionUploadModel sectionUploadModel, 
-            Guid userId, 
+            SectionUploadModel sectionUploadModel,
+            Guid userId,
             ISectionRepository sectionRepository)
         {
             var section = await sectionRepository.GetByIdAsync(sectionUploadModel.Id);

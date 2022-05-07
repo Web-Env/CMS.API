@@ -20,13 +20,14 @@ namespace CMS.API.Models.Content
             var contents = await contentRepository.GetPageAsync(page, pageSize);
             return contents;
         }
+
         public static async Task<ContentDownloadModel> GetContentAsync(
             string contentPath,
             IContentRepository contentRepository,
             string azureStorageConnectionString,
             IMapper mapper)
         {
-            Domain.Entities.Content content = null;
+            Domain.Entities.Content content;
             if (!string.IsNullOrWhiteSpace(contentPath))
             {
                 content = await contentRepository.GetByPathAsync(contentPath);
@@ -193,7 +194,7 @@ namespace CMS.API.Models.Content
         }
 
         public static async Task<IEnumerable<ContentTimeTracking>> GetUserTimeTrackingAsync(
-            Guid userId, 
+            Guid userId,
             IContentTimeTrackingRepository contentTimeTrackingRepository)
         {
             return await contentTimeTrackingRepository.GetByUserIdAsync(userId).ConfigureAwait(false);

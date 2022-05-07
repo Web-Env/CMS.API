@@ -67,8 +67,6 @@ namespace CMS.API.Controllers
             }
         }
 
-
-
         [HttpGet("Get")]
         public async Task<ActionResult<IEnumerable<ContentDownloadModel>>> GetContent(string contentPath)
         {
