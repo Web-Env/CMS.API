@@ -1,9 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace CMS.API.UploadModels.Content
 {
     public class SectionUploadModel : UploadModelBase
     {
+        public Guid Id { get; set; }
+
         [Required]
         public string Title { get; set; }
 

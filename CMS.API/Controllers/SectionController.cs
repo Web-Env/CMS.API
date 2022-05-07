@@ -57,8 +57,6 @@ namespace CMS.API.Controllers
             }
         }
 
-
-
         [HttpPost("Add")]
         public async Task<ActionResult<SectionDownloadModel>> AddSection(SectionUploadModel sectionUploadModel)
         {
@@ -71,6 +69,42 @@ namespace CMS.API.Controllers
                     if (userIsAdmin)
                     {
                         var section = await SectionModel.AddSectionAsync(
+                            sectionUploadModel,
+                            ExtractUserIdFromToken(),
+                            RepositoryManager.SectionRepository);
+
+                        return Ok(MapEntityToDownloadModel<Section, SectionDownloadModel>(section));
+                    }
+                    else
+                    {
+                        return Forbid();
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception err)
+            {
+                LogException(err);
+
+                return Problem();
+            }
+        }
+
+        [HttpPut("Update")]
+        public async Task<ActionResult<SectionDownloadModel>> UpdateSection(SectionUploadModel sectionUploadModel)
+        {
+            try
+            {
+                if (await IsUserValidAsync())
+                {
+                    var userIsAdmin = await UserModel.CheckUserIsAdminByIdAsync(ExtractUserIdFromToken(), RepositoryManager.UserRepository);
+
+                    if (userIsAdmin)
+                    {
+                        var section = await SectionModel.UpdateSectionAsync(
                             sectionUploadModel,
                             ExtractUserIdFromToken(),
                             RepositoryManager.SectionRepository);
