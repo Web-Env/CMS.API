@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CMS.API.UploadModels.Content
 {
-    public class ContentUploadModel : UploadModelBase
+    public class ContentUploadModel
     {
         public Guid? Id { get; set; }
 

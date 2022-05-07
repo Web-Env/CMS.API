@@ -1,6 +1,4 @@
 ﻿namespace CMS.API.UploadModels
 {
-    public interface IUploadModel
-    {
-    }
+    public interface IUploadModel {}
 }
