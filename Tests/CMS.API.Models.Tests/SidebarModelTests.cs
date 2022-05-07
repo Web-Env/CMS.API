@@ -43,7 +43,7 @@ namespace CMS.API.Models.Tests
         [Fact]
         public void MapSidebarButtonsToSidebarButtonDownloadModels_WithOneSectionAndZeroContentsAndIsAdminEqualsFalse_ShouldReturnZeroSidebarButtonDownloadModels()
         {
-            var sections = new List<Section>() { SidebarModelTestHelpers.CreateDummySection() };
+            var sections = new List<Section> { SidebarModelTestHelpers.CreateDummySection() };
             var contents = new List<Domain.Entities.Content>();
 
             var sidebarButtonDownloadModels = SidebarModel.MapSidebarButtonsToSidebarButtonDownloadModels(sections, contents, false);
@@ -54,7 +54,7 @@ namespace CMS.API.Models.Tests
         [Fact]
         public void MapSidebarButtonsToSidebarButtonDownloadModels_WithOneSectionAndZeroContentsAndIsAdminEqualsTrue_ShouldReturnOneSidebarButtonDownloadModelWithCorrectProperties()
         {
-            var sections = new List<Section>() { SidebarModelTestHelpers.CreateDummySection() };
+            var sections = new List<Section> { SidebarModelTestHelpers.CreateDummySection() };
             var contents = new List<Domain.Entities.Content>();
 
             var sidebarButtonDownloadModels = SidebarModel.MapSidebarButtonsToSidebarButtonDownloadModels(sections, contents, true);
@@ -71,7 +71,7 @@ namespace CMS.API.Models.Tests
         public void MapSidebarButtonsToSidebarButtonDownloadModels_WithZeroSectionsAndOneContentAndIsAdminEqualsFalse_ShouldReturnOneSidebarButtonDownloadModelWithCorrectProperties()
         {
             var sections = new List<Section>();
-            var contents = new List<Domain.Entities.Content>() { SidebarModelTestHelpers.CreateDummyContent() };
+            var contents = new List<Domain.Entities.Content> { SidebarModelTestHelpers.CreateDummyContent() };
 
             var sidebarButtonDownloadModels = SidebarModel.MapSidebarButtonsToSidebarButtonDownloadModels(sections, contents, false);
 
@@ -82,7 +82,7 @@ namespace CMS.API.Models.Tests
         public void MapSidebarButtonsToSidebarButtonDownloadModels_WithZeroSectionsAndOneContentAndIsAdminEqualsTrue_ShouldReturnTwoSidebarButtonDownloadModelWithCorrectProperties()
         {
             var sections = new List<Section>();
-            var contents = new List<Domain.Entities.Content>() { SidebarModelTestHelpers.CreateDummyContent() };
+            var contents = new List<Domain.Entities.Content> { SidebarModelTestHelpers.CreateDummyContent() };
 
             var sidebarButtonDownloadModels = SidebarModel.MapSidebarButtonsToSidebarButtonDownloadModels(sections, contents, true);
             var firstSidebarButtonDownloadModel = sidebarButtonDownloadModels.FirstOrDefault();
@@ -98,9 +98,9 @@ namespace CMS.API.Models.Tests
         [Fact]
         public void MapSidebarButtonsToSidebarButtonDownloadModels_WithOneSectionAndOneRelatedContentAndIsAdminEqualsFalse_ShouldReturnTwoSidebarButtonDownloadModelWithCorrectProperties()
         {
-            var sections = new List<Section>() { SidebarModelTestHelpers.CreateDummySection() };
+            var sections = new List<Section> { SidebarModelTestHelpers.CreateDummySection() };
             var sectionId = SidebarModelTestHelpers.DummySectionId;
-            var contents = new List<Domain.Entities.Content>() { SidebarModelTestHelpers.CreateDummyContent(sectionId) };
+            var contents = new List<Domain.Entities.Content> { SidebarModelTestHelpers.CreateDummyContent(sectionId) };
             var expectedSidebarSubButtonPath = $"{SidebarModelTestHelpers.DummySectionPath}/{SidebarModelTestHelpers.DummyContentPath}";
 
             var sidebarButtonDownloadModels = SidebarModel.MapSidebarButtonsToSidebarButtonDownloadModels(sections, contents, false);
@@ -118,9 +118,9 @@ namespace CMS.API.Models.Tests
         [Fact]
         public void MapSidebarButtonsToSidebarButtonDownloadModels_WithOneSectionAndOneRelatedContentAndIsAdminEqualsTrue_ShouldReturnOneSidebarButtonDownloadModelWithCorrectProperties()
         {
-            var sections = new List<Section>() { SidebarModelTestHelpers.CreateDummySection() };
+            var sections = new List<Section> { SidebarModelTestHelpers.CreateDummySection() };
             var sectionId = SidebarModelTestHelpers.DummySectionId;
-            var contents = new List<Domain.Entities.Content>() { SidebarModelTestHelpers.CreateDummyContent(sectionId) };
+            var contents = new List<Domain.Entities.Content> { SidebarModelTestHelpers.CreateDummyContent(sectionId) };
             var expectedSidebarSubButtonPath = $"{SidebarModelTestHelpers.DummySectionPath}/{SidebarModelTestHelpers.DummyContentPath}";
 
             var sidebarButtonDownloadModels = SidebarModel.MapSidebarButtonsToSidebarButtonDownloadModels(sections, contents, true);
@@ -143,9 +143,9 @@ namespace CMS.API.Models.Tests
         [Fact]
         public void MapSidebarButtonsToSidebarButtonDownloadModels_WithOneSectionAndOneRelatedContentAndOneUnrelatedContentAndIsAdminEqualsFalse_ShouldReturnTwoSidebarButtonDownloadModelWithCorrectProperties()
         {
-            var sections = new List<Section>() { SidebarModelTestHelpers.CreateDummySection() };
+            var sections = new List<Section> { SidebarModelTestHelpers.CreateDummySection() };
             var sectionId = SidebarModelTestHelpers.DummySectionId;
-            var contents = new List<Domain.Entities.Content>() {
+            var contents = new List<Domain.Entities.Content> {
                 SidebarModelTestHelpers.CreateDummyContent(sectionId),
                 SidebarModelTestHelpers.CreateDummyContent()
             };
@@ -169,9 +169,9 @@ namespace CMS.API.Models.Tests
         [Fact]
         public void MapSidebarButtonsToSidebarButtonDownloadModels_WithOneSectionAndOneRelatedContentAndOneUnrelatedContentAndIsAdminEqualsTrue_ShouldReturnOneSidebarButtonDownloadModelWithCorrectProperties()
         {
-            var sections = new List<Section>() { SidebarModelTestHelpers.CreateDummySection() };
+            var sections = new List<Section> { SidebarModelTestHelpers.CreateDummySection() };
             var sectionId = SidebarModelTestHelpers.DummySectionId;
-            var contents = new List<Domain.Entities.Content>() {
+            var contents = new List<Domain.Entities.Content> {
                 SidebarModelTestHelpers.CreateDummyContent(sectionId),
                 SidebarModelTestHelpers.CreateDummyContent()
             };
@@ -213,7 +213,7 @@ namespace CMS.API.Models.Tests
         [Fact]
         public void MapContentToSections_WithOneSectionAndZeroContents_ShouldReturnZeroSidebarButtonDownloadModels()
         {
-            var sections = new List<Section>() { SidebarModelTestHelpers.CreateDummySection() };
+            var sections = new List<Section> { SidebarModelTestHelpers.CreateDummySection() };
             var contents = new List<Domain.Entities.Content>();
             var sectionContentIds = new List<Guid>();
 
@@ -226,7 +226,7 @@ namespace CMS.API.Models.Tests
         public void MapContentToSections_WithZeroSectionsAndOneContent_ShouldReturnZeroSidebarButtonDownloadModelsAndZeroSectionContentIds()
         {
             var sections = new List<Section>();
-            var contents = new List<Domain.Entities.Content>() { SidebarModelTestHelpers.CreateDummyContent() };
+            var contents = new List<Domain.Entities.Content> { SidebarModelTestHelpers.CreateDummyContent() };
             var sectionContentIds = new List<Guid>();
 
             var sidebarButtonDownloadModels = SidebarModel.MapContentToSections(sections, contents, sectionContentIds);
@@ -239,7 +239,7 @@ namespace CMS.API.Models.Tests
         public void MapContentToSections_WithZeroSectionsAndTwoContents_ShouldReturnZeroSidebarButtonDownloadModelsAndZeroSectionContentIds()
         {
             var sections = new List<Section>();
-            var contents = new List<Domain.Entities.Content>() {
+            var contents = new List<Domain.Entities.Content> {
                 SidebarModelTestHelpers.CreateDummyContent(),
                 SidebarModelTestHelpers.CreateDummyContent()
             };
@@ -254,9 +254,9 @@ namespace CMS.API.Models.Tests
         [Fact]
         public void MapContentToSections_WithOneSectionAndOneRelatedContent_ShouldReturnOneSidebarButtonDownloadModelWithCorrectPropertiesAndOneSectionContentId()
         {
-            var sections = new List<Section>() { SidebarModelTestHelpers.CreateDummySection() };
+            var sections = new List<Section> { SidebarModelTestHelpers.CreateDummySection() };
             var sectionId = SidebarModelTestHelpers.DummySectionId;
-            var contents = new List<Domain.Entities.Content>() { SidebarModelTestHelpers.CreateDummyContent(sectionId) };
+            var contents = new List<Domain.Entities.Content> { SidebarModelTestHelpers.CreateDummyContent(sectionId) };
             var expectedSidebarSubButtonPath = $"{SidebarModelTestHelpers.DummySectionPath}/{SidebarModelTestHelpers.DummyContentPath}";
             var sectionContentIds = new List<Guid>();
 
@@ -276,9 +276,9 @@ namespace CMS.API.Models.Tests
         [Fact]
         public void MapContentToSections_WithOneSectionAndTwoRelatedContents_ShouldReturnOneSidebarButtonDownloadModelWithCorrectPropertiesAndTwoSectionContentId()
         {
-            var sections = new List<Section>() { SidebarModelTestHelpers.CreateDummySection() };
+            var sections = new List<Section> { SidebarModelTestHelpers.CreateDummySection() };
             var sectionId = SidebarModelTestHelpers.DummySectionId;
-            var contents = new List<Domain.Entities.Content>() {
+            var contents = new List<Domain.Entities.Content> {
                 SidebarModelTestHelpers.CreateDummyContent(sectionId),
                 SidebarModelTestHelpers.CreateDummyContent(sectionId)
             };
@@ -301,9 +301,9 @@ namespace CMS.API.Models.Tests
         [Fact]
         public void MapContentToSections_WithOneSectionAndTwoRelatedContentsAndOneUnrelatedContent_ShouldReturnOneSidebarButtonDownloadModelWithCorrectPropertiesAndTwoSectionContentId()
         {
-            var sections = new List<Section>() { SidebarModelTestHelpers.CreateDummySection() };
+            var sections = new List<Section> { SidebarModelTestHelpers.CreateDummySection() };
             var sectionId = SidebarModelTestHelpers.DummySectionId;
-            var contents = new List<Domain.Entities.Content>() {
+            var contents = new List<Domain.Entities.Content> {
                 SidebarModelTestHelpers.CreateDummyContent(sectionId),
                 SidebarModelTestHelpers.CreateDummyContent(sectionId),
                 SidebarModelTestHelpers.CreateDummyContent()
@@ -327,9 +327,9 @@ namespace CMS.API.Models.Tests
         [Fact]
         public void MapContentToSections_WithOneSectionAndTwoRelatedContentsAndTwoUnrelatedContents_ShouldReturnOneSidebarButtonDownloadModelWithCorrectPropertiesAndTwoSectionContentId()
         {
-            var sections = new List<Section>() { SidebarModelTestHelpers.CreateDummySection() };
+            var sections = new List<Section> { SidebarModelTestHelpers.CreateDummySection() };
             var sectionId = SidebarModelTestHelpers.DummySectionId;
-            var contents = new List<Domain.Entities.Content>() {
+            var contents = new List<Domain.Entities.Content> {
                 SidebarModelTestHelpers.CreateDummyContent(sectionId),
                 SidebarModelTestHelpers.CreateDummyContent(sectionId),
                 SidebarModelTestHelpers.CreateDummyContent(),
