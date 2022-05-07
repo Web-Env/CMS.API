@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace CMS.API.UploadModels.User
 {
@@ -12,6 +13,8 @@ namespace CMS.API.UploadModels.User
 
         [Required]
         public string LastName { get; set; }
+
+        public DateTime? ExpiresOn { get; set; }
 
         public bool IsAdmin { get; set; }
 

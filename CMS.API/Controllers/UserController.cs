@@ -152,7 +152,11 @@ namespace CMS.API.Controllers
                             _smtpSettings,
                             _emailSettings);
 
-                        return Ok(MapEntityToDownloadModel<User, UserDownloadModel>(newUser));
+                        var createdByUser = await UserModel.GetUserByIdAsync(ExtractUserIdFromToken(), RepositoryManager.UserRepository);
+                        var mappedNewUser = MapEntityToDownloadModel<User, UserDownloadModel>(newUser);
+                        mappedNewUser.CreatedBy = $"{createdByUser.FirstName} {createdByUser.LastName}";
+
+                        return Ok(mappedNewUser);
                     }
                     else
                     {
