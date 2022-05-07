@@ -40,9 +40,9 @@ Tests/CMS.API.Infrastructure.Tests/bin
 Tests/CMS.API.Infrastructure.Tests/obj
 Tests/CMS.API.Infrastructure.Tests/debug
 
-Tests/CMS.API.Mailer.Tests/bin
-Tests/CMS.API.Mailer.Tests/obj
-Tests/CMS.API.Mailer.Tests/debug
+Tests/CMS.API.Models.Tests/bin
+Tests/CMS.API.Models.Tests/obj
+Tests/CMS.API.Models.Tests/debug
 
 Tests/CMS.API.Services.Tests/bin
 Tests/CMS.API.Services.Tests/obj
