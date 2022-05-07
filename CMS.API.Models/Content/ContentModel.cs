@@ -20,6 +20,7 @@ namespace CMS.API.Models.Content
             var contents = await contentRepository.GetPageAsync(page, pageSize);
             return contents;
         }
+
         public static async Task<ContentDownloadModel> GetContentAsync(
             string contentPath,
             IContentRepository contentRepository,
