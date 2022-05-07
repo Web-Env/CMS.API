@@ -140,14 +140,10 @@ namespace CMS.API.Controllers
                             }
                         }
 
-                        newUser.CreatedBy = requesterId;
-                        newUser.CreatedOn = DateTime.Now;
-                        newUser.LastUpdatedBy = requesterId;
-                        newUser.LastUpdatedOn = DateTime.Now;
-
                         await UserModel.CreateNewUserAsync(
                             newUser,
                             ExtractRequesterAddress(),
+                            requesterId,
                             RepositoryManager,
                             _smtpSettings,
                             _emailSettings);
@@ -171,6 +167,52 @@ namespace CMS.API.Controllers
             catch (EmailAlreadyRegisteredException err)
             {
                 return BadRequest(new EmailAlreadyRegisteredException(err.ErrorMessage, err.ErrorData));
+            }
+            catch (Exception err)
+            {
+                LogException(err);
+
+                return Problem();
+            }
+        }
+
+        [HttpPut("UpdateUser")]
+        public async Task<ActionResult<UserDownloadModel>> UpdateUser(UserUploadModel user)
+        {
+            try
+            {
+                if (await IsUserValidAsync())
+                {
+                    var userIsAdmin = await UserModel.CheckUserIsAdminByIdAsync(ExtractUserIdFromToken(), RepositoryManager.UserRepository);
+
+                    if (userIsAdmin)
+                    {
+                        var requesterId = ExtractUserIdFromToken();
+
+                        var updatedUser = await UserModel.UpdateUserAsync(
+                            user,
+                            requesterId,
+                            RepositoryManager.UserRepository);
+
+                        var createdByUser = await UserModel.GetUserByIdAsync(ExtractUserIdFromToken(), RepositoryManager.UserRepository);
+                        var mappedNewUser = MapEntityToDownloadModel<User, UserDownloadModel>(updatedUser);
+                        mappedNewUser.CreatedBy = $"{createdByUser.FirstName} {createdByUser.LastName}";
+
+                        return Ok(mappedNewUser);
+                    }
+                    else
+                    {
+                        return Forbid();
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (InvalidTokenException err)
+            {
+                return Forbid();
             }
             catch (Exception err)
             {
