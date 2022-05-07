@@ -29,14 +29,7 @@ namespace CMS.API.Controllers
             {
                 if (await IsUserValidAsync())
                 {
-                    var sidebarButtons = await SidebarModel.GetSidebarButtonsAsync(RepositoryManager);
-
-                    var userIsAdmin = await UserModel.CheckUserIsAdminByIdAsync(ExtractUserIdFromToken(), RepositoryManager.UserRepository);
-
-                    if (userIsAdmin)
-                    {
-                        sidebarButtons.Add(SidebarModel.GetAdminSidebarButtons());
-                    }
+                    var sidebarButtons = await SidebarModel.GetSidebarButtonsAsync(RepositoryManager, ExtractUserIdFromToken());
 
                     return Ok(sidebarButtons);
                 }
