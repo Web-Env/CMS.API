@@ -6,6 +6,7 @@ using CMS.API.Infrastructure.Encryption.Helpers;
 using CMS.API.Infrastructure.Enums;
 using CMS.API.Infrastructure.Exceptions;
 using CMS.API.Infrastructure.Settings;
+using CMS.API.UploadModels.User;
 using CMS.Domain.Entities;
 using CMS.Domain.Repositories;
 using CMS.Domain.Repositories.User.Interfaces;
@@ -76,6 +77,7 @@ namespace CMS.API.Models.User
         public static async Task<Domain.Entities.User> CreateNewUserAsync(
             Domain.Entities.User user,
             string requesterAddress,
+            Guid requesterId,
             IRepositoryManager repositoryManager,
             SmtpSettings smtpSettings,
             EmailSettings emailSettings)
@@ -92,7 +94,11 @@ namespace CMS.API.Models.User
             }
 
             user.UserSecret = EncryptionService.EncryptString(ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.IdentifierLength));
+
+            user.CreatedBy = requesterId;
             user.CreatedOn = DateTime.Now;
+            user.LastUpdatedBy = requesterId;
+            user.LastUpdatedOn = DateTime.Now;
 
             await repositoryManager.UserRepository.AddAsync(user);
 
@@ -106,11 +112,58 @@ namespace CMS.API.Models.User
             return user;
         }
 
+        public static async Task<Domain.Entities.User> UpdateUserAsync(
+            UserUploadModel updatedUser,
+            Guid requesterId,
+            IUserRepository userRepository)
+        {
+            var userToBeUpdated = await userRepository.GetByIdAsync(updatedUser.Id);
+
+            if (userToBeUpdated != null)
+            {
+                if (updatedUser.IsAdmin && !userToBeUpdated.IsAdmin)
+                {
+                    if (updatedUser.AdminPassword != null)
+                    {
+                        var requesterIsValidAdmin = await CheckUserCredentialsValidAsync(
+                            userRepository,
+                            requesterId,
+                            updatedUser.AdminPassword).ConfigureAwait(false);
+
+                        if (!requesterIsValidAdmin)
+                        {
+                            throw new InvalidTokenException(
+                                InvalidTokenType.TokenNotFound,
+                                "The provided Administrator Password is invalid");
+                        }
+                    }
+                    else
+                    {
+                        throw new InvalidTokenException(
+                            InvalidTokenType.TokenNotFound,
+                            "The provided Administrator Password is invalid");
+                    }
+                }
+
+                userToBeUpdated.FirstName = updatedUser.FirstName;
+                userToBeUpdated.LastName = updatedUser.LastName;
+                userToBeUpdated.ExpiresOn = updatedUser.ExpiresOn;
+                userToBeUpdated.IsAdmin = updatedUser.IsAdmin;
+                userToBeUpdated.LastUpdatedOn = DateTime.Now;
+                userToBeUpdated.LastUpdatedBy = requesterId;
+
+                return await userRepository.UpdateAsync(userToBeUpdated);
+            }
+            else
+            {
+                throw new UserDoesNotExistException("User not found with provided Id", "User not found with provided Id");
+            }
+        }
+
         public static async Task DeleteUserAsync(
             Guid userId,
             Guid requesterId,
-            IUserRepository userRepositoryManager
-            )
+            IUserRepository userRepositoryManager)
         {
             var user = await GetUserByIdAsync(userId, userRepositoryManager).ConfigureAwait(false);
 

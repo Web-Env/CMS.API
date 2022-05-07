@@ -5,6 +5,8 @@ namespace CMS.API.UploadModels.User
 {
     public class UserUploadModel : UploadModelBase
     {
+        public Guid Id { get; set; }
+
         [Required]
         public string Email { get; set; }
 
