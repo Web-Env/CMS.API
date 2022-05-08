@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Azure.Storage.Blobs;
 using CMS.API.DownloadModels.Content;
+using CMS.API.Infrastructure.Exceptions;
 using CMS.API.UploadModels.Content;
 using CMS.Domain.Entities;
 using CMS.Domain.Repositories;
@@ -39,6 +40,11 @@ namespace CMS.API.Models.Content
                     Title = "Home",
                     Path = ""
                 };
+            }
+
+            if (content == null)
+            {
+                throw new NotFoundException("Content Not Found", "Content Not Found");
             }
 
             var contentDownloadModel = mapper.Map<Domain.Entities.Content, ContentDownloadModel>(content);

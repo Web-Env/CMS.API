@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CMS.API.DownloadModels.Content;
+using CMS.API.Infrastructure.Exceptions;
 using CMS.API.UploadModels.Content;
 using CMS.Domain.Entities;
 using CMS.Domain.Repositories.Content.Interfaces;
@@ -24,6 +25,11 @@ namespace CMS.API.Models.Content
             IMapper mapper)
         {
             Announcement announcement = await announcementRepository.GetByPathAsync(announcementPath);
+            
+            if (announcement == null)
+            {
+                throw new NotFoundException("Announcement Not Found", "Announcement Not Found");
+            }
 
             var announcementDownloadModel = mapper.Map<Announcement, AnnouncementDownloadModel>(announcement);
 

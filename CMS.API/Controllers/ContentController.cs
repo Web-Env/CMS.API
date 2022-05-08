@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CMS.API.DownloadModels.Content;
+using CMS.API.Infrastructure.Exceptions;
 using CMS.API.Infrastructure.Settings;
 using CMS.API.Models.Content;
 using CMS.API.Models.User;
@@ -86,6 +87,10 @@ namespace CMS.API.Controllers
                 {
                     return Unauthorized();
                 }
+            }
+            catch (NotFoundException _)
+            {
+                return NotFound();
             }
             catch (Exception err)
             {
