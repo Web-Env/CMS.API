@@ -2,7 +2,6 @@
 using CMS.API.DownloadModels.Content;
 using CMS.API.UploadModels.Content;
 using CMS.Domain.Entities;
-using CMS.Domain.Repositories;
 using CMS.Domain.Repositories.Content.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,10 +11,10 @@ namespace CMS.API.Models.Content
 {
     public static class AnnouncementModel
     {
-        public static async Task<IEnumerable<Domain.Entities.Content>> GetContentPageAsync(int page, int pageSize, IContentRepository contentRepository)
+        public static async Task<IEnumerable<Announcement>> GetAnnouncementsPageAsync(int page, int pageSize, IAnnouncementRepository announcementRepository)
         {
-            var contents = await contentRepository.GetPageAsync(page, pageSize);
-            return contents;
+            var announcements = await announcementRepository.GetPageAsync(page, pageSize);
+            return announcements;
         }
 
         public static async Task<AnnouncementDownloadModel> GetAnnouncementAsync(
@@ -43,13 +42,13 @@ namespace CMS.API.Models.Content
             return announcementDownloadModel;
         }
 
-        public static async Task<Domain.Entities.Content> AddContentAsync(
+        public static async Task<Announcement> AddAnnouncementAsync(
             ContentUploadModel contentUploadModel,
             Guid userId,
-            IContentRepository contentRepository,
+            IAnnouncementRepository announcementRepository,
             string azureStorageConnectionString)
         {
-            var content = new Domain.Entities.Content
+            var announcement = new Announcement
             {
                 Title = contentUploadModel.Title,
                 Path = contentUploadModel.Path,
@@ -61,69 +60,50 @@ namespace CMS.API.Models.Content
                 LastUpdatedBy = userId
             };
 
-            if (contentUploadModel.SectionId != null)
-            {
-                content.SectionId = contentUploadModel.SectionId;
-            }
-
-            await contentRepository.AddAsync(content);
+            await announcementRepository.AddAsync(announcement);
 
             await AzureBlobModel.UploadContentBlobAsync(
-                content.Id, 
+                announcement.Id, 
                 contentUploadModel, 
                 azureStorageConnectionString).ConfigureAwait(false);
 
-            return content;
+            return announcement;
         }
 
-        public static async Task<Domain.Entities.Content> UpdateContentAsync(
+        public static async Task<Announcement> UpdateAnnouncementAsync(
             ContentUploadModel contentUploadModel,
             Guid userId,
-            IContentRepository contentRepository,
+            IAnnouncementRepository announcementRepository,
             string azureStorageConnectionString)
         {
-            Domain.Entities.Content content = null;
-            if (contentUploadModel.Id != Guid.Empty)
-            {
-                content = await contentRepository.GetByIdAsync(contentUploadModel.Id.Value);
+            Announcement announcement = await announcementRepository.GetByIdAsync(contentUploadModel.Id.Value);
 
-                content.Title = contentUploadModel.Title;
-                content.Path = contentUploadModel.Path;
-                content.SectionId = contentUploadModel.SectionId;
-                content.LastUpdatedOn = DateTime.Now;
-                content.LastUpdatedBy = userId;
+            announcement.Title = contentUploadModel.Title;
+            announcement.Path = contentUploadModel.Path;
+            announcement.LastUpdatedOn = DateTime.Now;
+            announcement.LastUpdatedBy = userId;
 
-                await contentRepository.UpdateAsync(content);
-            }
-            else
-            {
-                content = new Domain.Entities.Content
-                {
-                    Id = contentUploadModel.Id.Value
-                };
-            }
+            await announcementRepository.UpdateAsync(announcement);
 
-            await AzureBlobModel.DeleteContentBlobAsync(content.Id, azureStorageConnectionString).ConfigureAwait(false);
+            await AzureBlobModel.DeleteContentBlobAsync(announcement.Id, azureStorageConnectionString).ConfigureAwait(false);
             await AzureBlobModel.UploadContentBlobToContainerAsync(
-                content.Id, 
+                announcement.Id, 
                 contentUploadModel, 
                 azureStorageConnectionString).ConfigureAwait(false);
 
-            return content;
+            return announcement;
         }
 
-        public static async Task DeleteContentAsync(
-            Guid contentId,
-            IRepositoryManager repositoryManager,
+        public static async Task DeleteAnnouncementAsync(
+            Guid announcementId,
+            IAnnouncementRepository announcementRepository,
             string azureStorageConnectionString)
         {
-            await AzureBlobModel.DeleteContentBlobContainerAsync(contentId, azureStorageConnectionString).ConfigureAwait(false);
+            await AzureBlobModel.DeleteContentBlobContainerAsync(announcementId, azureStorageConnectionString).ConfigureAwait(false);
 
-            var content = await repositoryManager.ContentRepository.GetByIdAsync(contentId);
-            var contentTimeTrackings = await repositoryManager.ContentTimeTrackingRepository.GetByContentIdAsync(contentId);
-
-            await repositoryManager.ContentTimeTrackingRepository.RemoveRangeAsync(contentTimeTrackings);
-            await repositoryManager.ContentRepository.RemoveAsync(content);
+            var announcement = await announcementRepository.GetByIdAsync(announcementId);
+            
+            await announcementRepository.RemoveAsync(announcement);
         }
     }
 }

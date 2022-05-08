@@ -45,9 +45,9 @@ namespace CMS.API.Controllers
 
                     if (userIsAdmin)
                     {
-                        var contents = await ContentModel.GetContentPageAsync(page, pageSize, RepositoryManager.ContentRepository);
+                        var announcements = await AnnouncementModel.GetAnnouncementsPageAsync(page, pageSize, RepositoryManager.AnnouncementRepository);
 
-                        return Ok(MapEntitiesToDownloadModels<Content, ContentDownloadModel>(contents));
+                        return Ok(MapEntitiesToDownloadModels<Announcement, AnnouncementDownloadModel>(announcements));
                     }
                     else
                     {
@@ -68,19 +68,19 @@ namespace CMS.API.Controllers
         }
 
         [HttpGet("Get")]
-        public async Task<ActionResult<AnnouncementDownloadModel>> GetAnnouncement(string contentPath)
+        public async Task<ActionResult<ContentDownloadModel>> GetAnnouncement(string announcementPath)
         {
             try
             {
                 if (await IsUserValidAsync())
                 {
-                    var content = await ContentModel.GetContentAsync(
-                        contentPath,
-                        RepositoryManager.ContentRepository,
+                    var announcement = await AnnouncementModel.GetAnnouncementAsync(
+                        announcementPath,
+                        RepositoryManager.AnnouncementRepository,
                         _azureStorageSettings.ConnectionString,
                         _mapper);
 
-                    return Ok(content);
+                    return Ok(announcement);
                 }
                 else
                 {
@@ -106,13 +106,13 @@ namespace CMS.API.Controllers
 
                     if (userIsAdmin)
                     {
-                        var content = await ContentModel.AddContentAsync(
+                        var announcement = await AnnouncementModel.AddAnnouncementAsync(
                             contentUploadModel,
                             ExtractUserIdFromToken(),
-                            RepositoryManager.ContentRepository,
+                            RepositoryManager.AnnouncementRepository,
                             _azureStorageSettings.ConnectionString);
 
-                        return Ok(MapEntityToDownloadModel<Content, ContentDownloadModel>(content));
+                        return Ok(MapEntityToDownloadModel<Announcement, AnnouncementDownloadModel>(announcement));
                     }
                     else
                     {
@@ -143,13 +143,13 @@ namespace CMS.API.Controllers
 
                     if (userIsAdmin)
                     {
-                        var content = await ContentModel.UpdateContentAsync(
+                        var announcement = await AnnouncementModel.UpdateAnnouncementAsync(
                             contentUploadModel,
                             ExtractUserIdFromToken(),
-                            RepositoryManager.ContentRepository,
+                            RepositoryManager.AnnouncementRepository,
                             _azureStorageSettings.ConnectionString);
 
-                        return Ok(MapEntityToDownloadModel<Content, ContentDownloadModel>(content));
+                        return Ok(MapEntityToDownloadModel<Announcement, AnnouncementDownloadModel>(announcement));
                     }
                     else
                     {
@@ -182,9 +182,9 @@ namespace CMS.API.Controllers
                     {
                         if (announcementId != Guid.Empty)
                         {
-                            await ContentModel.DeleteContentAsync(
+                            await AnnouncementModel.DeleteAnnouncementAsync(
                                 announcementId,
-                                RepositoryManager,
+                                RepositoryManager.AnnouncementRepository,
                                 _azureStorageSettings.ConnectionString);
 
                             return Ok();
