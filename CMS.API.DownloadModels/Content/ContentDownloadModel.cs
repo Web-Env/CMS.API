@@ -8,6 +8,8 @@ namespace CMS.API.DownloadModels.Content
 
         public string Path { get; set; }
 
+        public int Views { get; set; }
+
         public string SectionId { get; set; }
 
         public SectionDownloadModel Section { get; set; }

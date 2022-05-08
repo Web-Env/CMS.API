@@ -58,6 +58,14 @@ namespace CMS.API.Models.Content
             var contentDownloadModel = mapper.Map<Domain.Entities.Content, ContentDownloadModel>(content);
             contentDownloadModel.Content = contentString;
 
+            if (content != null && content.Id != Guid.Empty)
+            {
+                content.Views++;
+                content.CreatedByNavigation = null;
+
+                await contentRepository.UpdateAsync(content);
+            }
+
             return contentDownloadModel;
         }
 
