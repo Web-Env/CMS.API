@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure.Storage.Blobs;
 using CMS.API.DownloadModels.Content;
 using CMS.API.UploadModels.Content;
 using CMS.Domain.Entities;
@@ -7,13 +6,11 @@ using CMS.Domain.Repositories;
 using CMS.Domain.Repositories.Content.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CMS.API.Models.Content
 {
-    public static class ContentModel
+    public static class AnnouncementModel
     {
         public static async Task<IEnumerable<Domain.Entities.Content>> GetContentPageAsync(int page, int pageSize, IContentRepository contentRepository)
         {
@@ -21,42 +18,29 @@ namespace CMS.API.Models.Content
             return contents;
         }
 
-        public static async Task<ContentDownloadModel> GetContentAsync(
-            string contentPath,
-            IContentRepository contentRepository,
+        public static async Task<AnnouncementDownloadModel> GetAnnouncementAsync(
+            string announcementPath,
+            IAnnouncementRepository announcementRepository,
             string azureStorageConnectionString,
             IMapper mapper)
         {
-            Domain.Entities.Content content;
-            if (!string.IsNullOrWhiteSpace(contentPath))
-            {
-                content = await contentRepository.GetByPathAsync(contentPath);
-            }
-            else
-            {
-                content = new Domain.Entities.Content
-                {
-                    Title = "Home",
-                    Path = ""
-                };
-            }
+            Announcement announcement = await announcementRepository.GetByPathAsync(announcementPath);
 
-            var contentDownloadModel = mapper.Map<Domain.Entities.Content, ContentDownloadModel>(content);
+            var announcementDownloadModel = mapper.Map<Announcement, AnnouncementDownloadModel>(announcement);
 
-            var contentId = content != null ? content.Id : Guid.Empty;
-            contentDownloadModel.Content = await AzureBlobModel.GetContentStringByIdAsync(
-                contentId,
+            announcementDownloadModel.Content = await AzureBlobModel.GetContentStringByIdAsync(
+                announcement.Id, 
                 azureStorageConnectionString);
 
-            if (content != null && content.Id != Guid.Empty)
+            if (announcement != null && announcement.Id != Guid.Empty)
             {
-                content.Views++;
-                content.CreatedByNavigation = null;
+                announcement.Views++;
+                announcement.CreatedByNavigation = null;
 
-                await contentRepository.UpdateAsync(content);
+                await announcementRepository.UpdateAsync(announcement);
             }
 
-            return contentDownloadModel;
+            return announcementDownloadModel;
         }
 
         public static async Task<Domain.Entities.Content> AddContentAsync(
@@ -140,42 +124,6 @@ namespace CMS.API.Models.Content
 
             await repositoryManager.ContentTimeTrackingRepository.RemoveRangeAsync(contentTimeTrackings);
             await repositoryManager.ContentRepository.RemoveAsync(content);
-        }
-
-        public static async Task<IEnumerable<ContentTimeTracking>> GetUserTimeTrackingAsync(
-            Guid userId,
-            IContentTimeTrackingRepository contentTimeTrackingRepository)
-        {
-            return await contentTimeTrackingRepository.GetByUserIdAsync(userId).ConfigureAwait(false);
-        }
-
-        public static async Task TrackUserTime(Guid contentId, Guid userId, int interval, IRepositoryManager repositoryManager)
-        {
-            var contentTimeTracking = await repositoryManager.ContentTimeTrackingRepository.GetByContentIdAndUserIdAsync(
-                contentId,
-                userId
-            );
-
-            if (contentTimeTracking == null)
-            {
-                contentTimeTracking = new ContentTimeTracking
-                {
-                    ContentId = contentId,
-                    UserId = userId
-                };
-            }
-
-            contentTimeTracking.TotalTime += interval;
-            contentTimeTracking.LastSeen = DateTime.Now;
-
-            if (contentTimeTracking.Id == Guid.Empty)
-            {
-                await repositoryManager.ContentTimeTrackingRepository.AddAsync(contentTimeTracking);
-            }
-            else
-            {
-                await repositoryManager.ContentTimeTrackingRepository.UpdateAsync(contentTimeTracking);
-            }
         }
     }
 }
