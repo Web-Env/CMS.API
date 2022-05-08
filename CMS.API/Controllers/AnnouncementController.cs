@@ -19,14 +19,14 @@ namespace CMS.API.Controllers
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("[controller]")]
-    public class ContentController : CustomControllerBase
+    public class AnnouncementController : CustomControllerBase
     {
         private readonly AzureStorageSettings _azureStorageSettings;
         private readonly IMapper _mapper;
 
-        public ContentController(
+        public AnnouncementController(
             CMSContext cmsContext,
-            ILogger<ContentController> logger,
+            ILogger<AnnouncementController> logger,
             IMapper mapper,
             IOptions<AzureStorageSettings> azureStorageSettings) : base(cmsContext, logger, mapper)
         {
@@ -35,7 +35,7 @@ namespace CMS.API.Controllers
         }
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<ContentDownloadModel>>> GetContents(int page, int pageSize)
+        public async Task<ActionResult<IEnumerable<AnnouncementDownloadModel>>> GetAnnouncements(int page, int pageSize)
         {
             try
             {
@@ -45,9 +45,9 @@ namespace CMS.API.Controllers
 
                     if (userIsAdmin)
                     {
-                        var contents = await ContentModel.GetContentPageAsync(page, pageSize, RepositoryManager.ContentRepository);
+                        var announcements = await AnnouncementModel.GetAnnouncementsPageAsync(page, pageSize, RepositoryManager.AnnouncementRepository);
 
-                        return Ok(MapEntitiesToDownloadModels<Content, ContentDownloadModel>(contents));
+                        return Ok(MapEntitiesToDownloadModels<Announcement, AnnouncementDownloadModel>(announcements));
                     }
                     else
                     {
@@ -68,19 +68,19 @@ namespace CMS.API.Controllers
         }
 
         [HttpGet("Get")]
-        public async Task<ActionResult<ContentDownloadModel>> GetContent(string contentPath)
+        public async Task<ActionResult<ContentDownloadModel>> GetAnnouncement(string announcementPath)
         {
             try
             {
                 if (await IsUserValidAsync())
                 {
-                    var content = await ContentModel.GetContentAsync(
-                        contentPath,
-                        RepositoryManager.ContentRepository,
+                    var announcement = await AnnouncementModel.GetAnnouncementAsync(
+                        announcementPath,
+                        RepositoryManager.AnnouncementRepository,
                         _azureStorageSettings.ConnectionString,
                         _mapper);
 
-                    return Ok(content);
+                    return Ok(announcement);
                 }
                 else
                 {
@@ -96,7 +96,7 @@ namespace CMS.API.Controllers
         }
 
         [HttpPost("Add")]
-        public async Task<ActionResult<ContentDownloadModel>> AddContent(ContentUploadModel contentUploadModel)
+        public async Task<ActionResult<AnnouncementDownloadModel>> AddAnnouncement(ContentUploadModel contentUploadModel)
         {
             try
             {
@@ -106,13 +106,13 @@ namespace CMS.API.Controllers
 
                     if (userIsAdmin)
                     {
-                        var content = await ContentModel.AddContentAsync(
+                        var announcement = await AnnouncementModel.AddAnnouncementAsync(
                             contentUploadModel,
                             ExtractUserIdFromToken(),
-                            RepositoryManager.ContentRepository,
+                            RepositoryManager.AnnouncementRepository,
                             _azureStorageSettings.ConnectionString);
 
-                        return Ok(MapEntityToDownloadModel<Content, ContentDownloadModel>(content));
+                        return Ok(MapEntityToDownloadModel<Announcement, AnnouncementDownloadModel>(announcement));
                     }
                     else
                     {
@@ -133,7 +133,7 @@ namespace CMS.API.Controllers
         }
 
         [HttpPut("Update")]
-        public async Task<ActionResult<ContentDownloadModel>> EditContent(ContentUploadModel contentUploadModel)
+        public async Task<ActionResult<AnnouncementDownloadModel>> EditAnnouncement(ContentUploadModel contentUploadModel)
         {
             try
             {
@@ -143,13 +143,13 @@ namespace CMS.API.Controllers
 
                     if (userIsAdmin)
                     {
-                        var content = await ContentModel.UpdateContentAsync(
+                        var announcement = await AnnouncementModel.UpdateAnnouncementAsync(
                             contentUploadModel,
                             ExtractUserIdFromToken(),
-                            RepositoryManager.ContentRepository,
+                            RepositoryManager.AnnouncementRepository,
                             _azureStorageSettings.ConnectionString);
 
-                        return Ok(MapEntityToDownloadModel<Content, ContentDownloadModel>(content));
+                        return Ok(MapEntityToDownloadModel<Announcement, AnnouncementDownloadModel>(announcement));
                     }
                     else
                     {
@@ -170,7 +170,7 @@ namespace CMS.API.Controllers
         }
 
         [HttpDelete("Delete")]
-        public async Task<ActionResult> DeleteContent(Guid contentId)
+        public async Task<ActionResult> DeleteAnnouncement(Guid announcementId)
         {
             try
             {
@@ -180,11 +180,11 @@ namespace CMS.API.Controllers
 
                     if (userIsAdmin)
                     {
-                        if (contentId != Guid.Empty)
+                        if (announcementId != Guid.Empty)
                         {
-                            await ContentModel.DeleteContentAsync(
-                                contentId,
-                                RepositoryManager,
+                            await AnnouncementModel.DeleteAnnouncementAsync(
+                                announcementId,
+                                RepositoryManager.AnnouncementRepository,
                                 _azureStorageSettings.ConnectionString);
 
                             return Ok();
@@ -198,75 +198,6 @@ namespace CMS.API.Controllers
                     {
                         return Forbid();
                     }
-                }
-                else
-                {
-                    return Unauthorized();
-                }
-            }
-            catch (Exception err)
-            {
-                LogException(err);
-
-                return Problem();
-            }
-        }
-
-        [HttpGet("ContentTimeTracking/GetAllByUserId")]
-        public async Task<ActionResult> TrackUserTime(Guid userId)
-        {
-            try
-            {
-                if (await IsUserValidAsync())
-                {
-                    var userIsAdmin = await UserModel.CheckUserIsAdminByIdAsync(ExtractUserIdFromToken(), RepositoryManager.UserRepository);
-
-                    if (userIsAdmin)
-                    {
-                        var contentTimeTrackings = await ContentModel.GetUserTimeTrackingAsync(
-                            userId,
-                            RepositoryManager.ContentTimeTrackingRepository
-                        );
-
-                        return Ok(
-                            MapEntitiesToDownloadModels<ContentTimeTracking, ContentTimeTrackingDownloadModel>(
-                                contentTimeTrackings
-                            )
-                        );
-                    }
-                    else
-                    {
-                        return Forbid();
-                    }
-                }
-                else
-                {
-                    return Unauthorized();
-                }
-            }
-            catch (Exception err)
-            {
-                LogException(err);
-
-                return Problem();
-            }
-        }
-
-        [HttpPost("ContentTimeTracking/Record")]
-        public async Task<ActionResult> TrackUserTime(Guid contentId, int interval)
-        {
-            try
-            {
-                if (await IsUserValidAsync())
-                {
-                    await ContentModel.TrackUserTime(
-                        contentId,
-                        ExtractUserIdFromToken(),
-                        interval,
-                        RepositoryManager
-                    );
-
-                    return Ok();
                 }
                 else
                 {

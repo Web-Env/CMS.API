@@ -37,26 +37,16 @@ namespace CMS.API.Models.Content
                 content = new Domain.Entities.Content
                 {
                     Title = "Home",
-                    Path = "",
-                    Url = ""
+                    Path = ""
                 };
             }
 
-            var contentId = content != null ? content.Id.ToString().ToLowerInvariant() : Guid.Empty.ToString().ToLowerInvariant();
-            BlobServiceClient blobServiceClient = new BlobServiceClient(azureStorageConnectionString);
-            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(contentId);
-            BlobClient blobClient = containerClient.GetBlobClient(contentId);
-
-            string contentString;
-            using (var memStream = new MemoryStream())
-            {
-                await blobClient.DownloadToAsync(memStream);
-
-                contentString = Encoding.UTF8.GetString(memStream.ToArray());
-            }
-
             var contentDownloadModel = mapper.Map<Domain.Entities.Content, ContentDownloadModel>(content);
-            contentDownloadModel.Content = contentString;
+
+            var contentId = content != null ? content.Id : Guid.Empty;
+            contentDownloadModel.Content = await AzureBlobModel.GetContentStringByIdAsync(
+                contentId,
+                azureStorageConnectionString);
 
             if (content != null && content.Id != Guid.Empty)
             {
@@ -80,7 +70,6 @@ namespace CMS.API.Models.Content
                 Title = contentUploadModel.Title,
                 Path = contentUploadModel.Path,
                 Active = contentUploadModel.Active,
-                Url = "",
                 Views = 0,
                 CreatedOn = DateTime.Now,
                 CreatedBy = userId,
@@ -95,27 +84,12 @@ namespace CMS.API.Models.Content
 
             await contentRepository.AddAsync(content);
 
-            await UploadContentBlobAsync(content.Id, contentUploadModel, azureStorageConnectionString).ConfigureAwait(false);
+            await AzureBlobModel.UploadContentBlobAsync(
+                content.Id, 
+                contentUploadModel, 
+                azureStorageConnectionString).ConfigureAwait(false);
 
             return content;
-        }
-
-        private static async Task UploadContentBlobAsync(
-            Guid contentId,
-            ContentUploadModel contentUploadModel,
-            string azureStorageConnectionString)
-        {
-            var contentIdString = contentId.ToString().ToLowerInvariant();
-            BlobServiceClient blobServiceClient = new BlobServiceClient(azureStorageConnectionString);
-            BlobContainerClient containerClient = await blobServiceClient.CreateBlobContainerAsync(contentIdString);
-            BlobClient blobClient = containerClient.GetBlobClient(contentIdString);
-
-            var contentStream = Encoding.UTF8.GetBytes(contentUploadModel.Content);
-
-            using (var memStream = new MemoryStream(contentStream))
-            {
-                await blobClient.UploadAsync(memStream, true);
-            }
         }
 
         public static async Task<Domain.Entities.Content> UpdateContentAsync(
@@ -145,37 +119,13 @@ namespace CMS.API.Models.Content
                 };
             }
 
-            await DeleteContentBlobAsync(content.Id, azureStorageConnectionString).ConfigureAwait(false);
-            await UploadContentBlobToContainerAsync(content.Id, contentUploadModel, azureStorageConnectionString).ConfigureAwait(false);
+            await AzureBlobModel.DeleteContentBlobAsync(content.Id, azureStorageConnectionString).ConfigureAwait(false);
+            await AzureBlobModel.UploadContentBlobToContainerAsync(
+                content.Id, 
+                contentUploadModel, 
+                azureStorageConnectionString).ConfigureAwait(false);
 
             return content;
-        }
-
-        private static async Task UploadContentBlobToContainerAsync(
-            Guid contentId,
-            ContentUploadModel contentUploadModel,
-            string azureStorageConnectionString)
-        {
-            var contentIdString = contentId.ToString().ToLowerInvariant();
-            BlobServiceClient blobServiceClient = new BlobServiceClient(azureStorageConnectionString);
-            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(contentIdString);
-            BlobClient blobClient = containerClient.GetBlobClient(contentIdString);
-
-            var contentStream = Encoding.UTF8.GetBytes(contentUploadModel.Content);
-
-            using (var memStream = new MemoryStream(contentStream))
-            {
-                await blobClient.UploadAsync(memStream, true);
-            }
-        }
-
-        private static async Task DeleteContentBlobAsync(Guid contentId, string azureStorageConnectionString)
-        {
-            var contentIdString = contentId.ToString().ToLowerInvariant();
-            BlobServiceClient blobServiceClient = new BlobServiceClient(azureStorageConnectionString);
-            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(contentIdString);
-
-            await containerClient.GetBlobClient(contentIdString).DeleteAsync();
         }
 
         public static async Task DeleteContentAsync(
@@ -183,22 +133,13 @@ namespace CMS.API.Models.Content
             IRepositoryManager repositoryManager,
             string azureStorageConnectionString)
         {
-            await DeleteContentBlobContainerAsync(contentId, azureStorageConnectionString).ConfigureAwait(false);
+            await AzureBlobModel.DeleteContentBlobContainerAsync(contentId, azureStorageConnectionString).ConfigureAwait(false);
 
             var content = await repositoryManager.ContentRepository.GetByIdAsync(contentId);
             var contentTimeTrackings = await repositoryManager.ContentTimeTrackingRepository.GetByContentIdAsync(contentId);
 
             await repositoryManager.ContentTimeTrackingRepository.RemoveRangeAsync(contentTimeTrackings);
             await repositoryManager.ContentRepository.RemoveAsync(content);
-        }
-
-        private static async Task DeleteContentBlobContainerAsync(Guid contentId, string azureStorageConnectionString)
-        {
-            var contentIdString = contentId.ToString().ToLowerInvariant();
-            BlobServiceClient blobServiceClient = new BlobServiceClient(azureStorageConnectionString);
-            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(contentIdString);
-
-            await containerClient.DeleteAsync();
         }
 
         public static async Task<IEnumerable<ContentTimeTracking>> GetUserTimeTrackingAsync(
